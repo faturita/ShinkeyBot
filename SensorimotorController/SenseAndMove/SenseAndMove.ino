@@ -1,19 +1,21 @@
-/*
-HC-SR04 Ping distance sensor]
-VCC to arduino 5v GND to arduino GND
-Echo to Arduino pin 13 Trig to Arduino pin 12
-Red POS to Arduino pin 11
-Green POS to Arduino pin 10
-560 ohm resistor to both LED NEG and GRD power rail
-More info at: http://goo.gl/kJ8Gl
-Original code improvements to the Ping sketch sourced from Trollmaker.com
-Some code and wiring inspired by http://en.wikiversity.org/wiki/User:Dstaub/robotcar
-*/
-
-//#define trigPin 13
-//#define echoPin 12
-#define led 11
-#define led2 10
+/**
+ * ShinkeyBot - Sensorimotor
+ * 
+ * Fuse senses and move the robot wheels.
+ * 
+ * HR-SR04 - Distance Sensor
+ *     VCC to Arduino 5v 
+ *     GND to Arduino GND
+ *     Echo to Arduino Pin 13
+ *     Trig to Arduino Pin 12
+ *     Red Led to Arduino Pin 11
+ *     Green Led to Arduino Pin 10
+ *     560 ohm resistor to both Led Neg and GND Power rail
+ *     http://goo.gl/kJ8Gl    
+ *     http://en.wikiversity.org/wiki/User:Dstaub/robotcar 
+ *     
+ *     Motor Wheel: Pin 5,4,3,2.
+ */
 
 
 #define trigPin 13
@@ -30,14 +32,14 @@ int IN1 = 2;
 const int ledPin =  13;      // the number of the LED pin
 
 // Variables will change :
-int ledState = LOW;             // ledState used to set the LED
+int ledState = HIGH;             // ledState used to set the LED
 
 // Generally, you should use "unsigned long" for variables that hold time
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0;        // will store last time LED was updated
 
 // constants won't change :
-const long interval = 800;           // interval at which to blink (milliseconds)
+const long interval = 1000;           // interval at which to blink (milliseconds)
 
 
 void setupMotor()
@@ -49,24 +51,29 @@ void setupMotor()
 
   // set the digital pin as output:
   pinMode(ledPin, OUTPUT);  
+
+  randomSeed(analogRead(0));
 }
 
 
 void setup() {
   Serial.begin (9600);
-  //pinMode(trigPin, OUTPUT);
-  //pinMode(echoPin, INPUT);
-  //pinMode(led, OUTPUT);
-  //pinMode(led2, OUTPUT);
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
   setupMotor();
-
 }
 
-int motorstate=40;
+int const STILL = 1;
+int const MOVE_FORWARD = 2;
+int const MOVE_BACKWARDS = 3;
+int const RIGHT = 4;
+int const LEFT = 5;
+
+// L3 &&  L1 is BACKWARDS
+
+int motorstate=STILL;
 
 
 void blinkme()
@@ -91,6 +98,10 @@ void blinkme()
 
     // set the LED with the ledState of the variable:
     digitalWrite(ledPin, ledState);
+
+    long randNumber = random(14);
+
+    motorstate = (int)randNumber;
   }
 }
 
@@ -98,21 +109,43 @@ void loopMotor()
 {
   blinkme();
 
-  if (ledState == HIGH)
+  //if (ledState == HIGH)
   switch (motorstate)
   {
-    case 0: 
-      // Motor gira en un sentido
+    case MOVE_BACKWARDS: 
+      // Move Backward.
       Serial.println("Moving!");
       digitalWrite (IN4, HIGH);
       digitalWrite (IN3, LOW); 
       digitalWrite (IN2, HIGH);
       digitalWrite (IN1, LOW); 
-      motorstate++;
+      break;
+    case MOVE_FORWARD: 
+      // Go ahead and move forward
+      Serial.println("Moving!");
+      digitalWrite (IN4, LOW);
+      digitalWrite (IN3, HIGH); 
+      digitalWrite (IN2, LOW);
+      digitalWrite (IN1, HIGH); 
+      break;
+    case RIGHT: 
+      // Move the right caterpiller
+      Serial.println("Moving!");
+      digitalWrite (IN4, LOW);
+      digitalWrite (IN3, LOW); 
+      digitalWrite (IN2, LOW);
+      digitalWrite (IN1, HIGH); 
+      break;
+    case LEFT: 
+      // Move the left Caterpiller
+      Serial.println("Moving!");
+      digitalWrite (IN4, LOW);
+      digitalWrite (IN3, HIGH); 
+      digitalWrite (IN2, LOW);
+      digitalWrite (IN1, LOW); 
       break;
     default:
-      // Motor no gira
-      Serial.println("Stopping");
+      // Stop All Motors
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, LOW); 
       digitalWrite (IN2, LOW);
@@ -127,25 +160,26 @@ void loopMotor()
 
 void loop() {
   long duration, distance;
-  digitalWrite(trigPin, LOW);  // Added this line
-  delayMicroseconds(2); // Added this line
+  digitalWrite(trigPin, LOW);  
+  delayMicroseconds(2); 
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(5); // Added this line
+  delayMicroseconds(5); 
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
-  if (distance < 4) {  // This is where the LED On/Off happens
+  if (distance < 10) {  // This is where the LED On/Off happens
     //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
     //digitalWrite(led2,LOW);
 
-    motorstate=0;
+    motorstate=MOVE_BACKWARDS;
   }
   else {
+    //motorstate=STILL;
     //digitalWrite(led,LOW);
     //digitalWrite(led2,HIGH);
   }
   if (distance >= 200 || distance <= 0){
-    Serial.println("Out of range");
+    Serial.println("200");
   }
   else {
     Serial.print(distance);
