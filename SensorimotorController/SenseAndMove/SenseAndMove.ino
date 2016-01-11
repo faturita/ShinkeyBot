@@ -58,6 +58,7 @@ void setupMotor()
 
 void setup() {
   Serial.begin (9600);
+  Serial.println("Sensorimotor Cortex");
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -65,6 +66,7 @@ void setup() {
   setupMotor();
 }
 
+int const QUIET = 0;
 int const STILL = 1;
 int const MOVE_FORWARD = 2;
 int const MOVE_BACKWARDS = 3;
@@ -101,8 +103,29 @@ void blinkme()
 
     long randNumber = random(14);
 
-    motorstate = (int)randNumber;
+    if (motorstate != QUIET)
+    {
+       motorstate = (int)randNumber;
+    }
   }
+
+  int incomingByte;
+  
+ if (Serial.available() > 0) {
+    incomingByte = Serial.read();
+    
+    if (incomingByte == 'a')
+    {
+      //laser.setSpeed(250);
+    }
+
+    motorstate = incomingByte-48;
+  
+ }
+
+
+
+  
 }
 
 void loopMotor()
@@ -114,7 +137,7 @@ void loopMotor()
   {
     case MOVE_BACKWARDS: 
       // Move Backward.
-      Serial.println("Moving!");
+      //Serial.println("Moving!");
       digitalWrite (IN4, HIGH);
       digitalWrite (IN3, LOW); 
       digitalWrite (IN2, HIGH);
@@ -122,7 +145,7 @@ void loopMotor()
       break;
     case MOVE_FORWARD: 
       // Go ahead and move forward
-      Serial.println("Moving!");
+      //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, HIGH); 
       digitalWrite (IN2, LOW);
@@ -130,7 +153,7 @@ void loopMotor()
       break;
     case RIGHT: 
       // Move the right caterpiller
-      Serial.println("Moving!");
+      //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, LOW); 
       digitalWrite (IN2, LOW);
@@ -138,7 +161,7 @@ void loopMotor()
       break;
     case LEFT: 
       // Move the left Caterpiller
-      Serial.println("Moving!");
+      //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, HIGH); 
       digitalWrite (IN2, LOW);
@@ -179,11 +202,11 @@ void loop() {
     //digitalWrite(led2,HIGH);
   }
   if (distance >= 200 || distance <= 0){
-    Serial.println("200");
+    //Serial.println("200");
   }
   else {
-    Serial.print(distance);
-    Serial.println(" cm");
+    //Serial.print(distance);
+    //Serial.println(" cm");
   }
 
   loopMotor();
