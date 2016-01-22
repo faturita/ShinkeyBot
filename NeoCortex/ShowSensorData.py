@@ -22,8 +22,8 @@ print str((np.array(x)).mean())
 print str((np.array(y)).mean())
 print str((np.array(z)).mean())
 
-plt.plot(x)
-plt.plot(y)
-plt.plot(z)
+plt.plot(x,'r', label='X')
+plt.plot(y,'g', label='Y')
+plt.plot(z,'b', label='Z')
 
 plt.show()

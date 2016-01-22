@@ -39,7 +39,38 @@ int ledState = HIGH;             // ledState used to set the LED
 unsigned long previousMillis = 0;        // will store last time LED was updated
 
 // constants won't change :
-const long interval = 1000;           // interval at which to blink (milliseconds)
+const long interval = 2000;           // interval at which to blink (milliseconds)
+
+
+
+struct sensortype
+{
+  double onYaw;
+  double onPitch;
+  double onRoll;
+  int yaw;
+  int pitch;
+  int roll;
+  int geoYaw;
+  int geoPitch;
+  int geoRoll;
+  float T;
+  float P;
+  
+} sensor;
+
+
+bool serialOpen = 1;
+
+
+void dump(char *msg)
+{
+  if (serialOpen)
+  {
+    Serial.println(msg);
+  }
+}
+
 
 
 void setupMotor()
@@ -53,12 +84,14 @@ void setupMotor()
   pinMode(ledPin, OUTPUT);  
 
   randomSeed(analogRead(0));
+
+  initsensors();
 }
 
 
 void setup() {
-  Serial.begin (9600);
-  Serial.println("Sensorimotor Cortex");
+  Serial.begin (115200);
+  dump("Sensorimotor Cortex");
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -77,6 +110,7 @@ int const LEFT = 5;
 
 int motorstate=STILL;
 
+int txSensor = 0;
 
 void blinkme()
 {
@@ -87,10 +121,36 @@ void blinkme()
   // the LED is bigger than the interval at which you want to
   // blink the LED.
   unsigned long currentMillis = millis();
- 
+
+  int incomingByte;
+
+
+  if (txSensor == 1)
+  {
+    checksensors();
+  }
+    
+  if (Serial.available() > 0) {
+    incomingByte = Serial.read();
+
+    if (incomingByte == 'S')
+    {
+      txSensor = 1;
+    } else if (incomingByte == 'X')
+    {
+      txSensor = 0;
+    }
+    else
+    if (48<incomingByte && incomingByte<58)
+    {
+      motorstate = incomingByte-48;
+      previousMillis = currentMillis; 
+    }
+  } 
+  else
   if(currentMillis - previousMillis >= interval) {
     // save the last time you blinked the LED 
-    previousMillis = currentMillis;   
+    previousMillis = currentMillis; 
 
     // if the LED is off turn it on and vice-versa:
     if (ledState == LOW)
@@ -105,27 +165,12 @@ void blinkme()
 
     if (motorstate != QUIET)
     {
-       motorstate = (int)randNumber;
+      // Plus one is to eliminate the chance to fallback in quit mode
+      motorstate = ((int)randNumber)+1;
     }
+    //motorstate = STILL;
   }
 
-  int incomingByte;
-  
- if (Serial.available() > 0) {
-    incomingByte = Serial.read();
-    
-    if (incomingByte == 'a')
-    {
-      //laser.setSpeed(250);
-    }
-
-    motorstate = incomingByte-48;
-  
- }
-
-
-
-  
 }
 
 void loopMotor()
@@ -151,20 +196,20 @@ void loopMotor()
       digitalWrite (IN2, LOW);
       digitalWrite (IN1, HIGH); 
       break;
-    case RIGHT: 
+    case LEFT: 
       // Move the right caterpiller
       //Serial.println("Moving!");
-      digitalWrite (IN4, LOW);
+      digitalWrite (IN4, LOW); // LOW, HIGH for back
       digitalWrite (IN3, LOW); 
       digitalWrite (IN2, LOW);
       digitalWrite (IN1, HIGH); 
       break;
-    case LEFT: 
+    case RIGHT: 
       // Move the left Caterpiller
       //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, HIGH); 
-      digitalWrite (IN2, LOW);
+      digitalWrite (IN2, LOW);  // LOW, HIGH for back
       digitalWrite (IN1, LOW); 
       break;
     default:
@@ -176,7 +221,6 @@ void loopMotor()
       break;
   }
 
-  delay(10);
 }
 
 

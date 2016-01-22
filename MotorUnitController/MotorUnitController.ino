@@ -11,6 +11,7 @@
 #include <Servo.h> 
 
 
+// create motor objects, 64KHz pwm
 AF_DCMotor laser(1, MOTOR12_64KHZ);
 AF_DCMotor turret(2, MOTOR12_64KHZ);
 AF_DCMotor grip(3, MOTOR12_64KHZ);
@@ -27,7 +28,7 @@ int state=0;
 
 int speeds = 255;
 
-// create motor #2, 64KHz pwm
+
 void setup() {
  Serial.begin(115200); // set up Serial library at 9600 bps
  Serial.println("Motor Unit Neuron");
@@ -38,6 +39,8 @@ void setup() {
  laser.setSpeed(250);
 
  myservo.attach(9);  // Servo2 orange in
+
+ initsensors();
 }
 
 int incomingByte = 0;
@@ -49,7 +52,11 @@ void loop() {
  if (Serial.available() > 0) {
    
     char syncbyte = Serial.read();
-   
+
+    if (syncbyte == 'S')
+    {
+      checksensors();
+    }
 
     if (syncbyte == 'A')
     {   

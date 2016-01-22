@@ -66,7 +66,7 @@ def tiltsensor(hidraw):
 
 f = open('sensor.dat', 'w')
 
-ser = serial.Serial(port='/dev/tty.usbmodem1a1211',baudrate=115200, timeout=0)
+ser = serial.Serial(port='/dev/tty.usbmodem1421',baudrate=115200, timeout=0)
 hidraw = setupsensor()
 
 P = 1.2
@@ -74,7 +74,7 @@ I = 1
 D = 0.001
 pid = PID.PID(P, I, D)
 
-pid.SetPoint=400
+pid.SetPoint=300
 pid.setSampleTime(0.01)
 
 feedback = 0
