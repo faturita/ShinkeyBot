@@ -1,7 +1,11 @@
 import serial
 import time
 
-ser = serial.Serial(port='/dev/tty.usbmodem1421',baudrate=115200,timeout=0)
+
+if (os.path.exists('/dev/tty.usbmodem1421')):
+   ser = serial.Serial(port='/dev/tty.usbmodem1421',baudrate=115200,timeout=0)
+elif (os.path.exists('/dev/ttyACM1')):
+   ser = serial.Serial(port='/dev/ttyACM1',baudrate=115200,timeout=0)
 
 time.sleep(5)
 
