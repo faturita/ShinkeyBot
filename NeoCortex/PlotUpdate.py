@@ -9,6 +9,15 @@ from struct import *
 
 import sys, select
 
+import socket
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+server_address = ('0.0.0.0', 10000)
+print >> sys.stderr, 'starting up on %s port %s', server_address
+
+sock.bind(server_address)
+
 
 def gimmesomething(ser):
     while True:
@@ -18,26 +27,27 @@ def gimmesomething(ser):
     return line
 
 
-ser = serial.Serial(port='/dev/tty.usbmodem1411', baudrate=115200, timeout=0)
+f = open('sensor.dat','w')
 
-f = open('sensor.dat', 'w')
+if (False):
 
+    ser = serial.Serial(port='/dev/tty.usbmodem1411', baudrate=115200, timeout=0)
 
-ser.write('X')
-time.sleep(6)
+    f = open('sensor.dat', 'w')
 
+    ser.write('X')
+    time.sleep(6)
 
+    buf = ser.readline()
+    print str(buf)
 
-buf = ser.readline()
-print str(buf)
+    buf = ser.readline()
+    print str(buf)
 
-buf = ser.readline()
-print str(buf)
+    buf = ser.readline()
+    print str(buf)
 
-buf = ser.readline()
-print str(buf)
-
-ser.write('S')
+    ser.write('S')
 
 # You probably won't need this if you're embedding things in a tkinter plot...
 plt.ion()
@@ -48,8 +58,6 @@ z = []
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-
-
 
 line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the comma
 line2, = ax.plot(y,'g', label='Y')
@@ -64,11 +72,19 @@ plotx = []
 
 while True:
   # read
+  if (False):
+     myByte = ser.read(1)
+  else:
+     myByte = 'S'
 
-  myByte = ser.read(1)
   if myByte == 'S':
-      data = ser.read(32)
-      myByte = ser.read(1)
+      if (False):
+         data = ser.read(32)
+         myByte = ser.read(1)
+      else:
+         data, address = sock.recvfrom(32)
+         myByte = 'E'
+
       if myByte == 'E':
           # is  a valid message struct
           new_values = unpack('fffhhhhhhff', data)

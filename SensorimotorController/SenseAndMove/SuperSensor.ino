@@ -60,14 +60,8 @@ long b5;
 
 void initsensors()
 {
-  //Serial.begin(9600);
-  Wire.begin();
+  initializeBarometricSensor();
 
-  Serial.println("Initializing Sensor Data...");
-  // Inicializa o BMP085
-  bmp085Calibration();
-
-  
   // Inicializa o HMC5883
   Wire.beginTransmission(HMC5883_ADDRESS);
   // Seleciona o modo
@@ -89,25 +83,24 @@ void initsensors()
   setupL3G4200D(2000); 
 }
 
+
+void initializeBarometricSensor()
+{
+  // Temperature
+  //Serial.begin(9600);
+  Wire.begin();
+
+  Serial.println("Initializing Sensor Data...");
+  // Inicializa o BMP085
+  bmp085Calibration();
+}
+
+
 void checksensors()
 {
-  // Chama a rotina que calcula a temperatura
-  // Esta rotina DEVE ser executada primeiro
-  float temperature = bmp085GetTemperature(bmp085ReadUT());
-  // Chama a rotina que calcula a pressao
-  float pressure = bmp085GetPressure(bmp085ReadUP());
-  // Chama a rotina que calcula atmosfera
-  float atm = pressure / 101325; 
-  // Chama a rotina que calcula a altitude
-  float altitude = calcAltitude(pressure); 
-
-  //Serial.print("Temperatura: ");
-  // Mostra a temperatura com 2 casas decimais
-  //Serial.print(temperature, 2); 
-  //Serial.println(" C");
-  //Serial.print("Pressao: ");
-  //Serial.print(pressure, 0); 
-  //Serial.println(" Pa");
+  float temperature=0, pressure=0;
+  
+  //getBarometricData(temperature,pressure);
 
   sensor.T = temperature;
   sensor.P = pressure;
@@ -256,6 +249,28 @@ void checksensors()
 
   //Aguarda 5 segundos e reinicia o processo
   //delay(5000);
+}
+
+
+void getBarometricData(float &temperature, float &pressure)
+{
+  // Chama a rotina que calcula a temperatura
+  // Esta rotina DEVE ser executada primeiro
+  temperature = bmp085GetTemperature(bmp085ReadUT());
+  // Chama a rotina que calcula a pressao
+  pressure = bmp085GetPressure(bmp085ReadUP());
+  // Chama a rotina que calcula atmosfera
+  float atm = pressure / 101325; 
+  // Chama a rotina que calcula a altitude
+  float altitude = calcAltitude(pressure); 
+
+  //Serial.print("Temperatura: ");
+  // Mostra a temperatura com 2 casas decimais
+  //Serial.print(temperature, 2); 
+  //Serial.println(" C");
+  //Serial.print("Pressao: ");
+  //Serial.print(pressure, 0); 
+  //Serial.println(" Pa");
 }
 
 // Armazena todos os valores de calibracao do BMP085 em 
