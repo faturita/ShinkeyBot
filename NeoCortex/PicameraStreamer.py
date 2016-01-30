@@ -3,11 +3,12 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
+import numpy as np
 
 import socket
 import sys
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 server_address = ('192.168.0.106', 10000)
 
@@ -22,6 +23,8 @@ rawCapture = PiRGBArray(camera, size=(640, 480))
 # allow the camera to warmup
 time.sleep(0.1)
 
+frm = 0
+
 # capture frames from the camera
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	# grab the raw NumPy array representing the image, then initialize the timestamp
@@ -29,6 +32,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	image = frame.array
 
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+	gray = cv2.flip(gray,0)
 
 	frm = frm + 1
 	if (frm >= 256):
