@@ -28,14 +28,22 @@ while(True):
    #ret, frame = cap.read()
 
    while(True):
-       data, address = connection.recvfrom(640)
-       d = struct.unpack("640B", data)
+       fulldata = ''
+       while (len(fulldata)!=640):
+           data, address = connection.recvfrom(640-len(fulldata))
+           fulldata = fulldata+data
+
+       d = struct.unpack("640B", fulldata)
        if (np.count_nonzero(d) == 640):
            break
 
    for i in range(1,480):
-       data, address = connection.recvfrom(640)
-       d = struct.unpack("640B", data)
+       fulldata = ''
+       while (len(fulldata)!=640):
+           data, address = connection.recvfrom(640-len(fulldata))
+           fulldata = fulldata+data
+
+       d = struct.unpack("640B", fulldata)
 
        image[i,:] = d
            #image[i,j] = struct.unpack("B", data[j])[0]
