@@ -1,25 +1,77 @@
+#coding: latin-1
+
 import numpy as np
 import cv2
 
-#import pyserial
+import serial
 
-cap = cv2.VideoCapture(0)
+import serial
+import time
+from struct import *
+
+import sys, select
+
+import socket
+
+
+# Initialize UDP Controller Server on port 10001
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server_address = ('0.0.0.0', 10001)
+print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
+sock.bind(server_address)
+
 
 #window = namedWindow("TheWindow",1)
-#ser = serial.Serial(port='/dev/tty.usbserial-AD01QBMW', timeout=0)
+ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0)
+smr = serial.Serial(port='/dev/ttyACM1', baudrate=115200, timeout=0)
+
+
+time.sleep(5)
+
+# Initialize connection with Arduino
+idstring = ser.read(25)
+
+if (idstring.startswith('Motor Unit Neuron')):
+    mtrn = ser
+    ssmr = smr
+else:
+    ssmr = smr
+    mtrn = ser
+
+ssmr.write('C')
 
 while(True):
-   # Capture frame-by-frame
-   ret, frame = cap.read()
+    data, address = sock.recvfrom(1)
 
-   gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-   cv2.imwrite('01.png', gray)
+    if (data == 'O'):
+        mtrn.write('A3250')
+        time.sleep(3)
+        mtrn.write('A5000')
+    elif (data == 'L'):
+        mtrn.write('A4250')
+        time.sleep(2)
+        mtrn.write('A5000')
+    elif (data=='G'):
+        mtrn.write('A1000')
+        time.sleep(2)
+    elif (data=='R'):
+        mtrn.write('A1200')
+        time.sleep(2)
+    elif (data=='W'):
+        ssmr.write('2')
+    elif (data=='S'):
+        ssmr.write('3')
+    elif (data=='D'):
+        ssmr.write('5')
+    elif (data=='A'):
+        ssmr.write('4')
+    elif (data=='X'):
+        break
 
-   cv2.imshow("My Image", gray)
 
-   if cv2.waitKey(1) & 0xFF == ord('q'):
-      break
+
 
 #When everything done, release the capture
-cap.release()
-cv2.destroyAllWindows()
+ser.close()
+smr.close()
+sock.close()

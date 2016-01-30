@@ -34,6 +34,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 	gray = cv2.flip(gray,0)
+	gray = cv2.flip(gray,1)
 
 	frm = frm + 1
 	if (frm >= 256):

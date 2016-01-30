@@ -112,6 +112,8 @@ int motorstate=STILL;
 
 int txSensor = 0;
 
+int minRange = 1;
+
 void blinkme()
 {
   // here is where you'd put code that needs to be running all the time.
@@ -139,6 +141,12 @@ void blinkme()
     } else if (incomingByte == 'X')
     {
       txSensor = 0;
+    } else if (incomingByte == 'W')
+    {
+      minRange=1;
+    } else if (incomingByte == 'C')
+    {
+      minRange=6;
     }
     else
     if (48<incomingByte && incomingByte<58)
@@ -166,7 +174,7 @@ void blinkme()
     if (motorstate != QUIET)
     {
       // Plus one is to eliminate the chance to fallback in quit mode
-      motorstate = ((int)randNumber)+1;
+      motorstate = ((int)randNumber)+minRange;
     }
     //motorstate = STILL;
   }
@@ -234,7 +242,7 @@ void loop() {
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
-  if (distance < 10) {  // This is where the LED On/Off happens
+  if (distance < 14) {  // This is where the LED On/Off happens
     //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
     //digitalWrite(led2,LOW);
 
