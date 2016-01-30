@@ -22,9 +22,6 @@ sock.bind(server_address)
 
 
 #window = namedWindow("TheWindow",1)
-ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0)
-smr = serial.Serial(port='/dev/ttyACM1', baudrate=115200, timeout=0)
-
 serialport = 0
 while (True):
     if (os.path.exists('/dev/ttyACM'+str(serialport))):
