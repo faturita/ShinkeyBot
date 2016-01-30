@@ -34,7 +34,7 @@ while(True):
            fulldata = fulldata+data
 
        d = struct.unpack("640B", fulldata)
-       if (np.count_nonzero(d) == 640):
+       if (np.count_nonzero(d) == 640 and d[0] == d[1] == d[2] == d[3] == d[5] == 32):
            break
 
    for i in range(1,480):
