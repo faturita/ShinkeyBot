@@ -25,6 +25,19 @@ sock.bind(server_address)
 ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0)
 smr = serial.Serial(port='/dev/ttyACM1', baudrate=115200, timeout=0)
 
+serialport = 0
+while (True):
+    if (os.path.exists('/dev/ttyACM'+str(serialport))):
+        ser = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+        break
+    serialport = serialport + 1
+
+serialport = serialport + 1
+while (True):
+    if (os.path.exists('/dev/ttyACM'+str(serialport))):
+        smr = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+        break
+    serialport = serialport + 1
 
 time.sleep(5)
 
@@ -67,8 +80,6 @@ while(True):
         ssmr.write('4')
     elif (data=='X'):
         break
-
-
 
 
 #When everything done, release the capture
