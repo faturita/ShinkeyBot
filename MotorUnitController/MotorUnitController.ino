@@ -1,7 +1,7 @@
 /**
- * Adafruit Shield Motor Controller.
+ * Motor Unit Controller for ShinkeyBot
  * 
- * It uses AFMotor.h Adafruit library.
+ * It uses AFMotor.h Adafruit library and Shield (v1)
  * 
  * 
  */
@@ -40,7 +40,6 @@ void setup() {
 
  myservo.attach(9);  // Servo2 orange in
 
- initsensors();
 }
 
 int incomingByte = 0;
@@ -53,9 +52,9 @@ void loop() {
    
     char syncbyte = Serial.read();
 
-    if (syncbyte == 'S')
+    if (syncbyte == 'I')
     {
-      checksensors();
+      Serial.println("MTRN");
     }
 
     if (syncbyte == 'A')
@@ -116,6 +115,6 @@ void loop() {
     
  }
 
- delay(40);
+ delay(10);
 
 } 
