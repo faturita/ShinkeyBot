@@ -9,7 +9,7 @@ import serial
 import time
 from struct import *
 
-import sys, select
+import sys, os, select
 
 import socket
 
