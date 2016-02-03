@@ -135,7 +135,11 @@ void blinkme()
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
 
-    if (incomingByte == 'S')
+    if (incomingByte == 'I')
+    {
+      // Send ID
+      dump("SSMR");
+    } else if (incomingByte == 'S')
     {
       txSensor = 1;
     } else if (incomingByte == 'X')
@@ -242,7 +246,7 @@ void loop() {
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
-  if (distance < 14) {  // This is where the LED On/Off happens
+  if (distance < 8) {  // This is where the LED On/Off happens
     //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
     //digitalWrite(led2,LOW);
 
