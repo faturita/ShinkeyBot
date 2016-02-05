@@ -10,7 +10,7 @@ import sys
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_address = ('192.168.0.106', 10000)
+server_address = ('192.168.0.103', 10000)
 
 sock.connect(server_address)
 
@@ -48,8 +48,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	#    data = gray[i,:]
 	#    sent = sock.sendto(data, server_address)
 
-   data = gray.reshape(640*480,1)
-   sent = sock.sendto(data, server_address)
+	data = gray.reshape(640*480,1)
+   	sent = sock.sendto(data, server_address)
 
 
 	#cv2.imshow("My Image", gray)
