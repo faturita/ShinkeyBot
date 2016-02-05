@@ -6,8 +6,8 @@ import sys
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_address = ('192.168.0.106', 10000)
-
+#server_address = ('192.168.0.106', 10000)
+server_address = ('127.0.0.1', 10000)
 
 cap = cv2.VideoCapture(0)
 cap.set(3,640)
@@ -28,11 +28,16 @@ while(True):
        frm = 0
 
    data = np.zeros((640), dtype=np.uint8)
+   data[0] = data[1] = data[2] = data[3] = data[5] = 32
    sent = sock.sendto(data, server_address)
 
-   for i in range(1,480):
-       data = gray[i,:]
-       sent = sock.sendto(data, server_address)
+   # for i in range(1,480):
+   #     data = gray[i,:]
+   #     sent = sock.sendto(data, server_address)
+
+
+   data = gray.reshape(640*480,1)
+   sent = sock.sendto(data, server_address)
 
    #cv2.imshow("My Image", gray)
 

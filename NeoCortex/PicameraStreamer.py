@@ -41,14 +41,16 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	   frm = 0
 
 	data = np.zeros((640), dtype=np.uint8)
-
 	data[0] = data[1] = data[2] = data[3] = data[5] = 32
-
 	sent = sock.sendto(data, server_address)
 
-	for i in range(1,480):
-	   data = gray[i,:]
-	   sent = sock.sendto(data, server_address)
+	# for i in range(1,480):
+	#    data = gray[i,:]
+	#    sent = sock.sendto(data, server_address)
+
+   data = gray.reshape(640*480,1)
+   sent = sock.sendto(data, server_address)
+
 
 	#cv2.imshow("My Image", gray)
 

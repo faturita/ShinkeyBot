@@ -37,22 +37,32 @@ while(True):
        if (np.count_nonzero(d) == 5 and d[0] == d[1] == d[2] == d[3] == d[5] == 32):
            break
 
-   for i in range(1,480):
-       fulldata = ''
-       while (len(fulldata)!=640):
-           data, address = connection.recvfrom(640-len(fulldata))
-           fulldata = fulldata+data
+   # for i in range(1,480):
+   #     fulldata = ''
+   #     while (len(fulldata)!=640):
+   #         data, address = connection.recvfrom(640-len(fulldata))
+   #         fulldata = fulldata+data
+   #
+   #     d = struct.unpack("640B", fulldata)
+   #
+   #     image[i,:] = d
 
-       d = struct.unpack("640B", fulldata)
+   fulldata = ''
+   while (len(fulldata)!=640*480):
+       data, address = connection.recvfrom(640*480-len(fulldata))
+       fulldata = fulldata+data
 
-       image[i,:] = d
-           #image[i,j] = struct.unpack("B", data[j])[0]
+   d = struct.unpack("307200B", fulldata)
+
+   image = np.asarray(d, dtype=np.uint8)
+   image = image.reshape((480,640))
 
    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
    gray = image
    #cv2.imwrite('01.png', gray)
+   edges = cv2.Canny(gray,100,200)
 
-   cv2.imshow("My Image", gray)
+   cv2.imshow("ShinkeyBot Camera", edges)
 
    if cv2.waitKey(1) & 0xFF == ord('q'):
       break
