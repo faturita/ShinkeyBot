@@ -7,6 +7,38 @@ import PID
 import os
 import serial
 
+import datetime
+
+
+def serialcomm():
+    serialport = 0
+    while (True):
+        if (os.path.exists('/dev/ttyACM'+str(serialport))):
+            ser = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            break
+        serialport = serialport + 1
+
+    serialport = serialport + 1
+    while (True):
+        if (os.path.exists('/dev/ttyACM'+str(serialport))):
+            smr = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            break
+        serialport = serialport + 1
+
+    time.sleep(5)
+
+    # Initialize connection with Arduino
+    idstring = ser.read(25)
+
+    if (idstring.startswith('Motor Unit Neuron')):
+        mtrn = ser
+        ssmr = smr
+    else:
+        ssmr = smr
+        mtrn = ser
+
+    return [ssmr, mtrn]
+
 
 def setupsensor():
     for d in hid.enumerate(0, 0):
@@ -20,6 +52,7 @@ def setupsensor():
     hidraw = hid.device(0x1b67, 0x0004)
     hidraw.open(0x1b67, 0x0004)
 
+    # Size of Feature Report is 33 bytes for Oak Sensors.
     buf = [0] * (32+1)
 
     #�           Rpt, GnS, Tgt, Size, Index LSB, Index MSB, Data
@@ -32,20 +65,19 @@ def setupsensor():
     hidraw.get_feature_report(33,33)
     time.sleep(3)
 
-
-    #�Fixed
+    # Fixed
     hidraw.send_feature_report([0x00, 0x00, 0x00,0x01, 0x00, 0x00, 0x02])
 
     hidraw.get_feature_report(33,33)
     time.sleep(3)
 
-    #�Adjust report rate to max speed....
+    # Adjust report rate to max speed....
     hidraw.send_feature_report([0x00, 0x00, 0x00,0x02, 0x00, 0x00, 0x81, 0x00])
 
     hidraw.get_feature_report(33,33)
     time.sleep(3)
 
-    #�Adjust sample rate to max speed....
+    # Adjust sample rate to max speed....
     hidraw.send_feature_report([0x00, 0x00, 0x00,0x02, 0x01, 0x00, 0x01, 0x00])
 
     hidraw.get_feature_report(33,33)
@@ -63,54 +95,58 @@ def tiltsensor(hidraw):
 
     return [acceleration, zenith, azimuth]
 
+def moveto(mtrn, hidraw, targetpos):
+    P = 1.2
+    I = 1
+    D = 0.001
+    pid = PID.PID(P, I, D)
 
-f = open('sensor.dat', 'w')
+    pid.SetPoint=targetpos
+    pid.setSampleTime(0.001)
 
-if (os.path.exists('/dev/tty.usbmodem1411')):
-   ser = serial.Serial(port='/dev/tty.usbmodem1411',baudrate=115200, timeout=0)
-elif (os.path.exists('/dev/ttyACM0')):
-   ser = serial.Serial(port='/dev/ttyACM0',baudrate=115200, timeout=0)
+    feedback = 0
+    output = 0
+
+    for i in range(1,100):
+        [acceleration, zenith, azimuth ] = tiltsensor(hidraw)
+
+        print str(acceleration) + '-' + str(zenith) + ',' + str(azimuth)
+
+        f.write( str(acceleration) + ' ' + str(zenith) + ' ' + str(output) + '\n'  )
+
+        feedback = float( zenith )
+
+        if (azimuth < 25000):
+            feedback = feedback * -1
+
+        pid.update(feedback)
+        output = pid.output
+
+        cmd = 1
+
+        if ( abs(output) < 10):
+            cmd = 'A5000'
+        elif ( output < 0):
+            cmd = 'A4200'
+        else:
+            cmd = 'A3250'
+        print str(output) + '-' + str(feedback) + ':' + cmd
+
+        ser.write(cmd)
+
+    # Stop moving
+    mtrn.write('A5000')
+
+# NavData Recording
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+f = open('../data/navdata'+st+'.dat', 'w')
+
+[smnr, mtrn] = serialcomm()
+smnr.close()
 
 hidraw = setupsensor()
 
-P = 1.2
-I = 1
-D = 0.001
-pid = PID.PID(P, I, D)
+moveto(mtrn, hidraw, 30)
 
-pid.SetPoint=60
-pid.setSampleTime(0.001)
-
-feedback = 0
-output = 0
-
-for i in range(1,100):
-    [acceleration, zenith, azimuth ] = tiltsensor(hidraw)
-
-    print str(acceleration) + '-' + str(zenith) + ',' + str(azimuth)
-
-    f.write( str(acceleration) + ' ' + str(zenith) + ' ' + str(output) + '\n'  )
-
-    feedback = float( zenith )
-
-    if (azimuth < 25000):
-        feedback = feedback * -1
-
-    pid.update(feedback)
-    output = pid.output
-
-    cmd = 1
-
-    if ( abs(output) < 10):
-        cmd = 'A5000'
-    elif ( output < 0):
-        cmd = 'A4200'
-    else:
-        cmd = 'A3250'
-    print str(output) + '-' + str(feedback) + ':' + cmd
-
-    ser.write(cmd)
-
-ser.write('A5000')
 f.close()
 ser.close()

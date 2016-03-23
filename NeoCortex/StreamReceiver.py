@@ -60,9 +60,9 @@ while(True):
    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
    gray = image
    #cv2.imwrite('01.png', gray)
-   edges = cv2.Canny(gray,100,200)
+   #edges = cv2.Canny(gray,100,200)
 
-   cv2.imshow("ShinkeyBot Camera", edges)
+   cv2.imshow("ShinkeyBot Camera", gray)
 
    if cv2.waitKey(1) & 0xFF == ord('q'):
       break
