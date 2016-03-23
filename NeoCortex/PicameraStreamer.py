@@ -10,7 +10,7 @@ import sys
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_address = ('192.168.0.103', 10000)
+server_address = ('192.168.0.109', 10000)
 
 sock.connect(server_address)
 
