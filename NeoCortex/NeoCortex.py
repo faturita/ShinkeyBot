@@ -13,6 +13,8 @@ import sys, os, select
 
 import socket
 
+import Proprioceptive as prop
+
 
 # Initialize UDP Controller Server on port 10001
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -20,34 +22,11 @@ server_address = ('0.0.0.0', 10001)
 print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
 sock.bind(server_address)
 
+hidraw = prop.setupsensor()
 
-#window = namedWindow("TheWindow",1)
-serialport = 0
-while (True):
-    if (os.path.exists('/dev/ttyACM'+str(serialport))):
-        ser = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
-        break
-    serialport = serialport + 1
+[ssmr, mtrn] = prop.serialcomm()
 
-serialport = serialport + 1
-while (True):
-    if (os.path.exists('/dev/ttyACM'+str(serialport))):
-        smr = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
-        break
-    serialport = serialport + 1
-
-time.sleep(5)
-
-# Initialize connection with Arduino
-idstring = ser.read(25)
-
-if (idstring.startswith('Motor Unit Neuron')):
-    mtrn = ser
-    ssmr = smr
-else:
-    ssmr = smr
-    mtrn = ser
-
+# Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
 
 while(True):
@@ -75,11 +54,13 @@ while(True):
         ssmr.write('5')
     elif (data=='A'):
         ssmr.write('4')
+    elif (data=='T'):
+        prop.moveto(mtrn, hidraw, 30)
     elif (data=='X'):
         break
 
 
 #When everything done, release the capture
-ser.close()
-smr.close()
+mtrn.close()
+ssmr.close()
 sock.close()
