@@ -29,6 +29,8 @@ hidraw = prop.setupsensor()
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
 
+tgt = -1000
+
 while(True):
     data, address = sock.recvfrom(1)
 
@@ -54,8 +56,12 @@ while(True):
         ssmr.write('5')
     elif (data=='A'):
         ssmr.write('4')
+    elif (data=='+'):
+        tgt = tgt + 100
+    elif (data=='-'):
+        tgt = tgt - 100
     elif (data=='T'):
-        prop.moveto(mtrn, hidraw, 30)
+        prop.moveto(mtrn, hidraw, tgt)
     elif (data=='X'):
         break
 

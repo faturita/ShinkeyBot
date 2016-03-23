@@ -132,21 +132,24 @@ def moveto(mtrn, hidraw, targetpos):
             cmd = 'A3250'
         print str(output) + '-' + str(feedback) + ':' + cmd
 
-        ser.write(cmd)
+        mtrn.write(cmd)
 
     # Stop moving
     mtrn.write('A5000')
 
 # NavData Recording
+ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
 f = open('../data/navdata'+st+'.dat', 'w')
 
-[smnr, mtrn] = serialcomm()
-smnr.close()
 
-hidraw = setupsensor()
+def __init__(self):
+    [smnr, mtrn] = serialcomm()
+    smnr.close()
 
-moveto(mtrn, hidraw, 30)
+    hidraw = setupsensor()
 
-f.close()
-ser.close()
+    moveto(mtrn, hidraw, 30)
+
+    f.close()
+    mtrn.close()
