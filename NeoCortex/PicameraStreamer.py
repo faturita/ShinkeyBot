@@ -5,57 +5,70 @@ import time
 import cv2
 import numpy as np
 
+import thread
+
 import socket
 import sys
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+class VideoStreamer:
+	def __init__(self):
+		self.name = 'streamer'
 
-server_address = ('192.168.0.109', 10000)
+	def startAndConnect(self):
+		try:
+		   thread.start_new_thread( self.connect(), ("Thread-1", 2, ) )
+		except:
+		   print "Error: unable to start thread"
 
-sock.connect(server_address)
+	def connect(self):
+		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# initialize the camera and grab a reference to the raw camera capture
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(640, 480))
+		server_address = ('192.168.0.109', 10000)
 
-# allow the camera to warmup
-time.sleep(0.1)
+		sock.connect(server_address)
 
-frm = 0
+		# initialize the camera and grab a reference to the raw camera capture
+		camera = PiCamera()
+		camera.resolution = (640, 480)
+		camera.framerate = 32
+		rawCapture = PiRGBArray(camera, size=(640, 480))
 
-# capture frames from the camera
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	# grab the raw NumPy array representing the image, then initialize the timestamp
-	# and occupied/unoccupied text
-	image = frame.array
+		# allow the camera to warmup
+		time.sleep(0.1)
 
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+		frm = 0
 
-	gray = cv2.flip(gray,0)
-	gray = cv2.flip(gray,1)
+		# capture frames from the camera
+		for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+			# grab the raw NumPy array representing the image, then initialize the timestamp
+			# and occupied/unoccupied text
+			image = frame.array
 
-	frm = frm + 1
-	if (frm >= 256):
-	   frm = 0
+			gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-	data = np.zeros((640), dtype=np.uint8)
-	data[0] = data[1] = data[2] = data[3] = data[5] = 32
-	sent = sock.sendto(data, server_address)
+			gray = cv2.flip(gray,0)
+			gray = cv2.flip(gray,1)
 
-	# for i in range(1,480):
-	#    data = gray[i,:]
-	#    sent = sock.sendto(data, server_address)
+			frm = frm + 1
+			if (frm >= 256):
+			   frm = 0
 
-	data = gray.reshape(640*480,1)
-   	sent = sock.sendto(data, server_address)
+			data = np.zeros((640), dtype=np.uint8)
+			data[0] = data[1] = data[2] = data[3] = data[5] = 32
+			sent = sock.sendto(data, server_address)
+
+			# for i in range(1,480):
+			#    data = gray[i,:]
+			#    sent = sock.sendto(data, server_address)
+
+			data = gray.reshape(640*480,1)
+		   	sent = sock.sendto(data, server_address)
 
 
-	#cv2.imshow("My Image", gray)
+			#cv2.imshow("My Image", gray)
 
-	if cv2.waitKey(1) & 0xFF == ord('q'):
-	  break
+			if cv2.waitKey(1) & 0xFF == ord('q'):
+			  break
 
-	# clear the stream in preparation for the next frame
-	rawCapture.truncate(0)
+			# clear the stream in preparation for the next frame
+			rawCapture.truncate(0)

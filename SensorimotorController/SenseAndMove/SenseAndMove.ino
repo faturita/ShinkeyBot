@@ -31,6 +31,8 @@ int IN1 = 2;
 // constants won't change. Used here to set a pin number :
 const int ledPin =  13;      // the number of the LED pin
 
+const int laserPin = 8;
+
 // Variables will change :
 int ledState = HIGH;             // ledState used to set the LED
 
@@ -38,8 +40,8 @@ int ledState = HIGH;             // ledState used to set the LED
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0;        // will store last time LED was updated
 
-// constants won't change :
-const long interval = 2000;           // interval at which to blink (milliseconds)
+// duration of movement.
+long interval = 2000;           // interval at which to blink (milliseconds)
 
 
 
@@ -82,6 +84,8 @@ void setupMotor()
 
   // set the digital pin as output:
   pinMode(ledPin, OUTPUT);  
+
+  pinMode(laserPin, OUTPUT);
 
   randomSeed(analogRead(0));
 
@@ -151,6 +155,18 @@ void blinkme()
     } else if (incomingByte == 'C')
     {
       minRange=6;
+    } else if (incomingByte == 'L')
+    {
+      digitalWrite(laserPin, HIGH);
+    } else if (incomingByte == 'l')
+    {
+      digitalWrite(laserPin, LOW);
+    } else if (incomingByte == '-')
+    {
+      interval = 100;
+    } else if (incomingByte == '+')
+    {
+      interval = 2000;
     }
     else
     if (48<incomingByte && incomingByte<58)

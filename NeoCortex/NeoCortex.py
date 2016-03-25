@@ -48,6 +48,8 @@ while(True):
     elif (data=='R'):
         mtrn.write('A1200')
         time.sleep(2)
+    elif (data==' '):
+        ssmr.write('1')
     elif (data=='W'):
         ssmr.write('2')
     elif (data=='S'):
