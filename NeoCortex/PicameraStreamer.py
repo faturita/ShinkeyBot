@@ -13,10 +13,11 @@ import sys
 class VideoStreamer:
 	def __init__(self):
 		self.name = 'streamer'
+		self.keeprunning = True
 
 	def startAndConnect(self):
 		try:
-		   thread.start_new_thread( self.connect(), ("Thread-1", 2, ) )
+		   thread.start_new_thread( self.connect )
 		except:
 		   print "Error: unable to start thread"
 
@@ -72,3 +73,7 @@ class VideoStreamer:
 
 			# clear the stream in preparation for the next frame
 			rawCapture.truncate(0)
+
+			if (self.keeprunning == False):
+			  break
+

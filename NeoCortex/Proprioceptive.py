@@ -28,14 +28,20 @@ def serialcomm():
     time.sleep(5)
 
     # Initialize connection with Arduino
-    idstring = ser.read(25)
+    idstring = ser.read(250)
 
-    if (idstring.startswith('Motor Unit Neuron')):
-        mtrn = ser
-        ssmr = smr
+    ser.write('I')
+    time.sleep(1)
+    idstring = ser.read(4)
+
+    if (idstring.startswith('SSMR')):
+        mtrn = smr
+        ssmr = ser
+        print('Sensorimotor detected.')
     else:
         ssmr = smr
         mtrn = ser
+        print('Opposite order.')
 
     return [ssmr, mtrn]
 
