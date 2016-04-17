@@ -12,16 +12,17 @@
 
 
 // create motor objects, 64KHz pwm
-AF_DCMotor laser(1, MOTOR12_64KHZ);
-AF_DCMotor turret(2, MOTOR12_64KHZ);
-AF_DCMotor grip(3, MOTOR12_64KHZ);
-AF_DCMotor shoulder(4, MOTOR12_64KHZ);
+//AF_DCMotor laser(1, MOTOR12_64KHZ);
+//AF_DCMotor turret(4, MOTOR12_64KHZ);
+//AF_DCMotor grip(3, MOTOR12_64KHZ);
+AF_DCMotor shoulder(2, MOTOR12_64KHZ);
 
  
-Servo myservo;  // create servo object to control a servo 
+Servo wrist;  // create servo object to control a servo 
                 // twelve servo objects can be created on most boards
- 
-int pos = 0;    // variable to store the servo position 
+
+
+Servo grip;
 
 
 int state=0;
@@ -35,16 +36,50 @@ void setup() {
 
  //shoulder.setSpeed(255);
  //grip.setSpeed(255);
- turret.setSpeed(255);
- laser.setSpeed(250);
+ //turret.setSpeed(255);
+ //laser.setSpeed(250);
 
- myservo.attach(9);  // Servo2 orange in
+ grip.attach(10);  // Servo2 orange in
+
+ wrist.attach(9);
 
 }
 
 int incomingByte = 0;
 
-char buffer[3];
+char buffer[4];
+
+
+int direction=0;
+int pos=48;
+int desiredpos = 48;
+
+void update(Servo servo) {
+
+  if (desiredpos != pos)
+  {
+    //Serial.print(pos);Serial.print("--");
+    //Serial.println(desiredpos);
+    servo.write(pos);
+  
+    pos+=direction;
+    
+    if (pos>=185)
+    {
+      //Serial.print("Reset down:");
+      //Serial.println(counter++);
+      direction=-1;
+    }
+  
+    if (pos<=48)
+    {
+      //Serial.print("Reset up:");
+      //Serial.println(counter++);
+      direction=1;    
+    }
+  }
+
+} 
 
 void loop() {
 
@@ -68,23 +103,26 @@ void loop() {
         int b = buffer[2]-48;
         int c = buffer[3]-48;
 
-        speeds = a*100 + b*10 * c;
+        speeds = atoi(buffer+1);
         state = action;
+
+        Serial.print("Speed:");Serial.println(action);
+        Serial.println(speeds);
       }
     }
 
  }
  
-   
+
+ update(wrist);
+ 
  switch(state)
  {
   case 1: 
-    grip.run(FORWARD);
-    myservo.write(speeds);
+    grip.write(speeds);
     break;
   case 2:
-    grip.run(BACKWARD);
-    myservo.write(-speeds);
+    grip.write(-speeds);
     break;
   case 3:
     // Go up
@@ -99,13 +137,18 @@ void loop() {
     shoulder.run(RELEASE);
     state=0;
     break;
+  case 6:
+    // Update desired position.
+    desiredpos=speeds;
+    break;
   case 8:
-    myservo.attach(9);
+    grip.attach(10);
+    wrist.attach(9);
     state=0;
     break;
   case 9:
-    grip.run(RELEASE); 
-    myservo.detach();   
+    grip.detach();   
+    wrist.detach();
     state=0;
     break;
    default:
