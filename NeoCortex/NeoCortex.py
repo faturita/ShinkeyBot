@@ -38,50 +38,59 @@ ssmr.write('C')
 tgt = -1000
 
 while(True):
-    data, address = sock.recvfrom(1)
+    try:
+        data, address = sock.recvfrom(1)
 
-    if (data == 'Y'):
-        mtrn.write('A3250')
-        time.sleep(3)
-        mtrn.write('A5000')
-    elif (data=='J'):
-        mtrn.write('A6180')
-    elif (data == 'H'):
-        mtrn.write('A4250')
+        if (data == 'Y'):
+            mtrn.write('A3250')
+            time.sleep(0.9)
+            mtrn.write('A5000')
+        elif (data=='J'):
+            mtrn.write('A6180')
+        elif (data=='j'):
+            mtrn.write('A6090')
+        elif (data == 'H'):
+            mtrn.write('A4250')
+            time.sleep(2)
+            mtrn.write('A5000')
+        elif (data=='G'):
+            mtrn.write('A1000')
+            time.sleep(2)
+        elif (data=='R'):
+            mtrn.write('A1200')
+            time.sleep(2)
+        elif (data==' '):
+            ssmr.write('1')
+        elif (data=='W'):
+            ssmr.write('2')
+        elif (data=='S'):
+            ssmr.write('3')
+        elif (data=='D'):
+            ssmr.write('5')
+        elif (data=='A'):
+            ssmr.write('4')
+        elif (data=='.'):
+            ssmr.write('-')
+        elif (data==','):
+            ssmr.write('+')
+        elif (data=='L'):
+            ssmr.write('L')
+        elif (data=='l'):
+            ssmr.write('l')
+        elif (data=='+'):
+            tgt = tgt + 100
+        elif (data=='-'):
+            tgt = tgt - 100
+        elif (data=='T'):
+            prop.moveto(mtrn, hidraw, tgt)
+        elif (data=='X'):
+            break
+    except:
+        print "Waiting for serial connection to reestablish..."
         time.sleep(2)
-        mtrn.write('A5000')
-    elif (data=='G'):
-        mtrn.write('A1000')
-        time.sleep(2)
-    elif (data=='R'):
-        mtrn.write('A1200')
-        time.sleep(2)
-    elif (data==' '):
-        ssmr.write('1')
-    elif (data=='W'):
-        ssmr.write('2')
-    elif (data=='S'):
-        ssmr.write('3')
-    elif (data=='D'):
-        ssmr.write('5')
-    elif (data=='A'):
-        ssmr.write('4')
-    elif (data=='.'):
-        ssmr.write('-')
-    elif (data==','):
-        ssmr.write('+')
-    elif (data=='L'):
-        ssmr.write('L')
-    elif (data=='l'):
-        ssmr.write('l')
-    elif (data=='+'):
-        tgt = tgt + 100
-    elif (data=='-'):
-        tgt = tgt - 100
-    elif (data=='T'):
-        prop.moveto(mtrn, hidraw, tgt)
-    elif (data=='X'):
-        break
+        ssmr.close()
+        mtrn.close()
+        [ssmr, mtrn] = prop.serialcomm()
 
 obj.keeprunning = False
 time.sleep(2)

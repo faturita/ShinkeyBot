@@ -161,8 +161,8 @@ class PIDTarget:
 
         self.i = 1
 
-    def moveto(self, mtrn, hidraw, targetpos):
-        if (i<=80):
+    def moveto(self, mtrn, hidraw, targetpos,lasting=60):
+        if (i<=lasting):
             i=i+1
 
             [acceleration, zenith, azimuth ] = tiltsensor(hidraw)
