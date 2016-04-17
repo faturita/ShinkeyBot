@@ -44,6 +44,8 @@ while(True):
         mtrn.write('A3250')
         time.sleep(3)
         mtrn.write('A5000')
+    elif (data=='J'):
+        mtrn.write('A6180')
     elif (data == 'H'):
         mtrn.write('A4250')
         time.sleep(2)
