@@ -37,21 +37,27 @@ ssmr.write('C')
 
 tgt = -1000
 
+wristpos=48
+
 while(True):
     try:
         data, address = sock.recvfrom(1)
 
         if (data == 'Y'):
             mtrn.write('A3250')
-            time.sleep(0.9)
+            time.sleep(0.8)
             mtrn.write('A5000')
         elif (data=='J'):
-            mtrn.write('A6180')
+            # mtrn.write('A6180')
+            wristpos = wristpos + 1
+            mtrn.write('A6'+'{:3d}'.format(wristpos))
         elif (data=='j'):
-            mtrn.write('A6090')
+            # mtrn.write('A6090')
+            wristpos = wristpos - 1
+            mtrn.write('A6'+'{:3d}'.format(wristpos))
         elif (data == 'H'):
             mtrn.write('A4250')
-            time.sleep(2)
+            time.sleep(0.2)
             mtrn.write('A5000')
         elif (data=='G'):
             mtrn.write('A1000')
