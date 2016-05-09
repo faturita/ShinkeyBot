@@ -144,25 +144,25 @@ def moveto(mtrn, hidraw, targetpos):
     mtrn.write('A5000')
 
 class PIDTarget:
-	def __init__(self):
-		self.name = 'streamer'
-		self.keeprunning = True
+    def __init__(self):
+       self.name = 'streamer'
+       self.keeprunning = True
 
-        self.P = 1.2
-        self.I = 1
-        self.D = 0.001
-        self.pid = PID.PID(P, I, D)
+       self.P = 1.2
+       self.I = 1
+       self.D = 0.001
+       self.pid = PID.PID(P, I, D)
 
-        self.pid.SetPoint=targetpos
-        self.pid.setSampleTime(0.001)
+       self.pid.SetPoint=targetpos
+       self.pid.setSampleTime(0.001)
 
-        self.feedback = 0
-        self.output = 0
+       self.feedback = 0
+       self.output = 0
 
-        self.i = 1
+       self.i = 1
 
-    def moveto(self, mtrn, hidraw, targetpos,lasting=60):
-        if (i<=lasting):
+    def moveto(self, mtrn, hidraw, targetpos):
+       if (i<=60):
             i=i+1
 
             [acceleration, zenith, azimuth ] = tiltsensor(hidraw)
@@ -191,8 +191,8 @@ class PIDTarget:
 
             mtrn.write(cmd)
 
-        # Stop moving
-        mtrn.write('A5000')
+       # Stop moving
+       mtrn.write('A5000')
 
 # NavData Recording
 ts = time.time()

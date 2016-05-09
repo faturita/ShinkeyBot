@@ -92,6 +92,9 @@ while(True):
         mtrn.close()
         [ssmr, mtrn] = prop.serialcomm()
 
+        # Instruct the Sensorimotor Cortex to stop wandering.
+        ssmr.write('C')
+
 obj.keeprunning = False
 time.sleep(2)
 
