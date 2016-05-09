@@ -115,6 +115,7 @@ int const LEFT = 5;
 int motorstate=STILL;
 
 int txSensor = 0;
+int sampleCounter=0;
 
 int minRange = 1;
 
@@ -134,46 +135,54 @@ void blinkme()
   if (txSensor == 1)
   {
     checksensors();
+    sampleCounter++;
+    if (sampleCounter>100)
+    {
+      txSensor=0;
+      sampleCounter=0;
+    }
   }
     
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
 
-    if (incomingByte == 'I')
-    {
-      // Send ID
-      dump("SSMR");
-    } else if (incomingByte == 'S')
-    {
-      txSensor = 1;
-    } else if (incomingByte == 'X')
-    {
-      txSensor = 0;
-    } else if (incomingByte == 'W')
-    {
-      minRange=1;
-    } else if (incomingByte == 'C')
-    {
-      minRange=6;
-    } else if (incomingByte == 'L')
-    {
-      digitalWrite(laserPin, HIGH);
-    } else if (incomingByte == 'l')
-    {
-      digitalWrite(laserPin, LOW);
-    } else if (incomingByte == '-')
-    {
-      interval = 100;
-    } else if (incomingByte == '+')
-    {
-      interval = 2000;
+    switch (incomingByte) {
+      case 'I':
+        dump("SSMR");
+        break;
+      case 'S':
+        txSensor=1;
+        break;
+      case 'X':
+        txSensor=0;
+        break;
+      case 'W':
+        minRange=1;
+        break;
+      case 'C':
+        minRange=6;
+        break;
+      case 'L':
+        digitalWrite(laserPin, HIGH);
+        break;
+      case 'l':
+        digitalWrite(laserPin, LOW);
+        break;
+      case '-':
+        interval = 100;
+        break;
+      case '+':
+        interval = 2000;
+        break;
+      default:
+        if (48<incomingByte && incomingByte<58)
+        {
+          motorstate = incomingByte-48;
+          previousMillis = currentMillis; 
+        }
+        break;
     }
-    else
-    if (48<incomingByte && incomingByte<58)
-    {
-      motorstate = incomingByte-48;
-      previousMillis = currentMillis; 
-    }
+
   } 
   else
   if(currentMillis - previousMillis >= interval) {

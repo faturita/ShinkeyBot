@@ -140,6 +140,10 @@ void loop() {
   case 6:
     // Update desired position.
     desiredpos=speeds;
+    if (pos<desiredpos)
+      direction = 1;
+    else
+      direction =-1;
     break;
   case 8:
     grip.attach(10);
