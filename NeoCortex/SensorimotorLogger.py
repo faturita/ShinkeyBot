@@ -53,6 +53,7 @@ ssmr.write('S')
 
 while True:
   # read
+  ssmr.write('S')
   myByte = ssmr.read(1)
   if myByte == 'S':
       data = ssmr.read(32)
