@@ -38,29 +38,29 @@ class Sensorimotor:
 
     def cleanbuffer(self, smnr, mtrn):
         # Cancel sensor information.
-        ssmr.write('X')
+        smnr.write('X')
         time.sleep(6)
 
 
-        buf = ssmr.readline()
+        buf = smnr.readline()
         print str(buf)
 
-        buf = ssmr.readline()
+        buf = smnr.readline()
         print str(buf)
 
-        buf = ssmr.readline()
+        buf = smnr.readline()
         print str(buf)
 
         # Reactive sensor information
-        ssmr.write('S')
+        smnr.write('S')
 
     def sendsensorsample(self, smnr, mtrn):
         # read  Embed this in a loop.
-        ssmr.write('S')
-        myByte = ssmr.read(1)
+        smnr.write('S')
+        myByte = smnr.read(1)
         if myByte == 'S':
-          data = ssmr.read(32)
-          myByte = ssmr.read(1)
+          data = smnr.read(32)
+          myByte = smnr.read(1)
           if myByte == 'E':
               # is  a valid message struct
               new_values = unpack('fffhhhhhhff', data)
@@ -72,17 +72,7 @@ class Sensorimotor:
         self.f.close()
 
 if __name__ == "__main__":
-    [smnr, mtrn] = serialcomm()
-    smnr.close()
-
-    hidraw = setupsensor()
-
-    moveto(mtrn, hidraw, 30)
-
-    f.close()
-    mtrn.close()
-
-    [ssmr, mtrn] = prop.serialcomm()
+    [smnr, mtrn] = prop.serialcomm()
 
     sensorimotor = Sensorimotor()
     sensorimotor.start()
