@@ -34,7 +34,7 @@ class Sensorimotor:
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = (Configuration.ip, Configuration.telemetryport)
-
+        self.counter = 0
 
     def cleanbuffer(self, smnr, mtrn):
         # Cancel sensor information.
@@ -56,7 +56,10 @@ class Sensorimotor:
 
     def sendsensorsample(self, smnr, mtrn):
         # read  Embed this in a loop.
-        ssmr.write('S')
+        self.counter++
+        if (self.counter>90):
+            ssmr.write('S')
+            self.counter=0
         myByte = ssmr.read(1)
         if myByte == 'S':
           data = ssmr.read(32)
