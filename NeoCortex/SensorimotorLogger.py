@@ -20,7 +20,7 @@ server_address = (Configuration.ip, 10000)
 
 def gimmesomething(ser):
     while True:
-        line = ser.readline()
+        line = ssmr.readline()
         if (len(line)>0):
             break
     return line
@@ -34,29 +34,29 @@ st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
 f = open('../data/sensor.'+st+'.dat', 'w')
 
 # Cancel sensor information.
-ser.write('X')
+ssmr.write('X')
 time.sleep(6)
 
 
-buf = ser.readline()
+buf = ssmr.readline()
 print str(buf)
 
-buf = ser.readline()
+buf = ssmr.readline()
 print str(buf)
 
-buf = ser.readline()
+buf = ssmr.readline()
 print str(buf)
 
 # Reactive sensor information
-ser.write('S')
+ssmr.write('S')
 
 
 while True:
   # read
-  myByte = ser.read(1)
+  myByte = ssmr.read(1)
   if myByte == 'S':
-      data = ser.read(32)
-      myByte = ser.read(1)
+      data = ssmr.read(32)
+      myByte = ssmr.read(1)
       if myByte == 'E':
           # is  a valid message struct
           new_values = unpack('fffhhhhhhff', data)
@@ -65,4 +65,5 @@ while True:
           f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
 
 f.close()
-ser.close()
+ssmr.close()
+mtrn.close()
