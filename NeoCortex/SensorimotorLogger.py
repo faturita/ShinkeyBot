@@ -15,7 +15,7 @@ import Configuration
 
 def gimmesomething(ser):
     while True:
-        line = ssmr.readline()
+        line = ser.readline()
         if (len(line)>0):
             break
     return line
@@ -34,7 +34,7 @@ class Sensorimotor:
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = (Configuration.ip, Configuration.telemetryport)
-
+        self.counter = 0
 
     def cleanbuffer(self, smnr, mtrn):
         # Cancel sensor information.
@@ -56,7 +56,10 @@ class Sensorimotor:
 
     def sendsensorsample(self, smnr, mtrn):
         # read  Embed this in a loop.
-        smnr.write('S')
+        self.counter=self.counter+1
+        if (self.counter>500):
+            smnr.write('S')
+            self.counter=0
         myByte = smnr.read(1)
         if myByte == 'S':
           data = smnr.read(32)
