@@ -40,25 +40,20 @@ tgt = -1000
 
 wristpos=48
 
-sensor = 0
+sensesensor = 1
 
 sensorimotor = senso.Sensorimotor()
 sensorimotor.start()
-sensorimotor.cleanbuffer(smnr,mtrn)
+sensorimotor.cleanbuffer(ssmr,mtrn)
 
 while(True):
     try:
         data, address = sock.recvfrom(1)
 
-        if (sensor == 1):
-            sensorimotor.sendsensorsample(smnr,mtrn)
+        if (sensesensor == 1):
+            sensorimotor.sendsensorsample(ssmr,mtrn)
 
-        if (data == '%'):
-            if (sensor == 1):
-                sensor = 0
-            else
-                sensor = 1
-        elif (data == 'Y'):
+        if (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
             mtrn.write('A5000')

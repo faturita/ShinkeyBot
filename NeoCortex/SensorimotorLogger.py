@@ -84,6 +84,4 @@ if __name__ == "__main__":
     while True:
         sensorimotor.sendsensorsample(smnr,mtrn)
 
-sensorimotor.close()
-ssmr.close()
-mtrn.close()
+
