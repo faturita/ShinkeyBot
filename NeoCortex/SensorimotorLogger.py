@@ -2,15 +2,20 @@
 
 import serial
 import time
+import datetime
 from struct import *
 import os
 
 import socket
 import sys
 
+import Proprioceptive as prop
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-server_address = ('192.168.0.106', 10000)
+import Configuration
+
+server_address = (Configuration.ip, 10000)
 
 
 def gimmesomething(ser):
@@ -21,20 +26,18 @@ def gimmesomething(ser):
     return line
 
 
-if (os.path.exists('/dev/tty.usbmodem1411')):
-    ser = serial.Serial(port='/dev/tty.usbmodem1411', baudrate=115200, timeout=0)
-elif (os.path.exists('/dev/ttyACM0')):
-    ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0)
+[ssmr, mtrn] = prop.serialcomm()
 
+# Sensor Recording
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+f = open('../data/sensor.'+st+'.dat', 'w')
 
-f = open('sensor.dat', 'w')
-
-
+# Cancel sensor information.
 ser.write('X')
 time.sleep(6)
 
 
-
 buf = ser.readline()
 print str(buf)
 
@@ -44,6 +47,7 @@ print str(buf)
 buf = ser.readline()
 print str(buf)
 
+# Reactive sensor information
 ser.write('S')
 
 

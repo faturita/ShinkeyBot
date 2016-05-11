@@ -27,7 +27,11 @@ def gimmesomething(ser):
     return line
 
 
-f = open('sensor.dat','w')
+# Sensor Recording
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+f = open('../data/sensor.'+st+'.dat', 'w')
+
 
 if (False):
 
