@@ -14,6 +14,7 @@ import socket
 
 import Proprioceptive as prop
 import PicameraStreamer as pcs
+import SensorimotorLogger as senso
 
 obj = pcs.VideoStreamer()
 
@@ -39,11 +40,25 @@ tgt = -1000
 
 wristpos=48
 
+sensor = 0
+
+sensorimotor = senso.Sensorimotor()
+sensorimotor.start()
+sensorimotor.cleanbuffer(smnr,mtrn)
+
 while(True):
     try:
         data, address = sock.recvfrom(1)
 
-        if (data == 'Y'):
+        if (sensor == 1):
+            sensorimotor.sendsensorsample(smnr,mtrn)
+
+        if (data == '%'):
+            if (sensor == 1):
+                sensor = 0
+            else
+                sensor = 1
+        elif (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
             mtrn.write('A5000')
