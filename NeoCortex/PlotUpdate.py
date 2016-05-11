@@ -11,10 +11,11 @@ from struct import *
 import sys, select
 
 import socket
+import Configuration
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-server_address = ('0.0.0.0', 10000)
+server_address = ('0.0.0.0', Configuration.telemetryport)
 print >> sys.stderr, 'starting up on %s port %s', server_address
 
 sock.bind(server_address)
