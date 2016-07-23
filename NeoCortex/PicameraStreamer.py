@@ -10,6 +10,8 @@ import thread
 import socket
 import sys
 
+import Configuration as conf
+
 class VideoStreamer:
 	def __init__(self):
 		self.name = 'streamer'
@@ -24,7 +26,7 @@ class VideoStreamer:
 	def connect(self):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-		server_address = ('192.168.0.103', 10000)
+		server_address = (conf.ip, conf.videoport)
 
 		sock.connect(server_address)
 

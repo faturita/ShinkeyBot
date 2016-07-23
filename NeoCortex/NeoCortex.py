@@ -31,7 +31,8 @@ sock.bind(server_address)
 
 hidraw = prop.setupsensor()
 
-[ssmr, mtrn] = prop.serialcomm()
+[mtrn, ssmr] = prop.serialcomm()
+
 
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
@@ -40,7 +41,7 @@ tgt = -1000
 
 wristpos=48
 
-sensesensor = 1
+sensesensor = 0
 
 sensorimotor = senso.Sensorimotor()
 sensorimotor.start()
