@@ -12,38 +12,45 @@ import datetime
 
 def serialcomm():
     serialport = 0
-    while (True):
+    while (serialport<15):
         if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            ser = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
             break
         serialport = serialport + 1
 
     serialport = serialport + 1
-    while (True):
+    while (serialport<15):
         if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            smr = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            serb = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
             break
         serialport = serialport + 1
 
     time.sleep(5)
 
+    if (sera.isOpen() == False or serb.isOpen() == False):
+        return [None, None]
+
     # Initialize connection with Arduino
-    idstring = ser.read(250)
+    idstring = sera.read(250)
 
-    ser.write('I')
-    time.sleep(1)
-    idstring = ser.read(4)
+    for tries in range(1, 10):
+        sera.write('I')
+        time.sleep(1)
+        idstring = sera.read(100)
+    
+        if ('SSMR' in idstring):
+            mrn = serb
+            smr = sera
+            print('Sensorimotor detected.')
+            return [smr, mrn]
+        elif ('MTRN' in idstring):
+            smr = serb
+            mrn = sera
+            print('Motornneuron detected.')
+            return [smr, mrn]
 
-    if (idstring.startswith('SSMR')):
-        mtrn = smr
-        ssmr = ser
-        print('Sensorimotor detected.')
-    else:
-        ssmr = smr
-        mtrn = ser
-        print('Opposite order.')
-
-    return [ssmr, mtrn]
+    print ('Did not find serial')
+    return [None, None]
 
 
 def setupsensor():

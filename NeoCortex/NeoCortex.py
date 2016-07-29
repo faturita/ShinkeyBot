@@ -16,6 +16,8 @@ import Proprioceptive as prop
 import PicameraStreamer as pcs
 import SensorimotorLogger as senso
 
+import VisualCortex as visual
+
 obj = pcs.VideoStreamer()
 
 import thread
@@ -31,8 +33,10 @@ sock.bind(server_address)
 
 hidraw = prop.setupsensor()
 
-[mtrn, ssmr] = prop.serialcomm()
+[ssmr, mtrn] = prop.serialcomm()
 
+turret = visual.Turret()
+turret.init()
 
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
@@ -54,6 +58,12 @@ while(True):
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
+        if (data == 'B'):
+            turret.startmoveandstop(180)
+        elif (data == 'N'):
+            turret.startmoveandstop(90)
+        elif (data == 'M'):
+            turret.startmoveandstop(4)
         if (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
@@ -119,3 +129,4 @@ time.sleep(2)
 mtrn.close()
 ssmr.close()
 sock.close()
+turret.close()
