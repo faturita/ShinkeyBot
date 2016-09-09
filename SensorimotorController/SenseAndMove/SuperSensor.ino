@@ -99,7 +99,9 @@ void initializeBarometricSensor()
 void checksensors()
 {
   float temperature=0, pressure=0;
-  
+
+  // NO SE CARGA TEMPERATURA NI INFO BAROMETRICA
+  // Demora mucho por lo que hay que hacerlo por otro lado
   //getBarometricData(temperature,pressure);
 
   sensor.T = temperature;
@@ -135,7 +137,7 @@ void checksensors()
     y |= Wire.read(); //Y lsb
   }
   
-  // Imprime os vaores no serial monitor
+  // Dump los valores a serie.
   //Serial.print("x: ");
   //Serial.print(x);
   //Serial.print("  y: ");
@@ -232,19 +234,21 @@ void checksensors()
   Serial.write((uint8_t *)&aux,len);
   Serial.write('E');
 
-  /**Serial.println('S');
-  Serial.println(sensor.onYaw);
-  Serial.println(sensor.onPitch);
-  Serial.println(sensor.onRoll);
-  Serial.println(sensor.yaw);
-  Serial.println(sensor.pitch);
-  Serial.println(sensor.roll);
-  Serial.println(sensor.geoYaw);
-  Serial.println(sensor.geoPitch);
-  Serial.println(sensor.geoRoll);
-  Serial.println(sensor.T);
-  Serial.println(sensor.P);
-  Serial.println(']');**/
+  if (debug) {
+    Serial.println('S');
+    Serial.print("Rot Yaw:");Serial.println(sensor.onYaw);
+    Serial.print("Rot Pitch:");Serial.println(sensor.onPitch);
+    Serial.print("Rot Roll:");Serial.println(sensor.onRoll);
+    Serial.print("Yaw:");Serial.println(sensor.yaw);
+    Serial.print("Pitch:");Serial.println(sensor.pitch);
+    Serial.print("Roll:");Serial.println(sensor.roll);
+    Serial.print("Geo Yaw:");Serial.println(sensor.geoYaw);
+    Serial.print("Geo Pitch:");Serial.println(sensor.geoPitch);
+    Serial.print("Geo Roll:");Serial.println(sensor.geoRoll);
+    Serial.print("Temperature:");Serial.println(sensor.T);
+    Serial.print("Pressure:");Serial.println(sensor.P);
+    Serial.println(']');
+  }
   
 
   //Aguarda 5 segundos e reinicia o processo

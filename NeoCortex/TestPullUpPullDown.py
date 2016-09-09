@@ -1,0 +1,21 @@
+import serial
+ser = serial.Serial(port='/dev/cu.usbmodem1A12121', timeout=0, baudrate=9600)
+import time
+time.sleep(2)
+print ser.read(25)
+ser.write('A6180')
+#ser.write('A3200')
+time.sleep(4)
+ser.write('A3000')
+ser.write('A6090')
+time.sleep(2)
+ser.write('A4200')
+ser.write('A1200')
+time.sleep(2)
+ser.write('A4000')
+ser.write('A2200')
+time.sleep(2)
+ser.write('A2000')
+time.sleep(5)
+print 'Test successful.'
+ser.close()

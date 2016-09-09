@@ -15,11 +15,15 @@
  *     http://en.wikiversity.org/wiki/User:Dstaub/robotcar 
  *     
  *     Motor Wheel: Pin 5,4,3,2.
+ *     
+ *     Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan
  */
 
 
 #define trigPin 13
 #define echoPin 12
+
+bool debug = false;
 
 
 int IN4 = 5;
@@ -64,6 +68,8 @@ struct sensortype
 
 bool serialOpen = 1;
 
+bool txSensor = false;
+
 
 void dump(char *msg)
 {
@@ -89,18 +95,20 @@ void setupMotor()
 
   randomSeed(analogRead(0));
 
+  txSensor = false;
   initsensors();
 }
 
 
 void setup() {
-  Serial.begin (115200);
+  Serial.begin (9600);
   dump("Sensorimotor Cortex");
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
   setupMotor();
+  setupPanAndTilt();
 }
 
 int const QUIET = 0;
@@ -110,14 +118,16 @@ int const MOVE_BACKWARDS = 3;
 int const RIGHT = 4;
 int const LEFT = 5;
 
+int const STAYSTILL = 6;
+int const WANDERING = 1;
+
 // L3 &&  L1 is BACKWARDS
 
-int motorstate=STILL;
+int motorstate=QUIET;
 
-int txSensor = 0;
 int sampleCounter=0;
 
-int minRange = 1;
+int noAction = WANDERING;
 
 void blinkme()
 {
@@ -132,16 +142,18 @@ void blinkme()
   int incomingByte;
 
 
-  if (txSensor == 1)
+  if (txSensor)
   {
     checksensors();
     sampleCounter++;
     if (sampleCounter>100)
     {
-      txSensor=0;
+      txSensor=false;
       sampleCounter=0;
     }
   }
+
+  loopPanAndTilt();
     
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
@@ -150,22 +162,46 @@ void blinkme()
       case 'I':
         dump("SSMR");
         break;
+      case 'D':
+        debug = (!debug);
+        break;
+      case 'H':
+        if (debug) { Serial.println("Pan to 0"); }
+        setPanTgtPos(0);
+        break;
+      case 'F':
+        if (debug) { Serial.println("Pan to 180"); }
+        setPanTgtPos(180);
+        break;
+      case 'G':
+        if (debug) { Serial.println("Reset Pan and tilt."); }
+        setPanTgtPos(90);
+        setTiltTgtPos(90);
+        break;
+      case 'T':
+        if (debug) { Serial.println("Tilt to 170"); }
+        setTiltTgtPos(170);
+        break;
       case 'S':
-        txSensor=1;
+        txSensor=true;
         break;
       case 'X':
-        txSensor=0;
+        txSensor=false;
         break;
       case 'W':
-        minRange=1;
+        if (debug) { Serial.println("Wandering"); }
+        noAction=WANDERING;
         break;
       case 'C':
-        minRange=6;
+        if (debug) { Serial.println("Stay Still"); }
+        noAction=STAYSTILL;
         break;
       case 'L':
+        if (debug) { Serial.println("Laser on"); }
         digitalWrite(laserPin, HIGH);
         break;
       case 'l':
+        if (debug) { Serial.println("Laser off"); }
         digitalWrite(laserPin, LOW);
         break;
       case '-':
@@ -177,6 +213,7 @@ void blinkme()
       default:
         if (48<incomingByte && incomingByte<58)
         {
+          if (debug) { Serial.println("Driving"); }
           motorstate = incomingByte-48;
           previousMillis = currentMillis; 
         }
@@ -200,12 +237,9 @@ void blinkme()
 
     long randNumber = random(14);
 
-    if (motorstate != QUIET)
-    {
-      // Plus one is to eliminate the chance to fallback in quit mode
-      motorstate = ((int)randNumber)+minRange;
-    }
-    //motorstate = STILL;
+    // Plus one is to eliminate the chance to fallback in quit mode
+    motorstate = ((int)randNumber)+noAction;
+
   }
 
 }
@@ -274,6 +308,11 @@ void loop() {
   if (distance < 8) {  // This is where the LED On/Off happens
     //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
     //digitalWrite(led2,LOW);
+
+    if (debug)
+    {
+      Serial.println("Obstacle Rule fired.");
+    }
 
     motorstate=MOVE_BACKWARDS;
   }
