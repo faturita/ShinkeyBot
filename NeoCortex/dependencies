@@ -1,0 +1,5 @@
+serial
+hidapi (compiling)
+picamera
+opencv
+You have to enable camera
