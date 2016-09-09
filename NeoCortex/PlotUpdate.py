@@ -1,5 +1,7 @@
 #coding: latin-1
 
+# Run me with frameworkpython
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -13,12 +15,14 @@ import sys, select
 import socket
 import Configuration
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+serialconnected = True
 
-server_address = ('0.0.0.0', Configuration.telemetryport)
-print >> sys.stderr, 'starting up on %s port %s', server_address
+if (not serialconnected):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_address = ('0.0.0.0', Configuration.telemetryport)
+    print >> sys.stderr, 'starting up on %s port %s', server_address
 
-sock.bind(server_address)
+    sock.bind(server_address)
 
 
 def gimmesomething(ser):
@@ -35,9 +39,9 @@ st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
 f = open('../data/sensor.'+st+'.dat', 'w')
 
 
-if (False):
+if (serialconnected):
 
-    ser = serial.Serial(port='/dev/tty.usbmodem1411', baudrate=115200, timeout=0)
+    ser = serial.Serial(port='/dev/cu.usbmodem1A12141', baudrate=9600, timeout=0)
 
     f = open('sensor.dat', 'w')
 
@@ -78,13 +82,14 @@ plotx = []
 
 while True:
   # read
-  if (False):
+  ser.write('S')
+  if (serialconnected):
      myByte = ser.read(1)
   else:
      myByte = 'S'
 
   if myByte == 'S':
-      if (False):
+      if (serialconnected):
          data = ser.read(32)
          myByte = ser.read(1)
       else:
@@ -103,8 +108,6 @@ while True:
 
           plotx.append( plcounter )
 
-
-
           line1.set_ydata(x)
           line2.set_ydata(y)
           line3.set_ydata(z)
@@ -114,6 +117,7 @@ while True:
           line3.set_xdata(plotx)
 
           fig.canvas.draw()
+          plt.pause(0.0001)
 
           plcounter = plcounter+1
 

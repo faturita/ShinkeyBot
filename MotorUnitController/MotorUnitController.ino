@@ -10,6 +10,7 @@
 #include <AFMotor.h>
 #include <Servo.h> 
 
+bool debug = false;
 
 // create motor objects, 64KHz pwm
 //AF_DCMotor laser(1, MOTOR12_64KHZ);
@@ -23,6 +24,7 @@ Servo wrist;  // create servo object to control a servo
 
 
 Servo grip;
+AF_DCMotor grip2(1, MOTOR12_64KHZ);
 
 
 int state=0;
@@ -31,7 +33,7 @@ int speeds = 255;
 
 
 void setup() {
- Serial.begin(115200); // set up Serial library at 9600 bps
+ Serial.begin(9600); // set up Serial library at 9600 bps
  Serial.println("Motor Unit Neuron");
 
  //shoulder.setSpeed(255);
@@ -39,7 +41,7 @@ void setup() {
  //turret.setSpeed(255);
  //laser.setSpeed(250);
 
- grip.attach(10);  // Servo2 orange in
+ //grip.attach(10);  // Servo2 orange in
 
  wrist.attach(9);
 
@@ -92,9 +94,15 @@ void loop() {
       Serial.println("MTRN");
     }
 
+    if (syncbyte == 'D')
+    {
+      debug = (!debug);
+    }
+
     if (syncbyte == 'A')
     {   
-   
+      // Format A1000 >> A1220
+      // Format A5000
       int readbytes = Serial.readBytes(buffer, 4);
       
       if (readbytes == 4) {
@@ -106,23 +114,31 @@ void loop() {
         speeds = atoi(buffer+1);
         state = action;
 
-        Serial.print("Speed:");Serial.println(action);
-        Serial.println(speeds);
+        if (debug) {
+          Serial.print("Action:");
+          Serial.print(action);
+          Serial.print("/");
+          Serial.println(speeds);
+        }
       }
     }
 
  }
- 
 
+ // Update the servo wrist position.
  update(wrist);
  
  switch(state)
  {
   case 1: 
-    grip.write(speeds);
+    //grip.write(speeds);
+    grip2.setSpeed(speeds);
+    grip2.run(FORWARD);
     break;
   case 2:
-    grip.write(-speeds);
+    //grip.write(-speeds);
+    grip2.setSpeed(speeds);
+    grip2.run(BACKWARD);
     break;
   case 3:
     // Go up
@@ -135,6 +151,7 @@ void loop() {
     break;
   case 5:
     shoulder.run(RELEASE);
+    grip2.run(RELEASE);
     state=0;
     break;
   case 6:
@@ -146,12 +163,12 @@ void loop() {
       direction =-1;
     break;
   case 8:
-    grip.attach(10);
+    //grip.attach(10);
     wrist.attach(9);
     state=0;
     break;
   case 9:
-    grip.detach();   
+    //grip.detach();   
     wrist.detach();
     state=0;
     break;
