@@ -10,28 +10,34 @@ import serial
 import datetime
 
 
+baudrate = 9600
+
+
 def serialcomm():
     serialport = 0
+    sera = None
+    serb = None
     while (serialport<15):
         if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
             break
         serialport = serialport + 1
 
     serialport = serialport + 1
     while (serialport<15):
         if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            serb = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=115200, timeout=0)
+            serb = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
             break
         serialport = serialport + 1
 
     time.sleep(5)
 
-    if (sera.isOpen() == False or serb.isOpen() == False):
+    if (sera == None or serb == None or sera.isOpen() == False or serb.isOpen() == False):
         return [None, None]
 
     # Initialize connection with Arduino
     idstring = sera.read(250)
+    idstring = serb.read(250)
 
     for tries in range(1, 10):
         sera.write('I')
@@ -41,12 +47,12 @@ def serialcomm():
         if ('SSMR' in idstring):
             mrn = serb
             smr = sera
-            print('Sensorimotor detected.')
+            print('Sensorimotor,Motorneuron detected.')
             return [smr, mrn]
         elif ('MTRN' in idstring):
             smr = serb
             mrn = sera
-            print('Motornneuron detected.')
+            print('Motornneuron,Sensorimotor detected.')
             return [smr, mrn]
 
     print ('Did not find serial')
