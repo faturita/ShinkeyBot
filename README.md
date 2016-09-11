@@ -32,5 +32,12 @@ Boot up raspberry and execute the program
 Enable the program to work without camera.
 Hook up the robot to the brain signals.
 
+# Keyes Sensors
+http://www.johnboucha.com/arduino-photoresistor/
+https://gist.github.com/tagliati
+https://tkkrlab.nl/wiki/Arduino_KY-012_Active_buzzer_module
+https://learn.adafruit.com/adafruit-arduino-lesson-3-rgb-leds/breadboard-layout
+https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide?_ga=1.8013874.1081308802.1469763161
+
 
 
