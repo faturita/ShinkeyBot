@@ -58,13 +58,19 @@ while(True):
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
-        if (data == 'B'):
-            turret.startmoveandstop(180)
-        elif (data == 'N'):
-            turret.startmoveandstop(90)
-        elif (data == 'M'):
-            turret.startmoveandstop(4)
-        if (data == 'Y'):
+        if (data == 'H'):
+            ssmr.write('H')  
+            #Right
+        elif (data == 'G'):
+            ssmr.write('G')  
+            #Center
+        elif (data == 'F'):
+            ssmr.write('F')   
+            #Left
+        elif (data == 'T'):
+            ssmr.write('T')  
+            #Down nose
+        elif (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
             mtrn.write('A5000')
@@ -108,8 +114,12 @@ while(True):
             tgt = tgt + 100
         elif (data=='-'):
             tgt = tgt - 100
-        elif (data=='T'):
+        elif (data=='M'):
             prop.moveto(mtrn, hidraw, tgt)
+        elif (data=='E'):
+            ssmr.write('E')
+        elif (data=='B'):
+            ssmr.write('B')
         elif (data=='X'):
             break
     except:
