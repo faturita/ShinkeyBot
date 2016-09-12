@@ -54,14 +54,16 @@ struct sensortype
   double onYaw;
   double onPitch;
   double onRoll;
+  float T;
+  float P;
+  double light;
   int yaw;
   int pitch;
   int roll;
   int geoYaw;
   int geoPitch;
   int geoRoll;
-  float T;
-  float P;
+  int sound;
   
 } sensor;
 
@@ -109,6 +111,7 @@ void setup() {
 
   setupMotor();
   setupPanAndTilt();
+  setupEnvironmentSensor();
 }
 
 int const QUIET = 0;
@@ -176,11 +179,14 @@ void blinkme()
       case 'G':
         if (debug) { Serial.println("Reset Pan and tilt."); }
         setPanTgtPos(90);
-        setTiltTgtPos(90);
+        setTiltTgtPos(95);
         break;
       case 'T':
         if (debug) { Serial.println("Tilt to 170"); }
         setTiltTgtPos(170);
+        break;
+      case 'P':
+        getBarometricData(sensor.T,sensor.P);
         break;
       case 'S':
         txSensor=true;
@@ -204,6 +210,12 @@ void blinkme()
         if (debug) { Serial.println("Laser off"); }
         digitalWrite(laserPin, LOW);
         break;
+      case 'E':
+        if (debug) { Serial.println("Empire"); }
+        march();
+      case 'B':
+        if (debug) { Serial.println("Buzzer"); }
+        buzz();
       case '-':
         interval = 100;
         break;
@@ -305,7 +317,7 @@ void loop() {
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
-  if (distance < 8) {  // This is where the LED On/Off happens
+  if (distance < 12) {  // This is where the LED On/Off happens
     //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
     //digitalWrite(led2,LOW);
 
@@ -315,6 +327,10 @@ void loop() {
     }
 
     motorstate=MOVE_BACKWARDS;
+  } else if (isDark()) {
+    motorstate=MOVE_FORWARD;
+  } else if (isBarking()) {
+    motorstate=MOVE_BACKWARDS;  
   }
   else {
     //motorstate=STILL;

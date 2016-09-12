@@ -90,7 +90,7 @@ void initializeBarometricSensor()
   //Serial.begin(9600);
   Wire.begin();
 
-  Serial.println("Initializing Sensor Data...");
+  Serial.println("Initializing BMP085 (Pressure and Temp)");
   // Inicializa o BMP085
   bmp085Calibration();
 }
@@ -104,8 +104,8 @@ void checksensors()
   // Demora mucho por lo que hay que hacerlo por otro lado
   //getBarometricData(temperature,pressure);
 
-  sensor.T = temperature;
-  sensor.P = pressure;
+  //sensor.T = temperature;
+  //sensor.P = pressure;
   
   //Serial.print("Atmosfera padrao : ");
   // Mostra o valor com 4 casas decimais
@@ -227,7 +227,7 @@ void checksensors()
 
 
   int len = sizeof(sensor);
-  char aux[len];  //32
+  char aux[len];  //38
   memcpy(&aux,&sensor,len);
 
   Serial.write('S');

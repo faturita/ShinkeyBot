@@ -66,11 +66,11 @@ void setPanTgtPos(int tgtPos) {
 void setupPanAndTilt() {
   tilt.servo.attach(14);
   pan.servo.attach(15);
-  tilt.pos = 90;
+  tilt.pos = 95;
   pan.pos = 90;
-  tilt.tgtPos = 90;
+  tilt.tgtPos = 95;
   pan.tgtPos = 90;
-  tilt.minPos=90;
+  tilt.minPos=95;
   tilt.maxPos=180;
 }
 

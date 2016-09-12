@@ -58,15 +58,16 @@ class Sensorimotor:
         # read  Embed this in a loop.
         self.counter=self.counter+1
         if (self.counter>500):
+            smnr.write('P')
             smnr.write('S')
             self.counter=0
         myByte = smnr.read(1)
         if myByte == 'S':
-          data = smnr.read(32)
+          data = smnr.read(38)
           myByte = smnr.read(1)
           if myByte == 'E':
               # is  a valid message struct
-              new_values = unpack('fffhhhhhhff', data)
+              new_values = unpack('ffffffhhhhhhh', data)
               print new_values
               sent = self.sock.sendto(data, self.server_address)
               self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
@@ -83,5 +84,3 @@ if __name__ == "__main__":
 
     while True:
         sensorimotor.sendsensorsample(smnr,mtrn)
-
-
