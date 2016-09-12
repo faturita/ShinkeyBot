@@ -118,6 +118,8 @@ while(True):
             prop.moveto(mtrn, hidraw, tgt)
         elif (data=='E'):
             ssmr.write('E')
+        elif (data=='B'):
+            ssmr.write('B')
         elif (data=='X'):
             break
     except:
