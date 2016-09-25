@@ -31,7 +31,7 @@ server_address = ('0.0.0.0', 10001)
 print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
 sock.bind(server_address)
 
-hidraw = prop.setupsensor()
+#hidraw = prop.setupsensor()
 
 [ssmr, mtrn] = prop.serialcomm()
 
@@ -44,6 +44,8 @@ ssmr.write('C')
 tgt = -1000
 
 wristpos=48
+
+elbowpos = 150
 
 sensesensor = 0
 
@@ -58,22 +60,31 @@ while(True):
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
-        if (data == 'H'):
+        if (data == 'N'):
             ssmr.write('H')  
             #Right
-        elif (data == 'G'):
+        elif (data == 'B'):
             ssmr.write('G')  
             #Center
-        elif (data == 'F'):
+        elif (data == 'V'):
             ssmr.write('F')   
             #Left
-        elif (data == 'T'):
+        elif (data == 'M'):
             ssmr.write('T')  
             #Down nose
         elif (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
-            mtrn.write('A5000')
+            mtrn.write('A3000')
+        elif (data=='<'):
+            elbowpos = elbowpos + 1
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
+        elif (data=='>'):
+            elbowpos = elbowpos - 1
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
+        elif (data=='Z'):
+            elbowpos = 150
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='J'):
             # mtrn.write('A6180')
             wristpos = wristpos + 1
@@ -85,22 +96,24 @@ while(True):
         elif (data == 'H'):
             mtrn.write('A4250')
             time.sleep(0.2)
-            mtrn.write('A5000')
+            mtrn.write('A4000')
         elif (data=='G'):
-            mtrn.write('A1000')
-            time.sleep(2)
-        elif (data=='R'):
             mtrn.write('A1200')
             time.sleep(2)
+            mtrn.write('A1000')
+        elif (data=='R'):
+            mtrn.write('A2200')
+            time.sleep(2)
+            mtrn.write('A2000')
         elif (data==' '):
             ssmr.write('1')
         elif (data=='W'):
             ssmr.write('2')
         elif (data=='S'):
             ssmr.write('3')
-        elif (data=='D'):
-            ssmr.write('5')
         elif (data=='A'):
+            ssmr.write('5')
+        elif (data=='D'):
             ssmr.write('4')
         elif (data=='.'):
             ssmr.write('-')
