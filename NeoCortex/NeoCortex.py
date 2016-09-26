@@ -41,7 +41,7 @@ print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_addre
 sock.bind(server_address)
 
 # Open connection to tilt sensor.
-hidraw = prop.setupsensor()
+#hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
 [ssmr, mtrn] = prop.serialcomm()
 
@@ -54,6 +54,9 @@ ssmr.write('C')
 
 tgt = -1000
 wristpos=48
+
+elbowpos = 150
+
 sensesensor = 0
 
 # Connect remotely to any client that is waiting for sensor loggers.
@@ -70,23 +73,31 @@ while(True):
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
-        if (data == 'H'):
-            ssmr.write('H')
+        if (data == 'N'):
+            ssmr.write('H')  
             #Right
-        elif (data == 'G'):
-            ssmr.write('G')
+        elif (data == 'B'):
+            ssmr.write('G')  
             #Center
-        elif (data == 'F'):
-            ssmr.write('F')
+        elif (data == 'V'):
+            ssmr.write('F')   
             #Left
-        elif (data == 'T'):
-            ssmr.write('T')
+        elif (data == 'C'):
+            ssmr.write('T')  
             #Down nose
         elif (data == 'Y'):
             mtrn.write('A3250')
             time.sleep(0.8)
-            mtrn.write('A5000')
-            # Arm down
+            mtrn.write('A3000')
+        elif (data=='<'):
+            elbowpos = elbowpos + 1
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
+        elif (data=='>'):
+            elbowpos = elbowpos - 1
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
+        elif (data=='Z'):
+            elbowpos = 150
+            mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='J'):
             # mtrn.write('A6180')
             wristpos = wristpos + 1
@@ -100,15 +111,15 @@ while(True):
         elif (data == 'H'):
             mtrn.write('A4250')
             time.sleep(0.2)
-            mtrn.write('A5000')
-            # Arm Up
+            mtrn.write('A4000')
         elif (data=='G'):
-            mtrn.write('A1000')
-            time.sleep(2)
-            # Gripper
-        elif (data=='R'):
             mtrn.write('A1200')
             time.sleep(2)
+            mtrn.write('A1000')
+        elif (data=='R'):
+            mtrn.write('A2200')
+            time.sleep(2)
+            mtrn.write('A2000')
             # Gripper Release
         elif (data==' '):
             ssmr.write('1')
@@ -120,10 +131,10 @@ while(True):
             ssmr.write('3')
             # Backward
         elif (data=='D'):
-            ssmr.write('5')
+            ssmr.write('4')
             # Right
         elif (data=='A'):
-            ssmr.write('4')
+            ssmr.write('5')
             # Left
         elif (data=='.'):
             ssmr.write('-')
