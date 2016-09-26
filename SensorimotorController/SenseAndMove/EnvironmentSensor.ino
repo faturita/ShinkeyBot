@@ -181,7 +181,7 @@ bool isBarking() {
   soundSensorValue = analogRead(sensorPin);
 
   if (soundSensorValue>minSoundThreshold) {
-    digitalWrite (ledPin, HIGH); 
+    //digitalWrite (ledPin, HIGH); 
     beep(speakerPin, a, 10); 
     retval = true;
   }
@@ -200,12 +200,12 @@ bool isDark() {
   // if input is less than minLightValue turn on LED
   
   if (analogValue < minLightValue) {
-    digitalWrite(ledPin, HIGH);
+    //digitalWrite(ledPin, HIGH);
     retval = true;
   } else {
-     digitalWrite(ledPin, LOW); 
+     //digitalWrite(ledPin, LOW); 
   }
-  if (debug) {Serial.println(analogValue);}
+  if (debug) {Serial.print("Light:");Serial.println(analogValue);}
   
   // reads photoresistor every half second
   //delay(500);
