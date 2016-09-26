@@ -82,7 +82,7 @@ while(True):
         elif (data == 'V'):
             ssmr.write('F')   
             #Left
-        elif (data == 'M'):
+        elif (data == 'C'):
             ssmr.write('T')  
             #Down nose
         elif (data == 'Y'):
@@ -131,10 +131,10 @@ while(True):
             ssmr.write('3')
             # Backward
         elif (data=='D'):
-            ssmr.write('5')
+            ssmr.write('4')
             # Right
         elif (data=='A'):
-            ssmr.write('4')
+            ssmr.write('5')
             # Left
         elif (data=='.'):
             ssmr.write('-')
