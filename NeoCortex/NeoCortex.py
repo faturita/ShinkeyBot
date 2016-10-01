@@ -41,7 +41,7 @@ print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_addre
 sock.bind(server_address)
 
 # Open connection to tilt sensor.
-#hidraw = prop.setupsensor()
+hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
 [ssmr, mtrn] = prop.serialcomm()
 
