@@ -1,39 +1,48 @@
 /**
- * ShinkeyBot - Sensorimotor
- * 
- * Fuse senses and move the robot wheels.
- * 
- * HR-SR04 - Distance Sensor
- *     VCC to Arduino 5v 
- *     GND to Arduino GND
- *     Echo to Arduino Pin 13
- *     Trig to Arduino Pin 12
- *     Red Led to Arduino Pin 11
- *     Green Led to Arduino Pin 10
- *     560 ohm resistor to both Led Neg and GND Power rail
- *     http://goo.gl/kJ8Gl    
- *     http://en.wikiversity.org/wiki/User:Dstaub/robotcar 
- *     
- *     Motor Wheel: Pin 5,4,3,2.
- *     
- *     Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan
- */
+   ShinkeyBot - Sensorimotor
 
+   Fuse senses and move the robot wheels.
+
+   HR-SR04 - Distance Sensor
+       VCC to Arduino 5v
+       GND to Arduino GND
+       Echo to Arduino Pin 13
+       Trig to Arduino Pin 12
+       Red Led to Arduino Pin 11
+       Green Led to Arduino Pin 10
+       560 ohm resistor to both Led Neg and GND Power rail
+       http://goo.gl/kJ8Gl
+       http://en.wikiversity.org/wiki/User:Dstaub/robotcar
+
+       Motor Wheel: Pin 5,4,3,2.
+
+       Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan
+*/
+
+#include <stdarg.h>
+void p(char *fmt, ... ){
+        char buf[128]; // resulting string limited to 128 chars
+        va_list args;
+        va_start (args, fmt );
+        vsnprintf(buf, 128, fmt, args);
+        va_end (args);
+        Serial.print(buf);
+}
 
 #define trigPin 13
 #define echoPin 12
 
+
 bool debug = false;
 
-
 int IN4 = 5;
-int IN3 = 4; 
-int IN2 = 3; 
+int IN3 = 4;
+int IN2 = 3;
 int IN1 = 2;
 
 
 // constants won't change. Used here to set a pin number :
-const int ledPin =  13;      // the number of the LED pin
+const int ledPin =  8;      // the number of the LED pin
 
 const int laserPin = 8;
 
@@ -64,7 +73,7 @@ struct sensortype
   int geoPitch;
   int geoRoll;
   int sound;
-  
+
 } sensor;
 
 
@@ -81,17 +90,20 @@ void dump(char *msg)
   }
 }
 
+int leftorright() {
+  return random(2) + 4;
+}
 
 
 void setupMotor()
 {
-  pinMode (IN4, OUTPUT);    // Input4 conectada al pin 4 
+  pinMode (IN4, OUTPUT);    // Input4 conectada al pin 4
   pinMode (IN3, OUTPUT);    // Input3 conectada al pin 5
-  pinMode (IN2, OUTPUT);    // Input4 conectada al pin 3 
+  pinMode (IN2, OUTPUT);    // Input4 conectada al pin 3
   pinMode (IN1, OUTPUT);    // Input3 conectada al pin 2
 
   // set the digital pin as output:
-  pinMode(ledPin, OUTPUT);  
+  pinMode(ledPin, OUTPUT);
 
   pinMode(laserPin, OUTPUT);
 
@@ -126,11 +138,42 @@ int const WANDERING = 1;
 
 // L3 &&  L1 is BACKWARDS
 
-int motorstate=QUIET;
+int motorstate = QUIET;
 
-int sampleCounter=0;
+int sampleCounter = 0;
 
-int noAction = WANDERING;
+int noAction = STAYSTILL;
+
+
+int const RELAXED = 0;
+int const PHOTOTROPISM = 1;
+int const PHONOTROPISM = 2;
+int const MAGNETOTROPISM = 3;
+
+int limbic = RELAXED;
+
+char buffer[4];
+int value=0;
+
+char readcommand()
+{
+  int readbytes = Serial.readBytes(buffer,4);
+  char action = 0;
+  
+  if (readbytes == 4) {
+    action = buffer[0];
+    
+    value = atoi(buffer+1); 
+
+    if (debug) {
+      Serial.print("Action:");
+      Serial.print(action);
+      Serial.print("/");
+      Serial.println(value);
+    }  
+  }
+  return action;
+}
 
 void blinkme()
 {
@@ -144,20 +187,23 @@ void blinkme()
 
   int incomingByte;
 
+  char action;
+
 
   if (txSensor)
   {
     checksensors();
+    transmitsensor();
     sampleCounter++;
-    if (sampleCounter>100)
+    if (sampleCounter > 100)
     {
-      txSensor=false;
-      sampleCounter=0;
+      txSensor = false;
+      sampleCounter = 0;
     }
   }
 
   loopPanAndTilt();
-    
+
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
 
@@ -168,53 +214,86 @@ void blinkme()
       case 'D':
         debug = (!debug);
         break;
+      case 'A':
+        action = readcommand();
+        switch (action) {
+          case 'F':
+            setPanTgtPos(value);
+            break;
+          case 'T':
+            setTiltTgtPos(value);
+            break;
+          default:
+            break;
+        }
+        break;
       case 'H':
-        if (debug) { Serial.println("Pan to 0"); }
+        if (debug) {
+          Serial.println("Pan to 0");
+        }
         setPanTgtPos(0);
         break;
       case 'F':
-        if (debug) { Serial.println("Pan to 180"); }
+        if (debug) {
+          Serial.println("Pan to 180");
+        }
         setPanTgtPos(180);
         break;
       case 'G':
-        if (debug) { Serial.println("Reset Pan and tilt."); }
+        if (debug) {
+          Serial.println("Reset Pan and tilt.");
+        }
         setPanTgtPos(90);
         setTiltTgtPos(95);
         break;
       case 'T':
-        if (debug) { Serial.println("Tilt to 170"); }
+        if (debug) {
+          Serial.println("Tilt to 170");
+        }
         setTiltTgtPos(170);
         break;
       case 'P':
-        getBarometricData(sensor.T,sensor.P);
+        getBarometricData(sensor.T, sensor.P);
         break;
       case 'S':
-        txSensor=true;
+        txSensor = true;
         break;
       case 'X':
-        txSensor=false;
+        txSensor = false;
         break;
       case 'W':
-        if (debug) { Serial.println("Wandering"); }
-        noAction=WANDERING;
+        if (debug) {
+          Serial.println("Wandering");
+        }
+        noAction = WANDERING;
         break;
       case 'C':
-        if (debug) { Serial.println("Stay Still"); }
-        noAction=STAYSTILL;
+        if (debug) {
+          Serial.println("Stay Still");
+        }
+        noAction = STAYSTILL;
         break;
       case 'L':
-        if (debug) { Serial.println("Laser on"); }
+        if (debug) {
+          Serial.println("Laser on");
+        }
         digitalWrite(laserPin, HIGH);
         break;
       case 'l':
-        if (debug) { Serial.println("Laser off"); }
+        if (debug) {
+          Serial.println("Laser off");
+        }
         digitalWrite(laserPin, LOW);
         break;
       case 'E':
-        if (debug) { Serial.println("Empire"); }
+        if (debug) {
+          Serial.println("Empire");
+        }
         march();
       case 'B':
-        if (debug) { Serial.println("Buzzer"); }
+        if (debug) {
+          Serial.println("Buzzer");
+        }
         buzz();
       case '-':
         interval = 100;
@@ -223,20 +302,21 @@ void blinkme()
         interval = 2000;
         break;
       default:
-        if (48<incomingByte && incomingByte<58)
+        if (48 < incomingByte && incomingByte < 58)
         {
-          if (debug) { Serial.println("Driving"); }
-          motorstate = incomingByte-48;
-          previousMillis = currentMillis; 
+          if (debug) {
+            Serial.println("Driving");
+          }
+          motorstate = incomingByte - 48;
+          previousMillis = currentMillis;
         }
         break;
     }
 
-  } 
-  else
-  if(currentMillis - previousMillis >= interval) {
-    // save the last time you blinked the LED 
-    previousMillis = currentMillis; 
+  }
+  else if (currentMillis - previousMillis >= interval) {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
     if (ledState == LOW)
@@ -245,12 +325,34 @@ void blinkme()
       ledState = LOW;
 
     // set the LED with the ledState of the variable:
-    digitalWrite(ledPin, ledState);
+    //digitalWrite(ledPin, ledState);
 
-    long randNumber = random(14);
+    //Serial.println(limbic);
 
-    // Plus one is to eliminate the chance to fallback in quit mode
-    motorstate = ((int)randNumber)+noAction;
+//    switch (limbic) {
+//      case PHOTOTROPISM:
+//        motorstate = MOVE_FORWARD;
+//        break;
+//      case PHONOTROPISM:
+//        motorstate = leftorright();
+//        break;
+//      default:
+//        checksensors();// 320 320 160
+//        if (debug) p("Geo: %4d, %4d, %4d \n",  sensor.geoYaw, sensor.geoPitch, sensor.geoRoll);
+//        if ( (abs(sensor.geoYaw-320)<50) && (abs(sensor.geoPitch-320)<50) && (abs(sensor.geoRoll-160)<50) ) {
+//          if (debug) p("FOLLOW!");
+//          //motorstate = QUIET;  
+//        } else {
+//          //motorstate = LEFT;
+//        }
+//        
+//        //long randNumber = random(14);
+//        // Plus one is to eliminate the chance to fallback in quit mode
+//        //motorstate = ((int)randNumber) + noAction;
+//        break;
+//    }
+    motorstate = QUIET;  
+    limbic = QUIET;
 
   }
 
@@ -263,44 +365,44 @@ void loopMotor()
   //if (ledState == HIGH)
   switch (motorstate)
   {
-    case MOVE_BACKWARDS: 
+    case MOVE_BACKWARDS:
       // Move Backward.
       //Serial.println("Moving!");
       digitalWrite (IN4, HIGH);
-      digitalWrite (IN3, LOW); 
+      digitalWrite (IN3, LOW);
       digitalWrite (IN2, HIGH);
-      digitalWrite (IN1, LOW); 
+      digitalWrite (IN1, LOW);
       break;
-    case MOVE_FORWARD: 
+    case MOVE_FORWARD:
       // Go ahead and move forward
       //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
-      digitalWrite (IN3, HIGH); 
+      digitalWrite (IN3, HIGH);
       digitalWrite (IN2, LOW);
-      digitalWrite (IN1, HIGH); 
+      digitalWrite (IN1, HIGH);
       break;
-    case LEFT: 
+    case LEFT:
       // Move the right caterpiller
       //Serial.println("Moving!");
       digitalWrite (IN4, LOW); // LOW, HIGH for back
-      digitalWrite (IN3, LOW); 
+      digitalWrite (IN3, LOW);
       digitalWrite (IN2, LOW);
-      digitalWrite (IN1, HIGH); 
+      digitalWrite (IN1, HIGH);
       break;
-    case RIGHT: 
+    case RIGHT:
       // Move the left Caterpiller
       //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
-      digitalWrite (IN3, HIGH); 
+      digitalWrite (IN3, HIGH);
       digitalWrite (IN2, LOW);  // LOW, HIGH for back
-      digitalWrite (IN1, LOW); 
+      digitalWrite (IN1, LOW);
       break;
     default:
       // Stop All Motors
       digitalWrite (IN4, LOW);
-      digitalWrite (IN3, LOW); 
+      digitalWrite (IN3, LOW);
       digitalWrite (IN2, LOW);
-      digitalWrite (IN1, LOW); 
+      digitalWrite (IN1, LOW);
       break;
   }
 
@@ -310,34 +412,35 @@ void loopMotor()
 
 void loop() {
   long duration, distance;
-  digitalWrite(trigPin, LOW);  
-  delayMicroseconds(2); 
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(5); 
+  delayMicroseconds(5);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
-  distance = (duration/2) / 29.1;
-  if (distance < 12) {  // This is where the LED On/Off happens
-    //digitalWrite(led,HIGH); // When the Red condition is met, the Green LED should turn off
-    //digitalWrite(led2,LOW);
+  distance = (duration / 2) / 29.1;
+  if (distance == 0) {
+    // This is likely an error with the sensor.
+    buzz();
+  } else if (distance < 12) {  
 
     if (debug)
     {
-      Serial.println("Obstacle Rule fired.");
+      Serial.print("OBSTACLE !");Serial.println(distance);
     }
 
-    motorstate=MOVE_BACKWARDS;
+    motorstate = MOVE_BACKWARDS;
   } else if (isDark()) {
-    motorstate=MOVE_FORWARD;
+    //limbic = PHOTOTROPISM;
   } else if (isBarking()) {
-    motorstate=MOVE_BACKWARDS;  
+    limbic = PHONOTROPISM;
   }
   else {
     //motorstate=STILL;
     //digitalWrite(led,LOW);
     //digitalWrite(led2,HIGH);
   }
-  if (distance >= 200 || distance <= 0){
+  if (distance >= 200 || distance <= 0) {
     //Serial.println("200");
   }
   else {
@@ -346,7 +449,7 @@ void loop() {
   }
 
   loopMotor();
-  delay(10);
+  //delay(10);
 }
 
 

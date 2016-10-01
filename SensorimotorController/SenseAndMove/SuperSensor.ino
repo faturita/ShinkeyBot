@@ -224,8 +224,9 @@ void checksensors()
   sensor.pitch = gyroy;
   sensor.roll = gyroz;
 
+}
 
-
+void transmitsensor() {
   int len = sizeof(sensor);
   char aux[len];  //38
   memcpy(&aux,&sensor,len);
