@@ -103,8 +103,8 @@ while True:
           print new_values
           f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
 
-          x.append( float(new_values[12]))
-          y.append( float(new_values[3]))
+          x.append( float(new_values[3]))
+          y.append( float(new_values[4]))
           z.append( float(new_values[5]))
 
           plotx.append( plcounter )

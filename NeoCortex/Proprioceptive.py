@@ -43,7 +43,7 @@ def serialcomm():
         sera.write('I')
         time.sleep(1)
         idstring = sera.read(100)
-    
+
         if ('SSMR' in idstring):
             mrn = serb
             smr = sera
@@ -126,6 +126,8 @@ def moveto(mtrn, hidraw, targetpos):
     feedback = 0
     output = 0
 
+    elbowpos = 150;
+
     for i in range(1,100):
         [acceleration, zenith, azimuth ] = tiltsensor(hidraw)
 
@@ -133,28 +135,27 @@ def moveto(mtrn, hidraw, targetpos):
 
         f.write( str(acceleration) + ' ' + str(zenith) + ' ' + str(output) + '\n'  )
 
-        feedback = float( zenith )
-
-        if (azimuth < 25000):
-            feedback = feedback * -1
+        feedback = float( azimuth )
 
         pid.update(feedback)
         output = pid.output
 
-        cmd = 1
+        cmd = 'AA150'
 
         if ( abs(output) < 10):
-            cmd = 'A5000'
+            cmd = 'AA150'
         elif ( output < 0):
-            cmd = 'A4200'
+            cmd = 'AA170'
         else:
-            cmd = 'A3250'
+            cmd = 'AA140'
         print str(output) + '-' + str(feedback) + ':' + cmd
 
         mtrn.write(cmd)
 
+
     # Stop moving
-    mtrn.write('A5000')
+    elbowpos = 150;
+    mtrn.write('AA'+'{:3d}'.format(elbowpos))
 
 class PIDTarget:
     def __init__(self):

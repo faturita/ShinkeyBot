@@ -152,6 +152,29 @@ int const MAGNETOTROPISM = 3;
 
 int limbic = RELAXED;
 
+char buffer[4];
+int value=0;
+
+char readcommand()
+{
+  int readbytes = Serial.readBytes(buffer,4);
+  char action = 0;
+  
+  if (readbytes == 4) {
+    action = buffer[0];
+    
+    value = atoi(buffer+1); 
+
+    if (debug) {
+      Serial.print("Action:");
+      Serial.print(action);
+      Serial.print("/");
+      Serial.println(value);
+    }  
+  }
+  return action;
+}
+
 void blinkme()
 {
   // here is where you'd put code that needs to be running all the time.
@@ -163,6 +186,8 @@ void blinkme()
   unsigned long currentMillis = millis();
 
   int incomingByte;
+
+  char action;
 
 
   if (txSensor)
@@ -188,6 +213,19 @@ void blinkme()
         break;
       case 'D':
         debug = (!debug);
+        break;
+      case 'A':
+        action = readcommand();
+        switch (action) {
+          case 'F':
+            setPanTgtPos(value);
+            break;
+          case 'T':
+            setTiltTgtPos(value);
+            break;
+          default:
+            break;
+        }
         break;
       case 'H':
         if (debug) {

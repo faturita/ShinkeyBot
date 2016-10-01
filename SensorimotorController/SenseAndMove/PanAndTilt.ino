@@ -70,8 +70,10 @@ void setupPanAndTilt() {
   pan.pos = 90;
   tilt.tgtPos = 95;
   pan.tgtPos = 90;
+  pan.minPos=0;
+  pan.maxPos=180;
   tilt.minPos=95;
-  tilt.maxPos=180;
+  tilt.maxPos=170;
 }
 
 void loopPanAndTilt() {

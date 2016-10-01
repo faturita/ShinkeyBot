@@ -26,8 +26,6 @@ import thread
 import PicameraStreamer as pcs
 import SensorimotorLogger as senso
 
-import VisualCortex as visual
-
 # Get PiCamera stream and read everything in another thread.
 obj = pcs.VideoStreamer()
 thread.start_new_thread( obj.connect, () )
@@ -45,10 +43,6 @@ sock.bind(server_address)
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
 [ssmr, mtrn] = prop.serialcomm()
 
-# Handle connection to the visual turret (defunct)
-turret = visual.Turret()
-turret.init()
-
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
 
@@ -56,6 +50,9 @@ tgt = -1000
 wristpos=48
 
 elbowpos = 150
+
+# Pan and tilt
+visualpos = [90,95]
 
 sensesensor = 0
 
@@ -74,28 +71,37 @@ while(True):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
         if (data == 'N'):
-            ssmr.write('H')  
-            #Right
+            ssmr.write('H')
+            #Camera Right
         elif (data == 'B'):
-            ssmr.write('G')  
-            #Center
+            ssmr.write('G')
+            #Camera Center
         elif (data == 'V'):
-            ssmr.write('F')   
-            #Left
+            ssmr.write('F')
+            #Camera Left
         elif (data == 'C'):
-            ssmr.write('T')  
-            #Down nose
+            ssmr.write('T')
+            #Camera nose down
         elif (data == 'Y'):
+            # Move shoulder up
             mtrn.write('A3250')
-            time.sleep(0.8)
+            time.sleep(0.5) # This time depends on the weight
             mtrn.write('A3000')
+        elif (data == 'H'):
+            # Move shoulder down.
+            mtrn.write('A4250')
+            time.sleep(0.2)
+            mtrn.write('A4000')
         elif (data=='<'):
+            # Move elbows up (by increasing its torque)
             elbowpos = elbowpos + 1
             mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='>'):
+            # Move elbows dow (by decreasing its torque)
             elbowpos = elbowpos - 1
             mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='Z'):
+            # Reset Elbow position (no force)
             elbowpos = 150
             mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='J'):
@@ -108,15 +114,21 @@ while(True):
             wristpos = wristpos - 1
             mtrn.write('A6'+'{:3d}'.format(wristpos))
             # wrist down
-        elif (data == 'H'):
-            mtrn.write('A4250')
-            time.sleep(0.2)
-            mtrn.write('A4000')
+        elif (data=='\''):
+            mtrn.write('A8120')
+            time.sleep(0.6)
+            mtrn.write('A8000')
+        elif (data=='¡'):
+            mtrn.write('A9120')
+            time.sleep(0.6)
+            mtrn.write('A9000')
         elif (data=='G'):
+            # Grip close
             mtrn.write('A1200')
             time.sleep(2)
             mtrn.write('A1000')
         elif (data=='R'):
+            # Grip open
             mtrn.write('A2200')
             time.sleep(2)
             mtrn.write('A2000')
@@ -154,6 +166,18 @@ while(True):
         elif (data=='-'):
             tgt = tgt - 100
             # Pull down tesaki target
+        elif (data=='{'):
+            visualpos[0]=visualpos[0]-1;
+            ssmr.write('AF'+'{:3d}'.format(visualpos[1]))
+        elif (data=='}'):
+            visualpos[0]=visualpos[0]+1;
+            ssmr.write('AF'+'{:3d}'.format(visualpos[1]))
+        elif (data=='['):
+            visualpos[1]=visualpos[1]-1;
+            ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
+        elif (data==']'):
+            visualpos[1]=visualpos[1]+1;
+            ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
         elif (data=='M'):
             prop.moveto(mtrn, hidraw, tgt)
             # PID to desired position

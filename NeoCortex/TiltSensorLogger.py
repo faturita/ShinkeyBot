@@ -1,5 +1,8 @@
 #coding: latin-1
 
+#Â This program works in tandem with "ShowSensorData"
+#Â This program will log all the information that can be seen with the other program
+
 import hid
 import time
 
@@ -16,30 +19,30 @@ hidraw.open(0x1b67, 0x0004)
 
 buf = [0] * (32+1)
 
-#            Rpt, GnS, Tgt, Size, Index LSB, Index MSB, Data
+#ï¿½           Rpt, GnS, Tgt, Size, Index LSB, Index MSB, Data
 #buf[0:7] = [0x00,0x00, 0x01, 0x01, 0x00,     0x01,      0x01]
 #hidraw.send_feature_report(buf)
 
-# Blink 4 pulses
+#ï¿½Blink 4 pulses
 hidraw.send_feature_report([0x00, 0x00, 0x00,0x01, 0x01, 0x00, 0x03])
 
 hidraw.get_feature_report(33,33)
 time.sleep(3)
 
 
-# Fixed
+#ï¿½Fixed
 hidraw.send_feature_report([0x00, 0x00, 0x00,0x01, 0x00, 0x00, 0x02])
 
 hidraw.get_feature_report(33,33)
 time.sleep(3)
 
-# Adjust report rate to max speed....
+#ï¿½Adjust report rate to max speed....
 hidraw.send_feature_report([0x00, 0x00, 0x00,0x02, 0x00, 0x00, 0x01, 0x00])
 
 hidraw.get_feature_report(33,33)
 time.sleep(3)
 
-# Adjust sample rate to max speed....
+#ï¿½Adjust sample rate to max speed....
 hidraw.send_feature_report([0x00, 0x00, 0x00,0x02, 0x01, 0x00, 0x01, 0x00])
 
 hidraw.get_feature_report(33,33)
