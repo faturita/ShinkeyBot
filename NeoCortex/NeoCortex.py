@@ -28,7 +28,11 @@ import SensorimotorLogger as senso
 
 # Get PiCamera stream and read everything in another thread.
 obj = pcs.VideoStreamer()
-thread.start_new_thread( obj.connect, () )
+try:
+    thread.start_new_thread( obj.connect, () )
+except:
+    pass
+
 
 
 # Initialize UDP Controller Server on port 10001
@@ -46,7 +50,7 @@ hidraw = prop.setupsensor()
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
 
-tgt = -1000
+tgt = -300
 wristpos=48
 
 elbowpos = 150
@@ -61,6 +65,8 @@ sensorimotor = senso.Sensorimotor()
 sensorimotor.start()
 sensorimotor.cleanbuffer(ssmr,mtrn)
 
+
+print 'Remote controlling ShinkeyBot'
 # Live
 while(True):
     try:
@@ -69,13 +75,19 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
+	
+	if (data == '!'):
+            moredata, address = sock.recvfrom(4)
+            obj.ip = str(moredata[0]) + '.' + str(moredata[1]) + '.' + str(moredata[2]) + '.' + str(moredata[3])
 
+            thread.start_new_thread( obj.connect(), () )
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right
         elif (data == 'B'):
             ssmr.write('G')
             #Camera Center
+            visualpos = [90,95]
         elif (data == 'V'):
             ssmr.write('F')
             #Camera Left
@@ -118,7 +130,7 @@ while(True):
             mtrn.write('A8120')
             time.sleep(0.6)
             mtrn.write('A8000')
-        elif (data=='¡'):
+        elif (data=='?'):
             mtrn.write('A9120')
             time.sleep(0.6)
             mtrn.write('A9000')
@@ -167,11 +179,11 @@ while(True):
             tgt = tgt - 100
             # Pull down tesaki target
         elif (data=='{'):
-            visualpos[0]=visualpos[0]-1;
-            ssmr.write('AF'+'{:3d}'.format(visualpos[1]))
-        elif (data=='}'):
             visualpos[0]=visualpos[0]+1;
-            ssmr.write('AF'+'{:3d}'.format(visualpos[1]))
+            ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
+        elif (data=='}'):
+            visualpos[0]=visualpos[0]-1;
+            ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
         elif (data=='['):
             visualpos[1]=visualpos[1]-1;
             ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
@@ -206,4 +218,4 @@ time.sleep(2)
 mtrn.close()
 ssmr.close()
 sock.close()
-turret.close()
+
