@@ -1,0 +1,602 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		62F0925A1DAC449C00EAB149 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 62F092591DAC449C00EAB149 /* main.m */; };
+		62F0925D1DAC449C00EAB149 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F0925C1DAC449C00EAB149 /* AppDelegate.mm */; };
+		62F092601DAC449C00EAB149 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F0925F1DAC449C00EAB149 /* ViewController.mm */; };
+		62F092631DAC449C00EAB149 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62F092611DAC449C00EAB149 /* Main.storyboard */; };
+		62F092651DAC449C00EAB149 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62F092641DAC449C00EAB149 /* Assets.xcassets */; };
+		62F092681DAC449C00EAB149 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62F092661DAC449C00EAB149 /* LaunchScreen.storyboard */; };
+		62F092731DAC449C00EAB149 /* ShinkeyBotControllerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F092721DAC449C00EAB149 /* ShinkeyBotControllerTests.mm */; };
+		62F0927E1DAC449C00EAB149 /* ShinkeyBotControllerUITests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F0927D1DAC449C00EAB149 /* ShinkeyBotControllerUITests.mm */; };
+		62F092951DAC471100EAB149 /* GCDAsyncSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F092921DAC471100EAB149 /* GCDAsyncSocket.mm */; };
+		62F092961DAC471100EAB149 /* GCDAsyncUdpSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 62F092941DAC471100EAB149 /* GCDAsyncUdpSocket.mm */; };
+		62F0929E1DAC727600EAB149 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F0929D1DAC727600EAB149 /* opencv2.framework */; };
+		62F092A01DAC746800EAB149 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F0929F1DAC746800EAB149 /* SystemConfiguration.framework */; };
+		62F092A21DAC7DDE00EAB149 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F092A11DAC7DDE00EAB149 /* AVFoundation.framework */; };
+		62F092A41DAC847F00EAB149 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F092A31DAC847F00EAB149 /* AssetsLibrary.framework */; };
+		62F092A61DAC848700EAB149 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F092A51DAC848700EAB149 /* ImageIO.framework */; };
+		62F092A81DB276B600EAB149 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F092A71DB276B500EAB149 /* CoreVideo.framework */; };
+		62F092AA1DB276E700EAB149 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62F092A91DB276E700EAB149 /* CoreMedia.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		62F0926F1DAC449C00EAB149 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 62F0924D1DAC449B00EAB149 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 62F092541DAC449C00EAB149;
+			remoteInfo = ShinkeyBotController;
+		};
+		62F0927A1DAC449C00EAB149 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 62F0924D1DAC449B00EAB149 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 62F092541DAC449C00EAB149;
+			remoteInfo = ShinkeyBotController;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		62F092551DAC449C00EAB149 /* ShinkeyBotController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShinkeyBotController.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		62F092591DAC449C00EAB149 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		62F0925B1DAC449C00EAB149 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		62F0925C1DAC449C00EAB149 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		62F0925E1DAC449C00EAB149 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		62F0925F1DAC449C00EAB149 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
+		62F092621DAC449C00EAB149 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		62F092641DAC449C00EAB149 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		62F092671DAC449C00EAB149 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		62F092691DAC449C00EAB149 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62F0926E1DAC449C00EAB149 /* ShinkeyBotControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShinkeyBotControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		62F092721DAC449C00EAB149 /* ShinkeyBotControllerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ShinkeyBotControllerTests.mm; sourceTree = "<group>"; };
+		62F092741DAC449C00EAB149 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62F092791DAC449C00EAB149 /* ShinkeyBotControllerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShinkeyBotControllerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		62F0927D1DAC449C00EAB149 /* ShinkeyBotControllerUITests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ShinkeyBotControllerUITests.mm; sourceTree = "<group>"; };
+		62F0927F1DAC449C00EAB149 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62F092911DAC471100EAB149 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		62F092921DAC471100EAB149 /* GCDAsyncSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GCDAsyncSocket.mm; sourceTree = "<group>"; };
+		62F092931DAC471100EAB149 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		62F092941DAC471100EAB149 /* GCDAsyncUdpSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GCDAsyncUdpSocket.mm; sourceTree = "<group>"; };
+		62F0929C1DAC6FCE00EAB149 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		62F0929D1DAC727600EAB149 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
+		62F0929F1DAC746800EAB149 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		62F092A11DAC7DDE00EAB149 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		62F092A31DAC847F00EAB149 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		62F092A51DAC848700EAB149 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		62F092A71DB276B500EAB149 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		62F092A91DB276E700EAB149 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		62F092521DAC449C00EAB149 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F092AA1DB276E700EAB149 /* CoreMedia.framework in Frameworks */,
+				62F092A81DB276B600EAB149 /* CoreVideo.framework in Frameworks */,
+				62F092A61DAC848700EAB149 /* ImageIO.framework in Frameworks */,
+				62F092A41DAC847F00EAB149 /* AssetsLibrary.framework in Frameworks */,
+				62F092A21DAC7DDE00EAB149 /* AVFoundation.framework in Frameworks */,
+				62F092A01DAC746800EAB149 /* SystemConfiguration.framework in Frameworks */,
+				62F0929E1DAC727600EAB149 /* opencv2.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F0926B1DAC449C00EAB149 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F092761DAC449C00EAB149 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		62F0924C1DAC449B00EAB149 = {
+			isa = PBXGroup;
+			children = (
+				62F0929C1DAC6FCE00EAB149 /* PrefixHeader.pch */,
+				62F092911DAC471100EAB149 /* GCDAsyncSocket.h */,
+				62F092921DAC471100EAB149 /* GCDAsyncSocket.mm */,
+				62F092931DAC471100EAB149 /* GCDAsyncUdpSocket.h */,
+				62F092941DAC471100EAB149 /* GCDAsyncUdpSocket.mm */,
+				62F092571DAC449C00EAB149 /* ShinkeyBotController */,
+				62F092711DAC449C00EAB149 /* ShinkeyBotControllerTests */,
+				62F0927C1DAC449C00EAB149 /* ShinkeyBotControllerUITests */,
+				62F092561DAC449C00EAB149 /* Products */,
+				62F092991DAC6F0000EAB149 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		62F092561DAC449C00EAB149 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				62F092551DAC449C00EAB149 /* ShinkeyBotController.app */,
+				62F0926E1DAC449C00EAB149 /* ShinkeyBotControllerTests.xctest */,
+				62F092791DAC449C00EAB149 /* ShinkeyBotControllerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		62F092571DAC449C00EAB149 /* ShinkeyBotController */ = {
+			isa = PBXGroup;
+			children = (
+				62F0925B1DAC449C00EAB149 /* AppDelegate.h */,
+				62F0925C1DAC449C00EAB149 /* AppDelegate.mm */,
+				62F0925E1DAC449C00EAB149 /* ViewController.h */,
+				62F0925F1DAC449C00EAB149 /* ViewController.mm */,
+				62F092611DAC449C00EAB149 /* Main.storyboard */,
+				62F092641DAC449C00EAB149 /* Assets.xcassets */,
+				62F092661DAC449C00EAB149 /* LaunchScreen.storyboard */,
+				62F092691DAC449C00EAB149 /* Info.plist */,
+				62F092581DAC449C00EAB149 /* Supporting Files */,
+			);
+			path = ShinkeyBotController;
+			sourceTree = "<group>";
+		};
+		62F092581DAC449C00EAB149 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				62F092591DAC449C00EAB149 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		62F092711DAC449C00EAB149 /* ShinkeyBotControllerTests */ = {
+			isa = PBXGroup;
+			children = (
+				62F092721DAC449C00EAB149 /* ShinkeyBotControllerTests.mm */,
+				62F092741DAC449C00EAB149 /* Info.plist */,
+			);
+			path = ShinkeyBotControllerTests;
+			sourceTree = "<group>";
+		};
+		62F0927C1DAC449C00EAB149 /* ShinkeyBotControllerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				62F0927D1DAC449C00EAB149 /* ShinkeyBotControllerUITests.mm */,
+				62F0927F1DAC449C00EAB149 /* Info.plist */,
+			);
+			path = ShinkeyBotControllerUITests;
+			sourceTree = "<group>";
+		};
+		62F092991DAC6F0000EAB149 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				62F092A91DB276E700EAB149 /* CoreMedia.framework */,
+				62F092A71DB276B500EAB149 /* CoreVideo.framework */,
+				62F092A51DAC848700EAB149 /* ImageIO.framework */,
+				62F092A31DAC847F00EAB149 /* AssetsLibrary.framework */,
+				62F092A11DAC7DDE00EAB149 /* AVFoundation.framework */,
+				62F0929F1DAC746800EAB149 /* SystemConfiguration.framework */,
+				62F0929D1DAC727600EAB149 /* opencv2.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		62F092541DAC449C00EAB149 /* ShinkeyBotController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62F092821DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotController" */;
+			buildPhases = (
+				62F092511DAC449C00EAB149 /* Sources */,
+				62F092521DAC449C00EAB149 /* Frameworks */,
+				62F092531DAC449C00EAB149 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShinkeyBotController;
+			productName = ShinkeyBotController;
+			productReference = 62F092551DAC449C00EAB149 /* ShinkeyBotController.app */;
+			productType = "com.apple.product-type.application";
+		};
+		62F0926D1DAC449C00EAB149 /* ShinkeyBotControllerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62F092851DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotControllerTests" */;
+			buildPhases = (
+				62F0926A1DAC449C00EAB149 /* Sources */,
+				62F0926B1DAC449C00EAB149 /* Frameworks */,
+				62F0926C1DAC449C00EAB149 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				62F092701DAC449C00EAB149 /* PBXTargetDependency */,
+			);
+			name = ShinkeyBotControllerTests;
+			productName = ShinkeyBotControllerTests;
+			productReference = 62F0926E1DAC449C00EAB149 /* ShinkeyBotControllerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		62F092781DAC449C00EAB149 /* ShinkeyBotControllerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62F092881DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotControllerUITests" */;
+			buildPhases = (
+				62F092751DAC449C00EAB149 /* Sources */,
+				62F092761DAC449C00EAB149 /* Frameworks */,
+				62F092771DAC449C00EAB149 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				62F0927B1DAC449C00EAB149 /* PBXTargetDependency */,
+			);
+			name = ShinkeyBotControllerUITests;
+			productName = ShinkeyBotControllerUITests;
+			productReference = 62F092791DAC449C00EAB149 /* ShinkeyBotControllerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		62F0924D1DAC449B00EAB149 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = Baufest;
+				TargetAttributes = {
+					62F092541DAC449C00EAB149 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = G6ZL23P7MP;
+						ProvisioningStyle = Automatic;
+					};
+					62F0926D1DAC449C00EAB149 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = G6ZL23P7MP;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 62F092541DAC449C00EAB149;
+					};
+					62F092781DAC449C00EAB149 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = G6ZL23P7MP;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 62F092541DAC449C00EAB149;
+					};
+				};
+			};
+			buildConfigurationList = 62F092501DAC449B00EAB149 /* Build configuration list for PBXProject "ShinkeyBotController" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 62F0924C1DAC449B00EAB149;
+			productRefGroup = 62F092561DAC449C00EAB149 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				62F092541DAC449C00EAB149 /* ShinkeyBotController */,
+				62F0926D1DAC449C00EAB149 /* ShinkeyBotControllerTests */,
+				62F092781DAC449C00EAB149 /* ShinkeyBotControllerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		62F092531DAC449C00EAB149 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F092681DAC449C00EAB149 /* LaunchScreen.storyboard in Resources */,
+				62F092651DAC449C00EAB149 /* Assets.xcassets in Resources */,
+				62F092631DAC449C00EAB149 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F0926C1DAC449C00EAB149 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F092771DAC449C00EAB149 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		62F092511DAC449C00EAB149 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F092951DAC471100EAB149 /* GCDAsyncSocket.mm in Sources */,
+				62F092961DAC471100EAB149 /* GCDAsyncUdpSocket.mm in Sources */,
+				62F092601DAC449C00EAB149 /* ViewController.mm in Sources */,
+				62F0925D1DAC449C00EAB149 /* AppDelegate.mm in Sources */,
+				62F0925A1DAC449C00EAB149 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F0926A1DAC449C00EAB149 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F092731DAC449C00EAB149 /* ShinkeyBotControllerTests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62F092751DAC449C00EAB149 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F0927E1DAC449C00EAB149 /* ShinkeyBotControllerUITests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		62F092701DAC449C00EAB149 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 62F092541DAC449C00EAB149 /* ShinkeyBotController */;
+			targetProxy = 62F0926F1DAC449C00EAB149 /* PBXContainerItemProxy */;
+		};
+		62F0927B1DAC449C00EAB149 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 62F092541DAC449C00EAB149 /* ShinkeyBotController */;
+			targetProxy = 62F0927A1DAC449C00EAB149 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		62F092611DAC449C00EAB149 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				62F092621DAC449C00EAB149 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		62F092661DAC449C00EAB149 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				62F092671DAC449C00EAB149 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		62F092801DAC449C00EAB149 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		62F092811DAC449C00EAB149 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		62F092831DAC449C00EAB149 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
+				INFOPLIST_FILE = ShinkeyBotController/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotController;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		62F092841DAC449C00EAB149 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
+				INFOPLIST_FILE = ShinkeyBotController/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotController;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		62F092861DAC449C00EAB149 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				INFOPLIST_FILE = ShinkeyBotControllerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotControllerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShinkeyBotController.app/ShinkeyBotController";
+			};
+			name = Debug;
+		};
+		62F092871DAC449C00EAB149 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				INFOPLIST_FILE = ShinkeyBotControllerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotControllerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShinkeyBotController.app/ShinkeyBotController";
+			};
+			name = Release;
+		};
+		62F092891DAC449C00EAB149 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				INFOPLIST_FILE = ShinkeyBotControllerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotControllerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ShinkeyBotController;
+			};
+			name = Debug;
+		};
+		62F0928A1DAC449C00EAB149 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = G6ZL23P7MP;
+				INFOPLIST_FILE = ShinkeyBotControllerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.baufest.ShinkeyBotControllerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ShinkeyBotController;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		62F092501DAC449B00EAB149 /* Build configuration list for PBXProject "ShinkeyBotController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62F092801DAC449C00EAB149 /* Debug */,
+				62F092811DAC449C00EAB149 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62F092821DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62F092831DAC449C00EAB149 /* Debug */,
+				62F092841DAC449C00EAB149 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62F092851DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotControllerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62F092861DAC449C00EAB149 /* Debug */,
+				62F092871DAC449C00EAB149 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62F092881DAC449C00EAB149 /* Build configuration list for PBXNativeTarget "ShinkeyBotControllerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62F092891DAC449C00EAB149 /* Debug */,
+				62F0928A1DAC449C00EAB149 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 62F0924D1DAC449B00EAB149 /* Project object */;
+}
