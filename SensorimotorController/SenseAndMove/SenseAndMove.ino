@@ -329,6 +329,12 @@ void blinkme()
 
     //Serial.println(limbic);
 
+    switch (limbic) {
+      case PHONOTROPISM:
+        buzz();
+        break;
+    }
+
 //    switch (limbic) {
 //      case PHOTOTROPISM:
 //        motorstate = MOVE_FORWARD;
@@ -421,7 +427,7 @@ void loop() {
   distance = (duration / 2) / 29.1;
   if (distance == 0) {
     // This is likely an error with the sensor.
-    buzz();
+    //buzz();
   } else if (distance < 12) {  
 
     if (debug)
@@ -429,13 +435,8 @@ void loop() {
       Serial.print("OBSTACLE !");Serial.println(distance);
     }
 
-    motorstate = MOVE_BACKWARDS;
-  } else if (isDark()) {
-    //limbic = PHOTOTROPISM;
-  } else if (isBarking()) {
-    limbic = PHONOTROPISM;
-  }
-  else {
+    motorstate = STILL;
+  } else {
     //motorstate=STILL;
     //digitalWrite(led,LOW);
     //digitalWrite(led2,HIGH);
@@ -447,6 +448,15 @@ void loop() {
     //Serial.print(distance);
     //Serial.println(" cm");
   }
+
+  // Check light and sound sensors.
+  if (isDark()) {
+    //limbic = PHOTOTROPISM;
+  }
+  if (isBarking()) {
+    limbic = PHONOTROPISM;
+  }
+
 
   loopMotor();
   //delay(10);

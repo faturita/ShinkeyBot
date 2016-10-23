@@ -43,7 +43,7 @@ int sensorPin = A2;   // Analog input
 int speakerPin = 11;
 
 int soundSensorValue = 0;
-int minSoundThreshold = 54;
+int minSoundThreshold = 160;
 
 double analogValue;
 double minLightValue = 650.0; // min analog value to turn on LED
@@ -182,7 +182,7 @@ bool isBarking() {
 
   if (soundSensorValue>minSoundThreshold) {
     //digitalWrite (ledPin, HIGH); 
-    beep(speakerPin, a, 10); 
+    //beep(speakerPin, a, 10); 
     retval = true;
   }
     
