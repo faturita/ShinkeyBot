@@ -89,82 +89,6 @@ dispatch_queue_t _videoDataOutputQueue;
     
     [_commandText setDelegate:self];
     
-    _videoDataOutputQueue = dispatch_queue_create("com.test.app", NULL); //create a serial queue can either be null or DISPATCH_QUEUE_SERIAL
-    
-    
-    _captureSession = [[AVCaptureSession alloc] init];
-    
-    //-- Creata a video device and input from that Device.  Add the input to the capture session.
-    AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if(videoDevice == nil)
-        assert(0);
-    
-    //-- Add the device to the session.
-    NSError *error;
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice
-                                                                        error:&error];
-    if(error)
-        assert(0);
-    
-    [_captureSession addInput:input];
-    
-    //-- Configure the preview layer
-    _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
-    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    
-    [_previewLayer setFrame:CGRectMake(0, 0,
-                                       self.imageView.frame.size.width,
-                                       self.imageView.frame.size.height)];
-    
-    //-- Add the layer to the view that should display the camera input
-    [self.imageView.layer addSublayer:_previewLayer];
-    
-    stillImageOutput = [[AVCaptureStillImageOutput alloc]init];
-    
-    [_captureSession addOutput:stillImageOutput];
-    
-    
-
-
-    
-    
-    
-    
-    AVCaptureVideoDataOutput *videoDataOutput = [AVCaptureVideoDataOutput new];
-    
-    NSDictionary *newSettings =
-    @{ (NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA) };
-    
-    videoDataOutput.videoSettings = newSettings;
-    
-    // discard if the data output queue is blocked (as we process the still image
-    [videoDataOutput setAlwaysDiscardsLateVideoFrames:YES];
-    
-    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
-    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-    // see the header doc for setSampleBufferDelegate:queue: for more information
-    _videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-    [videoDataOutput setSampleBufferDelegate:self queue:_videoDataOutputQueue];
-    
-    AVCaptureSession *captureSession = _captureSession;
-    
-    if ( [captureSession canAddOutput:videoDataOutput] )
-        [captureSession addOutput:videoDataOutput];
-    
-
-    //-- Start the camera
-    [_captureSession startRunning];
-    
-    
-    /**
-    (void)captureStillImageAsynchronouslyFromConnection:(AVCaptu‌​reConnection *)connection completionHandler:(void (^)(CMSampleBufferRef imageDataSampleBuffer, NSError *error))handler;
-    
-    
-    
-    _captureSession.**/
-    
-    
-    
 }
 
 
@@ -252,6 +176,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     NSData* data = [[NSString stringWithString:message] dataUsingEncoding:NSASCIIStringEncoding];
     
+    NSLog(@"Send message %@", message);
     
     [udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:1];
 }
@@ -356,15 +281,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (IBAction)doUp:(id)sender {
     [ViewController send:@"192.168.0.110" withMessage:[NSString stringWithFormat:@"2"]];
-    
-    cv::Mat inputMat(200, 200, CV_8UC4);
-    
-    //cv::Mat greyMat;
-    //cv::cvtColor(inputMat, greyMat, CV_BGR2GRAY);
-    
-    //self.imageView.image = [self UIImageFromCVMat:inputMat];
-    
-    [self captureNow];
 }
 - (IBAction)doDown:(id)sender {
     [ViewController send:@"192.168.0.110" withMessage:[NSString stringWithFormat:@"3"]];

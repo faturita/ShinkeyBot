@@ -124,6 +124,7 @@ void setup() {
   setupMotor();
   setupPanAndTilt();
   setupEnvironmentSensor();
+  setupEncoder();
 }
 
 int const QUIET = 0;
@@ -189,7 +190,8 @@ void blinkme()
 
   char action;
 
-
+  updateEncoder();
+  
   if (txSensor)
   {
     checksensors();
@@ -284,6 +286,13 @@ void blinkme()
           Serial.println("Laser off");
         }
         digitalWrite(laserPin, LOW);
+        break;
+      case 'Q':
+        //Serial.println( getEncoderPos() );
+        p("%02d", getEncoderPos());
+        break;
+      case '=':
+        resetEncoderPos();
         break;
       case 'E':
         if (debug) {
@@ -435,7 +444,8 @@ void loop() {
       Serial.print("OBSTACLE !");Serial.println(distance);
     }
 
-    motorstate = STILL;
+    motorstate = MOVE_BACKWARDS;
+    interval = 100;
   } else {
     //motorstate=STILL;
     //digitalWrite(led,LOW);
