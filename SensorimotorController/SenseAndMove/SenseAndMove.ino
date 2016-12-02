@@ -399,7 +399,7 @@ void loopMotor()
     case LEFT:
       // Move the right caterpiller
       //Serial.println("Moving!");
-      digitalWrite (IN4, LOW); // LOW, HIGH for back
+      digitalWrite (IN4, HIGH); // LOW, HIGH for back
       digitalWrite (IN3, LOW);
       digitalWrite (IN2, LOW);
       digitalWrite (IN1, HIGH);
@@ -409,7 +409,7 @@ void loopMotor()
       //Serial.println("Moving!");
       digitalWrite (IN4, LOW);
       digitalWrite (IN3, HIGH);
-      digitalWrite (IN2, LOW);  // LOW, HIGH for back
+      digitalWrite (IN2, HIGH);  // LOW, HIGH for back
       digitalWrite (IN1, LOW);
       break;
     default:

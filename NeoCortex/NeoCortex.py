@@ -25,11 +25,15 @@ import Proprioceptive as prop
 import thread
 import PicameraStreamer as pcs
 import SensorimotorLogger as senso
+import MCast
+
+# Ok, so the first thing to do is to broadcast my own IP address.
 
 # Get PiCamera stream and read everything in another thread.
 obj = pcs.VideoStreamer()
 try:
     thread.start_new_thread( obj.connect, () )
+    pass
 except:
     pass
 
@@ -41,6 +45,25 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('0.0.0.0', 10001)
 print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
 sock.bind(server_address)
+
+sock.setblocking(0)
+sock.settimeout(5.0)
+
+noticer = MCast.Sender()
+
+myip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
+myip = myip[0]
+
+# Shinkeybot truly does nothing until it gets the remote controlling connection
+print 'Multicasting my own IP address:' + myip
+while True:
+    noticer.send()
+    try:
+        data, address = sock.recvfrom(1)
+        if (len(data)>0):
+            break
+    except:
+        data = None
 
 # Open connection to tilt sensor.
 hidraw = prop.setupsensor()
@@ -75,12 +98,16 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
-	
-	if (data == '!'):
+
+        if (data == '!'):
             moredata, address = sock.recvfrom(4)
             obj.ip = str(moredata[0]) + '.' + str(moredata[1]) + '.' + str(moredata[2]) + '.' + str(moredata[3])
 
-            thread.start_new_thread( obj.connect(), () )
+            try:
+                thread.start_new_thread( obj.connect(), () )
+            except:
+                pass
+
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right
@@ -218,4 +245,3 @@ time.sleep(2)
 mtrn.close()
 ssmr.close()
 sock.close()
-
