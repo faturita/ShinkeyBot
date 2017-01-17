@@ -16,7 +16,8 @@
 
        Motor Wheel: Pin 5,4,3,2.
 
-       Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan
+       Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan (on Arduino)
+       Digital 6 tilt, Digital 7 Pan on Mega.
 */
 
 #include <stdarg.h>
@@ -32,6 +33,8 @@ void p(char *fmt, ... ){
 #define trigPin 13
 #define echoPin 12
 
+#define tiltServoPin 7
+#define panServoPin  6
 
 bool debug = false;
 

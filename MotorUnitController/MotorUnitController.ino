@@ -1,27 +1,34 @@
 /**
  * Motor Unit Controller for ShinkeyBot
  * 
- * It uses AFMotor.h Adafruit library and Shield (v1)
+ * It uses Adafruit_MotorShield v2 from Adafruit (better!)
  * 
  * Gripper 1 DC Motor -> M1
  * Shoulder 2 DC Motor 12 V -> M2
  * Tesaki 4 DC Motor del Servo roto 6 V -> M4
  * 
- * Servo Wrist 9V 180 -> Servo 1 Pin 10
- * Servo Elbow 9V 360 -> Servo 2 Pin 9 Coaxial
+ * Servo Wrist 9V 180 -> Servo 1 Pin 10  White, Grey Violet
+ * Servo Elbow 9V 360 -> Servo 2 Pin 9 Coaxial  Black White Grey
  */
 
 
-#include <AFMotor.h>
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>
+#include "utility/Adafruit_MS_PWMServoDriver.h"
+
 #include <Servo.h> 
 
 bool debug = true;
 
-// create motor objects, 64KHz pwm
-AF_DCMotor grip(1, MOTOR12_64KHZ);
-AF_DCMotor tesaki(4, MOTOR12_64KHZ);
-AF_DCMotor shoulder(2, MOTOR12_64KHZ);
+// Create the motor shield object with the default I2C address
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+// Or, create it with a different I2C address (say for stacking)
+// Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
 
+// Select which 'port' M1, M2, M3 or M4. In this case, M1
+Adafruit_DCMotor *grip = AFMS.getMotor(1);
+Adafruit_DCMotor *tesaki = AFMS.getMotor(4);
+Adafruit_DCMotor *shoulder = AFMS.getMotor(2);
  
 Servo wrist; 
 Servo elbow;
@@ -34,6 +41,9 @@ int speeds = 255;
 void setup() {
  Serial.begin(9600); // set up Serial library at 9600 bps
  Serial.println("Motor Unit Neuron");
+
+ AFMS.begin();  // create with the default frequency 1.6KHz
+ //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
  wrist.attach(10);
  elbow.attach(9);
@@ -75,19 +85,19 @@ void update(Servo servo) {
 
 } 
 
-void push(AF_DCMotor motor) {
-    motor.run(FORWARD);
-    motor.setSpeed(0);
+void push(Adafruit_DCMotor *motor) {
+    motor->run(FORWARD);
+    motor->setSpeed(0);
     delay(50);
-    motor.setSpeed(255);
+    motor->setSpeed(255);
     delay(50);  
 }
 
-void pull(AF_DCMotor motor) {
-    motor.run(BACKWARD);
-    motor.setSpeed(0);
+void pull(Adafruit_DCMotor *motor) {
+    motor->run(BACKWARD);
+    motor->setSpeed(0);
     delay(50);
-    motor.setSpeed(255);
+    motor->setSpeed(255);
     delay(250);  
 }
 
@@ -150,28 +160,30 @@ void loop() {
  switch(state)
  {
   case 1: 
-    //grip.write(speeds);
-    grip.setSpeed(speeds);
-    grip.run(FORWARD);
+    //grip->write(speeds);
+    grip->setSpeed(speeds);
+    grip->run(FORWARD);
     break;
   case 2:
-    //grip.write(-speeds);
-    grip.setSpeed(speeds);
-    grip.run(BACKWARD);
+    //grip->write(-speeds);
+    grip->setSpeed(speeds);
+    grip->run(BACKWARD);
     break;
   case 3:
     // Go up
-    shoulder.setSpeed(speeds);
-    shoulder.run(FORWARD);
+    shoulder->setSpeed(speeds);
+    shoulder->run(FORWARD);
     break;
   case 4:
-    shoulder.setSpeed(speeds);
-    shoulder.run(BACKWARD);
+    shoulder->setSpeed(speeds);
+    shoulder->run(BACKWARD);
     break;
   case 5:
-    grip.run(RELEASE);
-    tesaki.run(RELEASE);
+    grip->run(RELEASE);
+    tesaki->run(RELEASE);
+    shoulder->run(RELEASE);
     elbow.detach();
+    wrist.detach();
     state=0;
     break;
   case 6:
@@ -183,12 +195,12 @@ void loop() {
       direction =-1;
     break;
   case 8:
-    tesaki.setSpeed(speeds);
-    tesaki.run(BACKWARD);
+    tesaki->setSpeed(speeds);
+    tesaki->run(BACKWARD);
     break;
   case 9:
-    tesaki.setSpeed(speeds);
-    tesaki.run(FORWARD);
+    tesaki->setSpeed(speeds);
+    tesaki->run(FORWARD);
     break;
   case 0x0a:
     // 150x10 is no movement. 360 servo.
