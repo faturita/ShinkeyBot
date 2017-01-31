@@ -26,9 +26,10 @@ class VideoStreamer:
 		   print "Error: unable to start thread"
 
 	def connect(self):
+                print "Connecting streaming to:"+self.ip
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-		server_address = (conf.ip, conf.videoport)
+		server_address = (self.ip, self.videoport)
 
 		sock.connect(server_address)
 
@@ -80,4 +81,8 @@ class VideoStreamer:
 
 			if (self.keeprunning == False):
 			  break
+
+
+		print "Closing Streaming"
+		sock.close()
 

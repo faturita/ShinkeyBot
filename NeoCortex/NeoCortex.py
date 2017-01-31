@@ -50,7 +50,7 @@ except:
     pass
 
 
-dobroadcastip = False
+dobroadcastip = True
 
 # Initialize UDP Controller Server on port 10001
 # This receives high-level commands from ShinkeyBotController.
@@ -88,6 +88,8 @@ if (dobroadcastip):
     sock.setblocking(1)
     sock.settimeout(0)
 
+print 'Connection to Remote Controller established.'
+
 # Open connection to tilt sensor.
 #hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
@@ -116,7 +118,11 @@ print 'Remote controlling ShinkeyBot'
 # Live
 while(True):
     try:
-        data, address = sock.recvfrom(1)
+        data = ''
+        try:
+            data, address = sock.recvfrom(1)
+        except Exception as e:
+            pass
         
         # If someone asked for it, send sensor information.
         if (sensesensor == 1):
@@ -251,7 +257,8 @@ while(True):
             # Buzz
         elif (data=='X'):
             break
-    except:
+    except Exception as e:
+        print "Error:" + e.message
         print "Waiting for serial connection to reestablish..."
         time.sleep(2)
         ssmr.close()
@@ -265,6 +272,7 @@ obj.keeprunning = False
 time.sleep(2)
 
 #When everything done, release the capture
-mtrn.close()
 ssmr.close()
 sock.close()
+mtrn.close()
+
