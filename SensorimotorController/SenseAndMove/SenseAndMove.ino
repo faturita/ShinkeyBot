@@ -30,11 +30,14 @@ void p(char *fmt, ... ){
         Serial.print(buf);
 }
 
-#define trigPin 13
-#define echoPin 12
+//#define trigPin 13
+//#define echoPin 12
 
-#define tiltServoPin 7
-#define panServoPin  6
+#define trigPin 22
+#define echoPin 23
+
+#define tiltServoPin 24
+#define panServoPin  25
 
 bool debug = false;
 
@@ -127,7 +130,7 @@ void setup() {
   setupMotor();
   setupPanAndTilt();
   setupEnvironmentSensor();
-  setupEncoder();
+  setupir();
 }
 
 int const QUIET = 0;
@@ -193,7 +196,6 @@ void blinkme()
 
   char action;
 
-  updateEncoder();
   
   if (txSensor)
   {
@@ -209,9 +211,21 @@ void blinkme()
 
   loopPanAndTilt();
 
+  incomingByte = getcommand();
+  bool doaction = false;
+
+  if (incomingByte > 0)
+  {
+    doaction = true;
+  }
+  
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
+    doaction = true;
+  }
 
+  if (doaction) 
+  {
     switch (incomingByte) {
       case 'I':
         dump("SSMR");
@@ -292,10 +306,10 @@ void blinkme()
         break;
       case 'Q':
         //Serial.println( getEncoderPos() );
-        p("%02d", getEncoderPos());
+        //p("%02d", getEncoderPos());
         break;
       case '=':
-        resetEncoderPos();
+        //resetEncoderPos();
         break;
       case 'E':
         if (debug) {

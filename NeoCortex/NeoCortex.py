@@ -103,7 +103,7 @@ while(True):
             moredata, address = sock.recvfrom(4)
             obj.ip = str(moredata[0]) + '.' + str(moredata[1]) + '.' + str(moredata[2]) + '.' + str(moredata[3])
 
-            try:
+            try: 
                 thread.start_new_thread( obj.connect(), () )
             except:
                 pass

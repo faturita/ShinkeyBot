@@ -1,6 +1,6 @@
 #coding: latin-1
 
-import hid
+#import hid
 import time
 
 import PID
@@ -13,31 +13,37 @@ import datetime
 baudrate = 9600
 
 
-def serialcomm():
+def serialcomm(serialportname):
     serialport = 0
     sera = None
     serb = None
-    while (serialport<15):
-        if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
-            break
-        serialport = serialport + 1
 
-    serialport = serialport + 1
-    while (serialport<15):
-        if (os.path.exists('/dev/ttyACM'+str(serialport))):
-            serb = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
-            break
+    sera = serial.Serial(port=serialportname, baudrate=baudrate,timeout=0)
+    if (True):
+        pass
+    else:
+        while (serialport<15):
+            if (os.path.exists('/dev/ttyACM'+str(serialport))):
+                sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
+                break
+            serialport = serialport + 1
+
         serialport = serialport + 1
+        while (serialport<15):
+            if (os.path.exists('/dev/ttyACM'+str(serialport))):
+                serb = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
+                break
+            serialport = serialport + 1
 
     time.sleep(5)
 
-    if (sera == None or serb == None or sera.isOpen() == False or serb.isOpen() == False):
-        return [None, None]
+    #if (sera == None or serb == None or sera.isOpen() == False or serb.isOpen() == False):
+    #    return [None, None]
 
     # Initialize connection with Arduino
     idstring = sera.read(250)
-    idstring = serb.read(250)
+    if (serb):
+        idstring = serb.read(250)
 
     for tries in range(1, 10):
         sera.write('I')

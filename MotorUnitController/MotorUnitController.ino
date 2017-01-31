@@ -20,6 +20,8 @@
 
 bool debug = true;
 
+const int laserPin = 8;
+
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 // Or, create it with a different I2C address (say for stacking)
@@ -47,6 +49,10 @@ void setup() {
 
  wrist.attach(10);
  elbow.attach(9);
+
+ pinMode(laserPin, OUTPUT);
+
+ setupEncoder();
 
 }
 
@@ -119,6 +125,16 @@ void loop() {
       debug = (!debug);
     }
 
+    if (syncbyte == 'L')
+    {
+      digitalWrite(laserPin, HIGH);
+    }
+
+    if (syncbyte == 'l')
+    {
+      digitalWrite(laserPin, LOW);
+    }
+
     if (syncbyte == 'A')
     {   
       // Format A1000 >> A1220   --> Close grip
@@ -156,6 +172,8 @@ void loop() {
 
  // Update the servo wrist position.
  update(wrist);
+
+ updateEncoder();
  
  switch(state)
  {

@@ -2,8 +2,8 @@
  *  this arduino to decode the encoder information.
  */
 
-int pinA = 9;  // Connected to CLK on KY-040
-int pinB = 10;  // Connected to DT on KY-040
+int pinA = 12;  // Connected to CLK on KY-040
+int pinB = 13;  // Connected to DT on KY-040
 int encoderPosCount;
 int pinALast;
 int aVal;

@@ -13,6 +13,17 @@ import Proprioceptive as prop
 
 import Configuration
 
+def readsomething(ser, length):
+    #data = smnr.read(38)
+    data = ''
+
+    while(len(data)<length):
+        byte = ser.read(1)
+        if (len(byte)>0):
+            data = data + byte
+
+    return data
+
 def gimmesomething(ser):
     while True:
         line = ser.readline()
@@ -35,6 +46,8 @@ class Sensorimotor:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = (Configuration.ip, Configuration.telemetryport)
         self.counter = 0
+
+
 
     def cleanbuffer(self, smnr, mtrn):
         # Cancel sensor information.
@@ -63,14 +76,16 @@ class Sensorimotor:
             self.counter=0
         myByte = smnr.read(1)
         if myByte == 'S':
-          data = smnr.read(38)
-          myByte = smnr.read(1)
-          if myByte == 'E':
+          readcount = 0
+          data = readsomething(smnr,38)
+          myByte = readsomething(smnr,1)
+          if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
               new_values = unpack('ffffffhhhhhhh', data)
               print new_values
               sent = self.sock.sendto(data, self.server_address)
               self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
+              return new_values
 
     def close(self):
         self.f.close()

@@ -5,6 +5,8 @@ import cv2
 import socket
 import sys
 
+import time
+
 import MCast
 
 
@@ -32,8 +34,9 @@ else:
 
 server_address = (ip, 10001)
 
-myip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
-myip = myip[0]
+#myip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
+#myip = myip[0]
+myip='192.168.0.103'
 
 data1 = int(myip.split('.')[0])
 data2 = int(myip.split('.')[1])
@@ -74,15 +77,7 @@ while (True):
   sent = sock.sendto(data, server_address)
 
   if (data.startswith('!')):
-      data = '!'
-      sent = sock.sendto(data, server_address)
-      sent = sock.sendto(data1, server_address)
-      sent = sock.sendto('.', server_address)
-      sent = sock.sendto(data2, server_address)
-      sent = sock.sendto('.', server_address)
-      sent = sock.sendto(data3, server_address)
-      sent = sock.sendto(data4, server_address)
-
+      print "Letting know ShinkeyBot that I want streaming...."
 
   if (data.startswith('X')):
       break

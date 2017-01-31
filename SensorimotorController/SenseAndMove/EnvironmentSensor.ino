@@ -14,15 +14,15 @@
  * Finger on top: 260
  */
 
-#define c 261
-#define d 294
-#define e 329
-#define f 349
-#define g 391
+#define _c 261
+#define _d 294
+#define _e 329
+#define _f 349
+#define _g 391
 #define gS 415
-#define a 440
+#define _a 440
 #define aS 455
-#define b 466
+#define _b 466
 #define cH 523
 #define cSH 554
 #define dH 587
@@ -86,16 +86,16 @@ void march()
     //this is just a translation of said sheet music to frequencies / time in ms
     //used 500 ms for a quart note
     
-    beep(speakerPin, a, 500); 
-    beep(speakerPin, a, 500);     
-    beep(speakerPin, a, 500); 
-    beep(speakerPin, f, 350); 
+    beep(speakerPin, _a, 500); 
+    beep(speakerPin, _a, 500);     
+    beep(speakerPin, _a, 500); 
+    beep(speakerPin, _f, 350); 
     beep(speakerPin, cH, 150);
     
-    beep(speakerPin, a, 500);
-    beep(speakerPin, f, 350);
+    beep(speakerPin, _a, 500);
+    beep(speakerPin, _f, 350);
     beep(speakerPin, cH, 150);
-    beep(speakerPin, a, 1000);
+    beep(speakerPin, _a, 1000);
     //first bit
     
     beep(speakerPin, eH, 500);
@@ -105,14 +105,14 @@ void march()
     beep(speakerPin, cH, 150);
     
     beep(speakerPin, gS, 500);
-    beep(speakerPin, f, 350);
+    beep(speakerPin, _f, 350);
     beep(speakerPin, cH, 150);
-    beep(speakerPin, a, 1000);
+    beep(speakerPin, _a, 1000);
     //second bit...
     
     beep(speakerPin, aH, 500);
-    beep(speakerPin, a, 350); 
-    beep(speakerPin, a, 150);
+    beep(speakerPin, _a, 350); 
+    beep(speakerPin, _a, 150);
     beep(speakerPin, aH, 500);
     beep(speakerPin, gSH, 250); 
     beep(speakerPin, gH, 250);
@@ -128,23 +128,23 @@ void march()
     //start of the interesting bit
     
     beep(speakerPin, cH, 125);  
-    beep(speakerPin, b, 125);  
+    beep(speakerPin, _b, 125);  
     beep(speakerPin, cH, 250);      
     delay(250);
-    beep(speakerPin, f, 125);  
+    beep(speakerPin, _f, 125);  
     beep(speakerPin, gS, 500);  
-    beep(speakerPin, f, 375);  
-    beep(speakerPin, a, 125); 
+    beep(speakerPin, _f, 375);  
+    beep(speakerPin, _a, 125); 
     
     beep(speakerPin, cH, 500); 
-    beep(speakerPin, a, 375);  
+    beep(speakerPin, _a, 375);  
     beep(speakerPin, cH, 125); 
     beep(speakerPin, eH, 1000); 
     //more interesting stuff (this doesn't quite get it right somehow)
     
     beep(speakerPin, aH, 500);
-    beep(speakerPin, a, 350); 
-    beep(speakerPin, a, 150);
+    beep(speakerPin, _a, 350); 
+    beep(speakerPin, _a, 150);
     beep(speakerPin, aH, 500);
     beep(speakerPin, gSH, 250); 
     beep(speakerPin, gH, 250);
@@ -160,18 +160,18 @@ void march()
     //repeat... repeat
     
     beep(speakerPin, cH, 125);  
-    beep(speakerPin, b, 125);  
+    beep(speakerPin, _b, 125);  
     beep(speakerPin, cH, 250);      
     delay(250);
-    beep(speakerPin, f, 250);  
+    beep(speakerPin, _f, 250);  
     beep(speakerPin, gS, 500);  
-    beep(speakerPin, f, 375);  
+    beep(speakerPin, _f, 375);  
     beep(speakerPin, cH, 125); 
            
-    beep(speakerPin, a, 500);            
-    beep(speakerPin, f, 375);            
-    beep(speakerPin, c, 125);            
-    beep(speakerPin, a, 1000);       
+    beep(speakerPin, _a, 500);            
+    beep(speakerPin, _f, 375);            
+    beep(speakerPin, _c, 125);            
+    beep(speakerPin, _a, 1000);       
     //and we're done \ó/    
 }
 
@@ -214,5 +214,5 @@ bool isDark() {
 }
 
 void buzz() {
-  beep(speakerPin, a, 300);
+  beep(speakerPin, _a, 300);
 }
