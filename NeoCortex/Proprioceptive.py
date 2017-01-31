@@ -32,8 +32,13 @@ def serialcomm():
 
     time.sleep(5)
 
-    if (sera == None or serb == None or sera.isOpen() == False or serb.isOpen() == False):
-        return [None, None]
+    #if (sera == None or serb == None or sera.isOpen() == False or serb.isOpen() == False):
+    #    return [None, None]
+
+    if (sera == None and serb != None):
+        return [serb, sera]
+    elif (sera != None and serb == None):
+        return [sera, serb]
 
     # Initialize connection with Arduino
     idstring = sera.read(250)

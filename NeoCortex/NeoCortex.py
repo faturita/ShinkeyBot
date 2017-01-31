@@ -27,6 +27,18 @@ import PicameraStreamer as pcs
 import SensorimotorLogger as senso
 import MCast
 
+import fcntl
+import struct
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
+
+
 # Ok, so the first thing to do is to broadcast my own IP address.
 
 # Get PiCamera stream and read everything in another thread.
@@ -38,6 +50,7 @@ except:
     pass
 
 
+dobroadcastip = False
 
 # Initialize UDP Controller Server on port 10001
 # This receives high-level commands from ShinkeyBotController.
@@ -46,17 +59,23 @@ server_address = ('0.0.0.0', 10001)
 print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
 sock.bind(server_address)
 
-sock.setblocking(0)
-sock.settimeout(5.0)
+if (dobroadcastip):
+    sock.setblocking(0)
+    sock.settimeout(0.01)
 
 noticer = MCast.Sender()
 
-myip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
-myip = myip[0]
+# Fixme push the network name inside the configuration file.
+myip = get_ip_address('wlan0')
+
+if (len(myip)>0):
+    myip = myip
+else:
+    myip = 'None'
 
 # Shinkeybot truly does nothing until it gets the remote controlling connection
 print 'Multicasting my own IP address:' + myip
-while True:
+while dobroadcastip:
     noticer.send()
     try:
         data, address = sock.recvfrom(1)
@@ -65,8 +84,12 @@ while True:
     except:
         data = None
 
+if (dobroadcastip):
+    sock.setblocking(1)
+    sock.settimeout(0)
+
 # Open connection to tilt sensor.
-hidraw = prop.setupsensor()
+#hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
 [ssmr, mtrn] = prop.serialcomm()
 
@@ -94,17 +117,17 @@ print 'Remote controlling ShinkeyBot'
 while(True):
     try:
         data, address = sock.recvfrom(1)
-
+        
         # If someone asked for it, send sensor information.
         if (sensesensor == 1):
             sensorimotor.sendsensorsample(ssmr,mtrn)
 
         if (data == '!'):
-            moredata, address = sock.recvfrom(4)
-            obj.ip = str(moredata[0]) + '.' + str(moredata[1]) + '.' + str(moredata[2]) + '.' + str(moredata[3])
+            obj.ip = address[0]
+            print "Reloading target ip for stream:"+obj.ip
 
             try:
-                thread.start_new_thread( obj.connect(), () )
+                thread.start_new_thread( obj.connect, () )
             except:
                 pass
 
