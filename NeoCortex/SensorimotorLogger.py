@@ -66,7 +66,7 @@ class Sensorimotor:
         print str(buf)
 
         # Reactive sensor information
-        smnr.write('S')
+        ser.write('S')
 
     def sendsensorsample(self, ser):
         # read  Embed this in a loop.
@@ -78,8 +78,10 @@ class Sensorimotor:
         myByte = ser.read(1)
         if myByte == 'S':
           readcount = 0
-          data = readsomething(ser,38)
-          myByte = readsomething(ser,1)
+          #data = readsomething(ser,38)
+          #myByte = readsomething(ser,1)
+          data = ser.read(38)
+          myByte = ser.read(1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
               new_values = unpack('ffffffhhhhhhh', data)

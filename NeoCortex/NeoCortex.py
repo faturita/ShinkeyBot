@@ -140,7 +140,7 @@ while(True):
                 pass
 
         if (data == 'Q'):
-            sensesensor = (not sensesenor)
+            sensesensor = (not sensesensor)
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right

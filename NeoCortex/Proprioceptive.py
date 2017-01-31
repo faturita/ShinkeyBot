@@ -13,15 +13,14 @@ import datetime
 baudrate = 9600
 
 
-def serialcomm(serialportname):
+def serialcomm(serialportname=None):
     serialport = 0
     sera = None
     serb = None
 
-    sera = serial.Serial(port=serialportname, baudrate=baudrate,timeout=0)
-    if (True):
-        pass
-    else:
+    if (serialportname):
+        sera = serial.Serial(port=serialportname, baudrate=baudrate,timeout=0)
+    if (sera == None):
         while (serialport<15):
             if (os.path.exists('/dev/ttyACM'+str(serialport))):
                 sera = serial.Serial(port='/dev/ttyACM'+str(serialport), baudrate=baudrate, timeout=0)
