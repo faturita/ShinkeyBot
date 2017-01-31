@@ -82,12 +82,12 @@ plotx = []
 
 while True:
   # read
-  ser.write('S')
-  ser.write('P')
   if (serialconnected):
-     myByte = ser.read(1)
+      ser.write('S')
+      ser.write('P')
+      myByte = ser.read(1)
   else:
-     myByte = 'S'
+      myByte = 'S'
 
   if myByte == 'S':
       if (serialconnected):
