@@ -39,8 +39,6 @@ def get_ip_address(ifname):
     )[20:24])
 
 
-# Ok, so the first thing to do is to broadcast my own IP address.
-
 # Get PiCamera stream and read everything in another thread.
 obj = pcs.VideoStreamer()
 try:
@@ -49,7 +47,7 @@ try:
 except:
     pass
 
-
+# Ok, so the first thing to do is to broadcast my own IP address.
 dobroadcastip = True
 
 # Initialize UDP Controller Server on port 10001
@@ -106,12 +104,12 @@ elbowpos = 150
 # Pan and tilt
 visualpos = [90,95]
 
-sensesensor = 0
+sensesensor = False
 
 # Connect remotely to any client that is waiting for sensor loggers.
 sensorimotor = senso.Sensorimotor()
 sensorimotor.start()
-sensorimotor.cleanbuffer(ssmr,mtrn)
+sensorimotor.cleanbuffer(ssmr)
 
 
 print 'Remote controlling ShinkeyBot'
@@ -120,23 +118,29 @@ while(True):
     try:
         data = ''
         try:
+            # Read from the UDP controller socket non-blocking
             data, address = sock.recvfrom(1)
         except Exception as e:
             pass
 
         # If someone asked for it, send sensor information.
-        if (sensesensor == 1):
-            sensorimotor.sendsensorsample(ssmr,mtrn)
+        if (sensesensor):
+            sensorimotor.sendsensorsample(ssmr)
 
         if (data == '!'):
             obj.ip = address[0]
             print "Reloading target ip for stream:"+obj.ip
+            sensorimotor.close()
+            sensorimotor.ip = address[0]
+            sensorimotor.start()
 
             try:
                 thread.start_new_thread( obj.connect, () )
             except:
                 pass
 
+        if (data == 'Q'):
+            sensesensor = (not sensesenor)
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right

@@ -36,6 +36,8 @@ class Sensorimotor:
     def __init__(self):
         self.name = 'sensorimotor'
         self.keeprunning = True
+        self.ip = Configuration.ip
+        self.telemetryport = Configuration.telemetryport
 
     def start(self):
         # Sensor Recording
@@ -44,41 +46,40 @@ class Sensorimotor:
         self.f = open('../data/sensor.'+st+'.dat', 'w')
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.server_address = (Configuration.ip, Configuration.telemetryport)
+        self.server_address = (self.ip, self.telemetryport)
         self.counter = 0
 
 
-
-    def cleanbuffer(self, smnr, mtrn):
+    def cleanbuffer(self, ser):
         # Cancel sensor information.
-        smnr.write('X')
+        ser.write('X')
         time.sleep(6)
 
-
-        buf = smnr.readline()
+        # Ser should be configured in non-blocking mode.
+        buf = ser.readline()
         print str(buf)
 
-        buf = smnr.readline()
+        buf = ser.readline()
         print str(buf)
 
-        buf = smnr.readline()
+        buf = ser.readline()
         print str(buf)
 
         # Reactive sensor information
         smnr.write('S')
 
-    def sendsensorsample(self, smnr, mtrn):
+    def sendsensorsample(self, ser):
         # read  Embed this in a loop.
         self.counter=self.counter+1
         if (self.counter>500):
-            smnr.write('P')
-            smnr.write('S')
+            ser.write('P')
+            ser.write('S')
             self.counter=0
-        myByte = smnr.read(1)
+        myByte = ser.read(1)
         if myByte == 'S':
           readcount = 0
-          data = readsomething(smnr,38)
-          myByte = readsomething(smnr,1)
+          data = readsomething(ser,38)
+          myByte = readsomething(ser,1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
               new_values = unpack('ffffffhhhhhhh', data)
@@ -89,13 +90,14 @@ class Sensorimotor:
 
     def close(self):
         self.f.close()
+        self.sock.close()
 
 if __name__ == "__main__":
     [smnr, mtrn] = prop.serialcomm()
 
     sensorimotor = Sensorimotor()
     sensorimotor.start()
-    sensorimotor.cleanbuffer(smnr,mtrn)
+    sensorimotor.cleanbuffer(smnr)
 
     while True:
-        sensorimotor.sendsensorsample(smnr,mtrn)
+        sensorimotor.sendsensorsample(smnr)

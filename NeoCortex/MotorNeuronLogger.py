@@ -75,9 +75,9 @@ if __name__ == "__main__":
     plotter = Plotter(500,-0,5000)
     sensorimotor = sensor.Sensorimotor()
     sensorimotor.start()
-    sensorimotor.cleanbuffer(mtrn, None)
+    sensorimotor.cleanbuffer(mtrn)
 
     while True:
-        new_values = sensorimotor.sendsensorsample(mtrn,None)
+        new_values = sensorimotor.sendsensorsample(mtrn)
         if (new_values):
             plotter.plotdata( [new_values[6], new_values[7], new_values[8]])

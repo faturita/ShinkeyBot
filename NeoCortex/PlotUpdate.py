@@ -15,7 +15,7 @@ import sys, select
 import socket
 import Configuration
 
-serialconnected = True
+serialconnected = False
 
 if (not serialconnected):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
