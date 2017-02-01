@@ -1,4 +1,7 @@
 
+![ShinkeyBot in action](screenshot1.png)
+
+
 # ShinkeyBot
 * http://www.ladyada.net/learn/arduino/lesson5.html
 * http://www.instructables.com/id/Arduino-Button-Tutorial/
