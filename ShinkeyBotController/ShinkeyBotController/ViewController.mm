@@ -1,7 +1,8 @@
 //
 //  ViewController.m
 //  ShinkeyBotController
-//
+//  https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/BinaryData/Tasks/WorkingMutableData.html#//apple_ref/doc/uid/20002150
+//  https://github.com/robbiehanson/CocoaAsyncSocket/wiki/Reference_GCDAsyncSocket
 //  Created by Rodrigo Ramele on 10/10/16.
 //  Copyright © 2016 Baufest. All rights reserved.
 //
@@ -19,11 +20,16 @@
 
 #import <mach/mach_time.h>
 
+// These are the default address where ShinkeyBot listens.
 #define SHINKEYBOTADDRESS   @"192.168.0.110"
 #define dshinkeybotaddress   @"10.17.13.89"
 
+// Multicast port and group IP
 #define MYPORT      8123
 #define MYGROUP_4   @"225.0.0.250"
+
+
+#define COMMAND_UDP_PORT    10001
 
 
 @interface ViewController ()
@@ -38,14 +44,25 @@ AVCaptureSession *_captureSession;
 AVCaptureStillImageOutput *stillImageOutput;
 dispatch_queue_t _videoDataOutputQueue;
 
+NSTimer *_moveAheadTimer;
 
+// UDP Socket for Commands
+GCDAsyncUdpSocket *_udpSocket ;
 
-NSTimer *fiveSecondTimer;
+// Multicast UDP Socket for Initial connection.
+GCDAsyncUdpSocket *_mudpSocket;
+
+// Stram TCP Server Socket
+GCDAsyncSocket *_tcpSocket;
+
+// Stream TCP IP Socket
+GCDAsyncSocket *_streamSocket;
+
 
 - (void)startTimedTask
 {
     // Timer seconds.
-    fiveSecondTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(performBackgroundTask) userInfo:nil repeats:YES];
+    _moveAheadTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(performBackgroundTask) userInfo:nil repeats:YES];
 }
 
 - (void)performBackgroundTask
@@ -53,6 +70,7 @@ NSTimer *fiveSecondTimer;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //Do background work
         
+        // Move ahead.
         [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"W"]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -67,19 +85,20 @@ NSTimer *fiveSecondTimer;
         NSLog(@"Moving ahead!");
         
     } else {
-        [fiveSecondTimer invalidate];
-        NSLog(@"Timer stopped. No movement for me");
+        [_moveAheadTimer invalidate];
+        NSLog(@"Timer stopped. No more movement for me");
     }
 }
 
+//
+// Store the IP Address that we obtained in user preferences.
 - (void)storeAddress:(NSString*)address {
     // To save data
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:address forKey:@"shinkeybotaddress"];
-    //[defaults setInteger:21 forKey:@"kSrNo"];
     
     [defaults synchronize];
-    NSLog(@"Data are saved to defaults.");
+    NSLog(@"Chunk data saved to defaults.");
 }
 
 - (void)recoverStoredAddress {
@@ -93,21 +112,20 @@ NSTimer *fiveSecondTimer;
         NSLog(@"Data from defaults--> Address: %@",address);
     }
 }
+
+// UDP Command Messages
 + (void)send:(NSString*)host withMessage:(NSString*)message
 {
-    [self send:host withPort:10001 withMessage:message];
+    [self send:host withPort:COMMAND_UDP_PORT withMessage:message];
 }
 
 + (void)send:(NSString*)host withPort:(int)port withMessage:(NSString *)message
 {
-    GCDAsyncUdpSocket *udpSocket ; // create this first part as a global variable
-    udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    
     NSData* data = [[NSString stringWithString:message] dataUsingEncoding:NSASCIIStringEncoding];
     
     NSLog(@"Send message %@", message);
     
-    [udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:1];
+    [_udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:1];
 }
 
 + (NSString *)currentWifiSSID {
@@ -122,8 +140,6 @@ NSTimer *fiveSecondTimer;
     }
     return ssid;
 }
-
-GCDAsyncUdpSocket *mudpSocket;
 
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:   (NSData *)address withFilterContext:(id)filterContext
@@ -147,39 +163,42 @@ GCDAsyncUdpSocket *mudpSocket;
     }
 }
 
+// Initialize a multicast UDP socket.
 - (void)setupSocket
 {
-    mudpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    _mudpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     NSError *error = nil;
-    if (![mudpSocket bindToPort:MYPORT error:&error])
+    if (![_mudpSocket bindToPort:MYPORT error:&error])
     {
         NSLog(@"Error binding to port: %@", error);
         return;
     }
     //225.0.0.250
     //226.1.1.1
-    if(![mudpSocket joinMulticastGroup:MYGROUP_4 error:&error]){
+    if(![_mudpSocket joinMulticastGroup:MYGROUP_4 error:&error]){
         NSLog(@"Error connecting to multicast group: %@", error);
         return;
     }
-    if (![mudpSocket beginReceiving:&error])
+    if (![_mudpSocket beginReceiving:&error])
     {
         NSLog(@"Error receiving: %@", error);
         return;
     }
-    NSLog(@"Socket Ready");
+    NSLog(@"Listening on Multicast UDP interface for incoming connections.");
 }
 
+
+// EXPERIMENTAL.  Not working very well....
 NSMutableData *stream;
 NSMutableData *consolidated;
 
 -(void)socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
 {
     NSLog(@"Receiving partial data...");
-    
-    
 }
 
+
+// Convert from NSData to OpenCV Mat colored
 - (void) imageFromData: (NSData *) data withSize:(cv::Size) size: (cv::Mat*) img
 {
     unsigned char *pix=NULL , *bytes;
@@ -250,11 +269,9 @@ NSMutableData *consolidated;
         [stream appendData:data];
     }
     
-    [rcvSocket readDataToLength:640*480 withTimeout:-1 tag:0];
+    [_streamSocket readDataToLength:640*480 withTimeout:-1 tag:0];
     
 }
-
-GCDAsyncSocket *rcvSocket;
 
 - (void)socketDidCloseReadStream:(GCDAsyncSocket *)sock
 {
@@ -269,13 +286,13 @@ GCDAsyncSocket *rcvSocket;
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
     NSLog(@"New Socket Accepted");
-    rcvSocket = newSocket;
+    _streamSocket = newSocket;
     
     //[rcvSocket readDataWithTimeout:-1 tag:0];
-    [rcvSocket readDataToLength:640*480 withTimeout:-1 tag:0];
+    [_streamSocket readDataToLength:640*480 withTimeout:-1 tag:0];
 }
 
-GCDAsyncSocket *tcpSocket;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -288,14 +305,16 @@ GCDAsyncSocket *tcpSocket;
     
     [self setupSocket];
     
-    
-    tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    _tcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     stream = [[NSMutableData alloc] initWithCapacity:640*480];
 
     NSError *err = nil;
-    if (![tcpSocket acceptOnPort:10000 error:&err]) {
+    if (![_tcpSocket acceptOnPort:10000 error:&err]) {
         NSLog(@"listenSocket failed to accept: %@", err);
     }
+    
+    // Done configuration.
     
     
     // ----- La primera parte crea los componentes para acceder a la cámara y los asocia a una imagen para provocar visualizaciones.
@@ -323,6 +342,7 @@ GCDAsyncSocket *tcpSocket;
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     
+    // Uncomment these lines to have preview.
     /**
     [_previewLayer setFrame:CGRectMake(0, 0,
                                        self.imageView.frame.size.width,
@@ -372,6 +392,7 @@ GCDAsyncSocket *tcpSocket;
     [super viewWillAppear:animated];
     [_captureSession startRunning];
     
+    // So that we can get the picture in portrait mode.
     NSArray *array = [[_captureSession.outputs objectAtIndex:0] connections];
     for (AVCaptureConnection *connection in array)
     {
@@ -385,6 +406,18 @@ GCDAsyncSocket *tcpSocket;
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    [_udpSocket close];
+    
+    _udpSocket = NULL;
+    _streamSocket = NULL;
+    _tcpSocket = NULL;
+    
+}
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -431,7 +464,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     //cv::Mat parm(inputMat.cols, inputMat.rows, CV_8UC4);
     
 
-    
     [[NSOperationQueue mainQueue] addOperationWithBlock:^
      {
          //self.postviewImage.image = [self UIImageFromCVMat:greyMat];
@@ -577,7 +609,10 @@ static double machTimeToSecs(uint64_t time)
 }
 
 
-
+//
+// Receives the buffer information and and generates the OpenCV matrix to draw the transmitted image.
+//
+//
 -(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat
 {
     //cv::transpose(cvMat, cvMatDst);
