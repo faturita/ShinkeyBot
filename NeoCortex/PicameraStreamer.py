@@ -17,7 +17,7 @@ class VideoStreamer:
 		self.name = 'streamer'
 		self.keeprunning = True
 		self.ip = conf.ip
-        self.videoport = conf.videoport
+                self.videoport = conf.videoport
 
 	def startAndConnect(self):
 		try:
