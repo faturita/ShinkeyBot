@@ -71,24 +71,22 @@ class Sensorimotor:
     def sendsensorsample(self, ser):
         # read  Embed this in a loop.
         self.counter=self.counter+1
-        if (self.counter>90):
+        if (self.counter>100):
             ser.write('P')
             ser.write('S')
             self.counter=0
         myByte = ser.read(1)
         if myByte == 'S':
           readcount = 0
-          #data = readsomething(ser,38)
-          #myByte = readsomething(ser,1)
-          data = ser.read(38)
-          myByte = ser.read(1)
+          data = readsomething(ser,38)
+          myByte = readsomething(ser,1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
               new_values = unpack('ffffffhhhhhhh', data)
-              print new_values
+              #print new_values
               sent = self.sock.sendto(data, self.server_address)
-              self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
-              return new_values
+              #self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
+              #return new_values
 
     def close(self):
         self.f.close()
