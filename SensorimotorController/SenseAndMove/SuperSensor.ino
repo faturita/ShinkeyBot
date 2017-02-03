@@ -98,6 +98,12 @@ void initializeBarometricSensor()
 
 void checksensors()
 {
+  static int counter = 0;
+  if (counter>=255)
+  {
+    counter=0;
+  }
+  sensor.counter = counter;
   float temperature=0, pressure=0;
 
   // NO SE CARGA TEMPERATURA NI INFO BAROMETRICA

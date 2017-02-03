@@ -73,7 +73,7 @@ line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the c
 line2, = ax.plot(y,'g', label='Y')
 line3, = ax.plot(z,'b', label='Z')
 
-ax.axis([0, 500, -500, 1000])
+ax.axis([0, 500, -500, 120])
 
 
 plcounter = 0
@@ -91,10 +91,10 @@ while True:
 
   if myByte == 'S':
       if (serialconnected):
-         data = ser.read(38)
+         data = ser.read(42)
          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(38)
+         data, address = sock.recvfrom(42)
          myByte = 'E'
 
       if myByte == 'E':
@@ -103,9 +103,9 @@ while True:
           print new_values
           f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
 
-          x.append( float(new_values[3]))
-          y.append( float(new_values[4]))
-          z.append( float(new_values[5]))
+          x.append( float(new_values[4]))
+          y.append( float(new_values[5]))
+          z.append( float(new_values[12]))
 
           plotx.append( plcounter )
 

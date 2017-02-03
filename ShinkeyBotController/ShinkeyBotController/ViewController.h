@@ -11,5 +11,7 @@
 
 @interface ViewController : UIViewController <UITextFieldDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 
+@property (strong, atomic) NSString *shinkeybotaddress;
+
 @end
 

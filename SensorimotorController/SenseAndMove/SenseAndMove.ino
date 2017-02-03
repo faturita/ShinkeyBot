@@ -41,6 +41,8 @@ void p(char *fmt, ... ){
 
 bool debug = false;
 
+#define MAX_SIZE_SENSOR_BURST 100
+
 int IN4 = 5;
 int IN3 = 4;
 int IN2 = 3;
@@ -49,7 +51,6 @@ int IN1 = 2;
 
 // constants won't change. Used here to set a pin number :
 const int ledPin =  8;      // the number of the LED pin
-
 const int laserPin = 8;
 
 // Variables will change :
@@ -60,32 +61,34 @@ int ledState = HIGH;             // ledState used to set the LED
 unsigned long previousMillis = 0;        // will store last time LED was updated
 
 // duration of movement.
-long interval = 2000;           // interval at which to blink (milliseconds)
+long interval = 2000;           // interval of duration of movement
 
 
 
 struct sensortype
 {
-  double onYaw;
-  double onPitch;
-  double onRoll;
-  float T;
-  float P;
-  double light;
-  int yaw;
-  int pitch;
-  int roll;
-  int geoYaw;
-  int geoPitch;
-  int geoRoll;
-  int sound;
+  double onYaw;     // +4
+  double onPitch;   // +4 = 8
+  double onRoll;    // +4 = 12
+  float T;          // +4 = 16
+  float P;          // +4 = 20
+  double light;     // +4 = 24
+  int yaw;          // +2 = 26
+  int pitch;        // +2 = 28
+  int roll;         // +2 = 30
+  int geoYaw;       // +2 = 32
+  int geoPitch;     // +2 = 34
+  int geoRoll;      // +2 = 36
+  int sound;        // +2 = 38
+  int freq;         // +2 = 40
+  int counter;      // +2 = 42
 
 } sensor;
 
 
 bool serialOpen = 1;
 
-bool txSensor = false;
+bool sensorburst = false;
 
 
 void dump(char *msg)
@@ -115,7 +118,7 @@ void setupMotor()
 
   randomSeed(analogRead(0));
 
-  txSensor = false;
+  sensorburst = false;
   initsensors();
 }
 
@@ -144,9 +147,7 @@ int const STAYSTILL = 6;
 int const WANDERING = 1;
 
 // L3 &&  L1 is BACKWARDS
-
 int motorstate = QUIET;
-
 int sampleCounter = 0;
 
 int noAction = STAYSTILL;
@@ -182,6 +183,32 @@ char readcommand()
   return action;
 }
 
+int fps()
+{
+  static int freqValue=200;
+  static int freqCounter=0;
+  static unsigned long myPreviousMillis = millis();
+  unsigned long myCurrentMillis=0;
+
+  myCurrentMillis = millis();
+  
+  if ((myCurrentMillis - myPreviousMillis)>1000)
+  {
+    if (debug) 
+    {
+      Serial.print("Frequency:");Serial.println(freqCounter);
+    }
+    myPreviousMillis = myCurrentMillis;
+    freqValue = freqCounter;
+    freqCounter=0;
+  }
+  else
+  {
+    freqCounter++;
+  }  
+  return freqValue;
+}
+
 void blinkme()
 {
   // here is where you'd put code that needs to be running all the time.
@@ -191,20 +218,21 @@ void blinkme()
   // the LED is bigger than the interval at which you want to
   // blink the LED.
   unsigned long currentMillis = millis();
+  
+  sensor.freq = fps();
 
   int incomingByte;
 
   char action;
-
   
-  if (txSensor)
+  if (sensorburst)
   {
     checksensors();
     transmitsensor();
     sampleCounter++;
-    if (sampleCounter > 100)
+    if (sampleCounter > MAX_SIZE_SENSOR_BURST)
     {
-      txSensor = false;
+      sensorburst = false;
       sampleCounter = 0;
     }
   }
@@ -275,10 +303,12 @@ void blinkme()
         getBarometricData(sensor.T, sensor.P);
         break;
       case 'S':
-        txSensor = true;
+        sensorburst = true;
+        // Reset counter to avoid loosing data.
+        sampleCounter=0;
         break;
       case 'X':
-        txSensor = false;
+        sensorburst = false;
         break;
       case 'W':
         if (debug) {
@@ -303,13 +333,6 @@ void blinkme()
           Serial.println("Laser off");
         }
         digitalWrite(laserPin, LOW);
-        break;
-      case 'Q':
-        //Serial.println( getEncoderPos() );
-        //p("%02d", getEncoderPos());
-        break;
-      case '=':
-        //resetEncoderPos();
         break;
       case 'E':
         if (debug) {

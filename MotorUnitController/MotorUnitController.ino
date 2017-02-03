@@ -52,7 +52,7 @@ void setup() {
 
  pinMode(laserPin, OUTPUT);
 
- setupEncoder();
+ //setupEncoder();
 
 }
 
@@ -130,6 +130,16 @@ void loop() {
       digitalWrite(laserPin, HIGH);
     }
 
+    if (syncbyte == 'Q')
+    {
+      //Serial.println( getEncoderPos() );
+    }
+
+    if (syncbyte == '=')
+    {
+      //resetEncoderPos();
+    }
+        
     if (syncbyte == 'l')
     {
       digitalWrite(laserPin, LOW);
@@ -173,7 +183,7 @@ void loop() {
  // Update the servo wrist position.
  update(wrist);
 
- updateEncoder();
+ //updateEncoder();
  
  switch(state)
  {

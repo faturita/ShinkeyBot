@@ -275,6 +275,7 @@ while(True):
 obj.keeprunning = False
 time.sleep(2)
 
+
 #When everything done, release the capture
 ssmr.close()
 sock.close()
