@@ -232,7 +232,7 @@ void checksensors()
 
 }
 
-void transmitsensor() {
+void transmitsensors() {
   int len = sizeof(sensor);
   char aux[len];  //38
   memcpy(&aux,&sensor,len);

@@ -228,7 +228,7 @@ void blinkme()
   if (sensorburst)
   {
     checksensors();
-    transmitsensor();
+    transmitsensors();
     sampleCounter++;
     if (sampleCounter > MAX_SIZE_SENSOR_BURST)
     {
