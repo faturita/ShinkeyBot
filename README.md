@@ -1,5 +1,5 @@
 
-![ShinkeyBot in action](data/shinkeybotselfie.jpg)
+![ShinkeyBot in action](shinkeybotselfie.jpg)
 
 
 # ShinkeyBot
