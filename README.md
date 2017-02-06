@@ -1,5 +1,5 @@
 
-![ShinkeyBot in action](screenshot1.png)
+![ShinkeyBot in action](data/shinkeybotselfie.jpg)
 
 
 # ShinkeyBot
@@ -10,7 +10,7 @@
 * http://www.arduinoecia.com.br/2014/09/sensor-gy-80-acelerometro-bussola-barometro.html
 * http://www.forkrobotics.com/2013/06/using-the-gy80-10dof-module-with-arduino/
 
-Library: 
+Library:
 
 * https://github.com/Anilm3/ADXL345-Accelerometer
 * http://blog.oscarliang.net/use-gy80-arduino-adxl345-accelerometer/
@@ -39,6 +39,3 @@ gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4
 * https://tkkrlab.nl/wiki/Arduino_KY-012_Active_buzzer_module
 * https://learn.adafruit.com/adafruit-arduino-lesson-3-rgb-leds/breadboard-layout
 * https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide?_ga=1.8013874.1081308802.1469763161
-
-
-
