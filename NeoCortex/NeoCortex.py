@@ -30,6 +30,21 @@ import MCast
 import fcntl
 import struct
 
+# First create a witness token to guarantee only one running instance
+if (!os.access("running.wt", os.R_OK)):
+    print >> sys.stderr, 'Another instance is running. Cancelling.'
+    quit(1)
+
+runningtoken = open('running.wt', 'w')
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+
+runningtoken.write(st)
+
+runningtoken.close()
+
+
+
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -112,16 +127,39 @@ sensorimotor.start()
 sensorimotor.cleanbuffer(ssmr)
 
 
-print 'Remote controlling ShinkeyBot'
+class Surrogator:
+	def __init__(self, sock):
+        self.data = ''
+        self.sock = sock
+        self.address = None
+        self.keeprunning = True
+
+    def hookme(self):
+        print 'Remote controlling ShinkeyBot'
+        while (self.keeprunning):
+            self.data = ''
+            try:
+                # Read from the UDP controller socket blocking
+                self.data, self.address = sock.recvfrom(1)
+            except Exception as e:
+                pass
+
+            if (self.data == 'X'):
+                break
+
+sur = Surrogator(sock)
+
+try:
+    thread.start_new_thread( sur.hookme, () )
+    pass
+except:
+    pass
+
+
 # Live
 while(True):
     try:
-        data = ''
-        try:
-            # Read from the UDP controller socket non-blocking
-            data, address = sock.recvfrom(1)
-        except Exception as e:
-            pass
+        data = sur.data
 
         # If someone asked for it, send sensor information.
         if (sensesensor):
@@ -273,6 +311,7 @@ while(True):
         ssmr.write('C')
 
 obj.keeprunning = False
+sur.keeprunning = False
 time.sleep(2)
 
 
@@ -280,3 +319,5 @@ time.sleep(2)
 ssmr.close()
 sock.close()
 mtrn.close()
+
+os.remove('running.wt')

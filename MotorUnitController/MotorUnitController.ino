@@ -1,14 +1,28 @@
 /**
    Motor Unit Controller for ShinkeyBot
 
-   It uses Adafruit_MotorShield v2 from Adafruit (better!)
+   It uses Adafruit_MotorShield v2 from Adafruit.
 
    Gripper 1 DC Motor -> M1
    Shoulder 2 DC Motor 12 V -> M2
-   Tesaki 4 DC Motor del Servo roto 6 V -> M4
+   Tesaki 4 DC Motor from the broken servo 6 V -> M4
 
    Servo Wrist 9V 180 -> Servo 1 Pin 10  White, Grey Violet
    Servo Elbow 9V 360 -> Servo 2 Pin 9 Coaxial  Black White Grey
+
+   Encoder (shoulder)
+   Pin 12 connected to CLK on KY-040
+   Pin 13 connected to DT  on KY-040
+   + to Arduino 5V
+   GND to Arduino GND
+
+
+   Tilt Sensor (Elbow)
+   SCL connected to SCL on MMA8452
+   SDA connected to SDA on MMA8452   (I2C port is 60)
+   3.3V connected to Arduino 3.3 V
+   GND to Arduino GND 
+   
 */
 
 
@@ -24,7 +38,7 @@ MMA8452Q accel;
 
 #include <Servo.h>
 
-bool debug = true;
+bool debug = false;
 
 const int laserPin = 8;
 
@@ -153,6 +167,76 @@ void updatedc(Adafruit_DCMotor *dcmotor, int currentpos)
 
 }
 
+float targetposelbow=1.72;
+
+
+float fdet(float val)
+{
+  return val*(-0.3)+204;
+}
+
+void updaterotservo(Servo servo, float currentpos)
+{
+  //Serial.print(currentpos);Serial.print("->");Serial.print(targetposelbow);Serial.print("--");Serial.print(accel.cx);Serial.print(":");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.print("Angle:");Serial.println(getTilt()*180.0/PI);
+  
+  //if (true || abs(targetposelbow-currentpos)<0.20)
+  //if (abs(targetposelbow-currentpos)>0.1)
+  {
+    int direction=1;
+    if (targetposelbow < currentpos)
+      direction=1;
+    else
+      direction=-1;
+      
+    servo.writeMicroseconds((fdet(targetposelbow*180.0/PI)+10*direction) * 10);
+    //Serial.println( (fdet(targetposelbow*180.0/PI))+10*direction );
+
+  //} else {
+    //servo->writeMicroseconds(speeds * 10);
+  }
+
+}
+
+void setTargetPosElbow(float newtargetpos)
+{
+  targetposelbow = newtargetpos;  
+}
+
+void readcommand(int &state, int &speeds)
+{
+  // Format A1000 >> A1220   --> Close grip
+  // A2255 >> Open Grip
+  // A6090 >> 90 deg wrist A6010 --> A6180
+  // A3220 or A4220 Move forward backward shoulder
+  // A7150 will keep the elbow at zero encoder angle arm vertical. So AA140 will pull it up
+  // A8220 clockwise A9220 counter
+  // AA150 -> Keep elbow steady, AA140 backward AA160 forward (AA100 --> AA150 --> AA200)
+  // Format A5000  Reset everything.
+  memset(buffer, 0, 5);
+  int readbytes = Serial.readBytes(buffer, 4);
+
+  if (readbytes == 4) {
+    if (debug) Serial.println ( (int)buffer[0] );
+    int action = 0;
+    if (buffer[0] >= 65)  // send alpha hexa actions.
+      action = buffer[0] - 65 + 10;
+    else
+      action = buffer[0] - 48;
+    int a = buffer[1] - 48;
+    int b = buffer[2] - 48;
+    int c = buffer[3] - 48;
+
+    speeds = atoi(buffer + 1);
+    state = action;
+
+    if (debug) {
+      Serial.print("Action:");
+      Serial.print(action);
+      Serial.print("/");
+      Serial.println(speeds);
+    }
+  }
+}
 
 
 void loop() {
@@ -163,78 +247,51 @@ void loop() {
     //printCalculatedAccels();
   }
 
+  //Serial.print("Angle:");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.println(getTilt());
   sensor.fps = fps();
   checksensors();
   burstsensors();
 
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) 
+  {
 
     char syncbyte = Serial.read();
 
-    if (syncbyte == 'I')
+    switch (syncbyte) 
     {
-      Serial.println("MTRN");
-    }
-
-    if (syncbyte == 'D')
-    {
-      debug = (!debug);
-    }
-
-    if (syncbyte == 'L')
-    {
-      digitalWrite(laserPin, HIGH);
-    }
-
-    if (syncbyte == 'Q')
-    {
-      Serial.println( getEncoderPos() );
-    }
-
-    if (syncbyte == '=')
-    {
-      resetEncoderPos();
-    }
-
-    if (syncbyte == 'l')
-    {
-      digitalWrite(laserPin, LOW);
-    }
-
-    if (syncbyte == 'A')
-    {
-      // Format A1000 >> A1220   --> Close grip
-      // A2255 >> Open Grip
-      // A6090 >> 90 deg wrist A6010 --> A6180
-      // A3220 or A4220 Move forward backward shoulder
-      // A7150 will keep the arm vertical.
-      // A8220 clockwise A9220 counter
-      // AA150 -> Keep elbow steady, AA140 backward AA160 forward (AA100 --> AA150 --> AA200)
-      // Format A5000  Reset everything.
-      memset(buffer, 0, 5);
-      int readbytes = Serial.readBytes(buffer, 4);
-
-      if (readbytes == 4) {
-        Serial.println ( (int)buffer[0] );
-        int action = 0;
-        if (buffer[0] >= 65)  // send alpha hexa actions.
-          action = buffer[0] - 65 + 10;
-        else
-          action = buffer[0] - 48;
-        int a = buffer[1] - 48;
-        int b = buffer[2] - 48;
-        int c = buffer[3] - 48;
-
-        speeds = atoi(buffer + 1);
-        state = action;
-
-        if (debug) {
-          Serial.print("Action:");
-          Serial.print(action);
-          Serial.print("/");
-          Serial.println(speeds);
-        }
-      }
+      case 'I':
+        Serial.println("MTRN");
+        break;
+      case 'S':
+        startburst();
+        break;
+      case 'X':
+        stopburst();
+        break;
+      case 'D':
+        debug = (!debug);
+        break;
+      case 'L':
+        digitalWrite(laserPin, HIGH);
+        break;
+      case 'l':
+        digitalWrite(laserPin, LOW);
+        break;
+      case 'Q':
+        Serial.println( getEncoderPos() );
+        break;
+      case 'U':
+        Serial.print(accel.cx);Serial.print(":");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.print("Angle:");Serial.println(getTilt()*180.0/PI);
+        break;
+      case '=':
+        resetEncoderPos();
+        targetpos=0;
+        break;
+      case 'A':
+        readcommand(state,speeds);
+        break;
+      default:
+        break;
     }
 
   }
@@ -245,6 +302,8 @@ void loop() {
   updateEncoder();
 
   updatedc(shoulder, getEncoderPos());
+
+  //updaterotservo(elbow, getTilt());
 
   switch (state)
   {
@@ -303,6 +362,9 @@ void loop() {
       elbow.writeMicroseconds(speeds * 10);
       elbowcounter = 1;
       break;
+    case 0x0b:
+      setTargetPosElbow(((float)speeds)*PI/180.0);
+      elbowcounter = 1;
     default:
       // Do Nothing
       state = 0;
@@ -311,18 +373,19 @@ void loop() {
   }
 
   // Limit Elbow movement.  This servo will try to stay on that position for 1000 cycles.
-  elbowcounter = elbowcounter + 1;
+/**  elbowcounter = elbowcounter + 1;
 
-  if (elbowcounter >= 1000) {
+
+  if (elbowcounter >= 3000) {
     elbow.writeMicroseconds(1500);
     elbowcounter = 0;
-  }
+  }**/
 
 
   // Limit The movement of the wrist rolling.
   tesakicounter = tesakicounter + 1;
 
-  if (tesakicounter > 50) {
+  if (tesakicounter > 100) {
     tesaki->setSpeed(0);
     tesakicounter = 0;
   }
@@ -331,13 +394,13 @@ void loop() {
   // Limit the gripper force.
   grippercounter = grippercounter + 1;
 
-  if (grippercounter > 50) {
+  if (grippercounter > 400) {
     grip->setSpeed(0);
     grippercounter = 0;
   }
 
 
-  delay(10);
-  state = 0;
+  //delay(10);
+  state = 0;  // State is reset after the command has been given and processesd.
 
 }

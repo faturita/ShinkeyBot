@@ -46,10 +46,6 @@ void updateEncoder() {
   pinALast = aVal;
 }
 
-int getTilt()
-{
-  return atan2(accel.cz,accel.cy);
-}
 
 int getEncoderPos()
 {

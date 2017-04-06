@@ -10,6 +10,17 @@ void printCalculatedAccels()
   Serial.print("\t");
 }
 
+float getTilt()
+{
+  if (accel.cz < 0)
+  {
+    return 2*PI+atan2(accel.cz,accel.cy);
+  } else
+  {
+    return atan2(accel.cz,accel.cy);
+  }
+}
+
 int fps()
 {
   static int freqValue = 200;

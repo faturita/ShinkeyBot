@@ -67,7 +67,7 @@ def connectAndShow(sock, server_address):
        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
        gray = image
        #cv2.imwrite('01.png', gray)
-       gray = cv2.Canny(gray,100,200)
+       #gray = cv2.Canny(gray,100,200)
 
        cv2.imshow("ShinkeyBot Camera", gray)
 
