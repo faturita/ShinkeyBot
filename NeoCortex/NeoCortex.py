@@ -178,7 +178,8 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sensorimotor.sendsensorsample(ssmr)
-            print sensorimotor.sensors[0]
+            if (not sensorimotor.sensors == None):
+                print sensorimotor.sensors[0]
 
         if (data == '!'):
             obj.ip = address[0]

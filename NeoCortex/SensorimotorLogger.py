@@ -87,6 +87,7 @@ class Sensorimotor:
               #print new_values
               self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)
+              print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
               #self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
               #return new_values
 
