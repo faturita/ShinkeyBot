@@ -156,19 +156,25 @@ class Surrogator:
 
         print 'Stopping surrogate...'
 
-sur = Surrogator(sock)
+#sur = Surrogator(sock)
 
-try:
-    thread.start_new_thread( sur.hookme, () )
-    pass
-except:
-    pass
+#try:
+#    thread.start_new_thread( sur.hookme, () )
+#    pass
+#except:
+#    pass
 
 
 # Live
 while(True):
     try:
-        data = sur.getdata()
+        data = ''
+        try:
+            # Read from the UDP controller socket blocking
+            data, address = sock.recvfrom(1)
+        except Exception as e:
+            pass
+
         print 'Incoming command:' + data
 
         # If someone asked for it, send sensor information.
