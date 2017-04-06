@@ -149,6 +149,7 @@ class Surrogator:
                 pass
 
             self.data = nextdata
+            yield
 
             if (self.data == 'X'):
                 break
