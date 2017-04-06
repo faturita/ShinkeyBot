@@ -4,7 +4,7 @@
 # It handles basic USB-Serial comm with other modules and handles
 # the basic operation of ShinkeyBot
 #
-# x) Transmit TCP/IP images through CameraStreamer.
+#  x) Transmit TCP/IP images through CameraStreamer.
 # x) Captures sensor data from SensorimotorLogger
 # x) Handles output to motor unit and sensorimotor commands through Proprioceptive
 # x) Receives high-level commands from ShinkeyBotController.
@@ -15,6 +15,7 @@ import cv2
 import serial
 
 import time
+import datetime
 from struct import *
 
 import sys, os, select
@@ -31,7 +32,7 @@ import fcntl
 import struct
 
 # First create a witness token to guarantee only one running instance
-if (not os.access("running.wt", os.R_OK)):
+if (os.access("running.wt", os.R_OK)):
     print >> sys.stderr, 'Another instance is running. Cancelling.'
     quit(1)
 
@@ -128,7 +129,7 @@ sensorimotor.cleanbuffer(ssmr)
 
 
 class Surrogator:
-	def __init__(self, sock):
+    def __init__(self, sock):
         self.data = ''
         self.sock = sock
         self.address = None
@@ -137,15 +138,19 @@ class Surrogator:
     def hookme(self):
         print 'Remote controlling ShinkeyBot'
         while (self.keeprunning):
-            self.data = ''
+            nextdata  = ''
             try:
                 # Read from the UDP controller socket blocking
-                self.data, self.address = sock.recvfrom(1)
+                nextdata, self.address = self.sock.recvfrom(1)
             except Exception as e:
                 pass
 
+            self.data = nextdata
+
             if (self.data == 'X'):
                 break
+
+        print 'Stopping surrogate...'
 
 sur = Surrogator(sock)
 
@@ -160,6 +165,7 @@ except:
 while(True):
     try:
         data = sur.data
+        print 'Incoming command:' + data
 
         # If someone asked for it, send sensor information.
         if (sensesensor):
@@ -316,8 +322,10 @@ time.sleep(2)
 
 
 #When everything done, release the capture
-ssmr.close()
+if (not ssmr == None):
+    ssmr.close()
 sock.close()
-mtrn.close()
+if (not mtrn == None):
+    mtrn.close()
 
 os.remove('running.wt')
