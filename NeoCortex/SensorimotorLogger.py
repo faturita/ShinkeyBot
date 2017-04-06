@@ -38,6 +38,7 @@ class Sensorimotor:
         self.keeprunning = True
         self.ip = Configuration.ip
         self.telemetryport = Configuration.telemetryport
+        self.sensors = None
 
     def start(self):
         # Sensor Recording
@@ -84,6 +85,7 @@ class Sensorimotor:
               # is  a valid message struct
               new_values = unpack('ffffffhhhhhhh', data)
               #print new_values
+              self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)
               #self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
               #return new_values
