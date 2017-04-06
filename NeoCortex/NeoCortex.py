@@ -31,7 +31,7 @@ import fcntl
 import struct
 
 # First create a witness token to guarantee only one running instance
-if (!os.access("running.wt", os.R_OK)):
+if (not os.access("running.wt", os.R_OK)):
     print >> sys.stderr, 'Another instance is running. Cancelling.'
     quit(1)
 
