@@ -138,25 +138,27 @@ class Surrogator:
     def getdata(self):
         return self.data
 
+    def getcommand(self):
+        self.data = ''
+        try:
+            # Read from the UDP controller socket non blocking
+            self.data, self.address = self.sock.recvfrom(1)
+        except Exception as e:
+            pass
+
+
     def hookme(self):
         print 'Remote controlling ShinkeyBot'
         while (self.keeprunning):
             nextdata  = ''
-            try:
-                # Read from the UDP controller socket blocking
-                nextdata, self.address = self.sock.recvfrom(1)
-            except Exception as e:
-                pass
-
-            self.data = nextdata
-            yield
+            self.getcommand()
 
             if (self.data == 'X'):
                 break
 
         print 'Stopping surrogate...'
 
-#sur = Surrogator(sock)
+sur = Surrogator(sock)
 
 #try:
 #    thread.start_new_thread( sur.hookme, () )
@@ -169,11 +171,8 @@ class Surrogator:
 while(True):
     try:
         data = ''
-        try:
-            # Read from the UDP controller socket blocking
-            data, address = sock.recvfrom(1)
-        except Exception as e:
-            pass
+        sur.getcommand()
+        data, address = sur.data, sur.address
 
         print 'Incoming command:' + data
 
