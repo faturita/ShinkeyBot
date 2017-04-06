@@ -135,6 +135,9 @@ class Surrogator:
         self.address = None
         self.keeprunning = True
 
+    def getdata(self):
+        return self.data
+
     def hookme(self):
         print 'Remote controlling ShinkeyBot'
         while (self.keeprunning):
@@ -164,7 +167,7 @@ except:
 # Live
 while(True):
     try:
-        data = sur.data
+        data = sur.getdata()
         print 'Incoming command:' + data
 
         # If someone asked for it, send sensor information.
