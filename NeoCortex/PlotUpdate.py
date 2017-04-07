@@ -99,7 +99,7 @@ while True:
 
       if myByte == 'E':
           # is  a valid message struct
-          new_values = unpack('ffffffhhhhhhhhhl', data)
+          new_values = unpack('ffffffhhhhhhhhhh', data)
           print new_values[9] + '\t' + new_values[10] + '\t' + new_values[11]
           f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
 
