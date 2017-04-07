@@ -178,17 +178,16 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sens = sensorimotor.sendsensorsample(ssmr)
-            print sens
-            if (not sensorimotor.sensors == None):
-                print sensorimotor.sensors[0]
+
 
         if (data == '!'):
             obj.ip = address[0]
-            sensorimotor.ip = address[0]
             print "Reloading target ip for stream:"+obj.ip
+
             sensorimotor.close()
-            sensorimotor.ip = address[0]
             sensorimotor.start()
+            sensorimotor.ip = address[0]
+            print "Reloading target ip for telemetry:"+sensorimotor.ip
 
             try:
                 thread.start_new_thread( obj.connect, () )

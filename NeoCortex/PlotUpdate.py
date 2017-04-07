@@ -99,13 +99,13 @@ while True:
 
       if myByte == 'E':
           # is  a valid message struct
-          new_values = unpack('ffffffhhhhhhh', data)
+          new_values = unpack('ffffffhhhhhhhhh', data)
           print new_values
           f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
 
-          x.append( float(new_values[4]))
-          y.append( float(new_values[5]))
-          z.append( float(new_values[12]))
+          x.append( float(new_values[9]))
+          y.append( float(new_values[10]))
+          z.append( float(new_values[14]))
 
           plotx.append( plcounter )
 

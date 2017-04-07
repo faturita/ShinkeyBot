@@ -1,5 +1,25 @@
 #coding: latin-1
 
+# struct sensortype
+# {
+#   double onYaw;     // +4
+#   double onPitch;   // +4 = 8
+#   double onRoll;    // +4 = 12
+#   float T;          // +4 = 16
+#   float P;          // +4 = 20
+#   double light;     // +4 = 24
+#   int yaw;          // +2 = 26
+#   int pitch;        // +2 = 28
+#   int roll;         // +2 = 30
+#   int geoYaw;       // +2 = 32
+#   int geoPitch;     // +2 = 34
+#   int geoRoll;      // +2 = 36
+#   int sound;        // +2 = 38
+#   int freq;         // +2 = 40
+#   int counter;      // +2 = 42
+#
+# } sensor;
+
 import serial
 import time
 import datetime
@@ -88,7 +108,7 @@ class Sensorimotor:
               #print new_values
               self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)
-              print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
+              #print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
               #self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
               return new_values
 
