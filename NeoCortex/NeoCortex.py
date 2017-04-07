@@ -181,12 +181,12 @@ while(True):
             sens = sensorimotor.sendsensorsample(ssmr)
 
             if (sens != None and target != None):
-                if (target[0] != 0):
+                if (target[0] == 0):
                     target = sens[9], sens[10], sens[11]
 
                 if (automode):
-                    print "Moving to :" + str(target)
-                    print "From:" + str(sens)
+                    print "Moving to :" + str(target[0]) + '\t' + str(target[1]) + '\t' + str(target[2])
+                    print "From:     :" + str(sens[9])   + '\t' + str(sens[10])  + '\t' + str(sens[11])
                     if (not ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 )):
                         ssmr.write('-')
                         ssmr.write('4')
