@@ -180,13 +180,14 @@ while(True):
         if (sensesensor):
             sens = sensorimotor.sendsensorsample(ssmr)
 
-            if (target[0] != 0):
-                target = sens[9], sens[10], sens[11]
+            if (sens != None and target != None):
+                if (target[0] != 0):
+                    target = sens[9], sens[10], sens[11]
 
-            if (automode):
-                if ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 ):
-                    ssmr.write('-')
-                    ssmr.write('4')
+                if (automode):
+                    if ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 ):
+                        ssmr.write('-')
+                        ssmr.write('4')
 
 
         if (data == '!'):
