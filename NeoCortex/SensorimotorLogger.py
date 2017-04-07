@@ -116,6 +116,10 @@ class Sensorimotor:
         self.f.close()
         self.sock.close()
 
+    def restart(self):
+        self.close()
+        self.start()
+
 if __name__ == "__main__":
     [smnr, mtrn] = prop.serialcomm()
 
