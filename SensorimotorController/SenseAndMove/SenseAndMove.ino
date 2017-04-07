@@ -82,6 +82,7 @@ struct sensortype
   int sound;        // +2 = 38
   int freq;         // +2 = 40
   int counter;      // +2 = 42
+  long distance;    // +4 = 46
 
 } sensor;
 
@@ -474,6 +475,7 @@ void loop() {
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration / 2) / 29.1;
+  sensor.distance = distance;
   if (distance == 0) {
     // This is likely an error with the sensor.
     //buzz();

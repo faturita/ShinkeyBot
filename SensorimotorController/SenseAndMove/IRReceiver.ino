@@ -54,13 +54,23 @@ int getcommand()
     //Serial.print(ReceiverCode);
     switch(ReceiverCode)
     {
-       case IR_BUTTON_A: Serial.println("Press A."); break;
-       case IR_BUTTON_B: Serial.println("Press B."); break;
+       case IR_BUTTON_A: //Serial.println("Press A."); 
+       return '+';
+       break;
+       case IR_BUTTON_B: //Serial.println("Press B."); 
+       return '-';
+       break;
        case IR_BUTTON_C: Serial.println("Press C."); break;
        case IR_BUTTON_D: Serial.println("Press D."); break;
-       case IR_BUTTON_E: Serial.println("Press E."); break;
-       case IR_BUTTON_F: Serial.println("Press F."); break;
-       case IR_BUTTON_SETTING: Serial.println("Press Setting."); break;
+       case IR_BUTTON_E: //Serial.println("Press E."); 
+       return 'L';
+       break;
+       case IR_BUTTON_F: //Serial.println("Press F."); 
+       return 'l';
+       break;
+       case IR_BUTTON_SETTING: //Serial.println("Press Setting."); 
+       return 'E';
+       break;
        case IR_BUTTON_UP: //Serial.println("Press Up."); 
        return '2';break;
        case IR_BUTTON_DOWN: //Serial.println("Press Down."); 
@@ -72,7 +82,9 @@ int getcommand()
        case IR_BUTTON_RIGHT: //Serial.println("Press Right."); 
        return '4';
        break;
-       case IR_BUTTON_0: Serial.println("Press 0."); break;
+       case IR_BUTTON_0: //Serial.println("Press 0."); 
+       return '9';
+       break;
        case IR_BUTTON_1: Serial.println("Press 1."); break;
        case IR_BUTTON_2: Serial.println("Press 2."); break;
        case IR_BUTTON_3: Serial.println("Press 3."); break;

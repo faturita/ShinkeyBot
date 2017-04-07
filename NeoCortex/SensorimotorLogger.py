@@ -100,11 +100,11 @@ class Sensorimotor:
         myByte = ser.read(1)
         if myByte == 'S':
           readcount = 0
-          data = readsomething(ser,42)
+          data = readsomething(ser,46)
           myByte = readsomething(ser,1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
-              new_values = unpack('ffffffhhhhhhhhh', data)
+              new_values = unpack('ffffffhhhhhhhhhl', data)
               #print new_values
               self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)

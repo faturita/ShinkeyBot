@@ -103,7 +103,7 @@ void checksensors()
   {
     counter=0;
   }
-  sensor.counter = counter;
+  sensor.counter = counter++;
   float temperature=0, pressure=0;
 
   // NO SE CARGA TEMPERATURA NI INFO BAROMETRICA
@@ -234,7 +234,7 @@ void checksensors()
 
 void transmitsensors() {
   int len = sizeof(sensor);
-  char aux[len];  //38
+  char aux[len];  //46
   memcpy(&aux,&sensor,len);
 
   Serial.write('S');

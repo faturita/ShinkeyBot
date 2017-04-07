@@ -166,6 +166,8 @@ sur = Surrogator(sock)
 #except:
 #    pass
 
+target = [0,0,0]
+automode = False;
 
 # Live
 while(True):
@@ -174,12 +176,18 @@ while(True):
         sur.getcommand()
         data, address = sur.data, sur.address
 
-        noticer.send()
-
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sens = sensorimotor.sendsensorsample(ssmr)
 
+            if (target[0] != 0):
+                target = sens[9], sens[10], sens[11]
+
+            if (automode):
+                if ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 ):
+                    ssmr.write('-')
+                    ssmr.write('4')
+                    
 
         if (data == '!'):
             obj.ip = address[0]
@@ -197,6 +205,8 @@ while(True):
 
         if (data == 'Q'):
             sensesensor = (not sensesensor)
+        if (data == 'M'):
+            automode = (not automode)
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right

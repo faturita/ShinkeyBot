@@ -73,7 +73,7 @@ line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the c
 line2, = ax.plot(y,'g', label='Y')
 line3, = ax.plot(z,'b', label='Z')
 
-ax.axis([0, 500, -500, 120])
+ax.axis([0, 500, -500, 1200])
 
 
 plcounter = 0
@@ -94,18 +94,18 @@ while True:
          data = ser.read(42)
          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(42)
+         data, address = sock.recvfrom(46)
          myByte = 'E'
 
       if myByte == 'E':
           # is  a valid message struct
-          new_values = unpack('ffffffhhhhhhhhh', data)
-          print new_values
+          new_values = unpack('ffffffhhhhhhhhhl', data)
+          print new_values[9] + '\t' + new_values[10] + '\t' + new_values[11]
           f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
 
           x.append( float(new_values[9]))
           y.append( float(new_values[10]))
-          z.append( float(new_values[14]))
+          z.append( float(new_values[11]))
 
           plotx.append( plcounter )
 
