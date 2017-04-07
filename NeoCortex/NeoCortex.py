@@ -185,7 +185,9 @@ while(True):
                     target = sens[9], sens[10], sens[11]
 
                 if (automode):
-                    if ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 ):
+                    print "Moving to :" + str(target)
+                    print "From:" + str(sens)
+                    if (not ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 )):
                         ssmr.write('-')
                         ssmr.write('4')
 
