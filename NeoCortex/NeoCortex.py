@@ -184,6 +184,7 @@ while(True):
 
         if (data == '!'):
             obj.ip = address[0]
+            sens.ip = address[0]
             print "Reloading target ip for stream:"+obj.ip
             sensorimotor.close()
             sensorimotor.ip = address[0]
