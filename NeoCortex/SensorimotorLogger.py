@@ -69,6 +69,7 @@ class Sensorimotor:
         # Reactive sensor information
         ser.write('S')
 
+
     def sendsensorsample(self, ser):
         # read  Embed this in a loop.
         self.counter=self.counter+1
@@ -89,7 +90,7 @@ class Sensorimotor:
               sent = self.sock.sendto(data, self.server_address)
               print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
               #self.f.write( str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n')
-              #return new_values
+              return new_values
 
     def close(self):
         self.f.close()

@@ -120,7 +120,7 @@ elbowpos = 150
 # Pan and tilt
 visualpos = [90,95]
 
-sensesensor = False
+sensesensor = True
 
 # Connect remotely to any client that is waiting for sensor loggers.
 sensorimotor = senso.Sensorimotor()
@@ -130,6 +130,7 @@ sensorimotor.cleanbuffer(ssmr)
 
 class Surrogator:
     def __init__(self, sock):
+        print 'Remote controlling ShinkeyBot'
         self.data = ''
         self.sock = sock
         self.address = None
@@ -148,7 +149,6 @@ class Surrogator:
 
 
     def hookme(self):
-        print 'Remote controlling ShinkeyBot'
         while (self.keeprunning):
             nextdata  = ''
             self.getcommand()
@@ -177,7 +177,8 @@ while(True):
 
         # If someone asked for it, send sensor information.
         if (sensesensor):
-            sensorimotor.sendsensorsample(ssmr)
+            sens = sensorimotor.sendsensorsample(ssmr)
+            print sens
             if (not sensorimotor.sensors == None):
                 print sensorimotor.sensors[0]
 
