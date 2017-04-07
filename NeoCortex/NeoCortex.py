@@ -187,7 +187,7 @@ while(True):
                 if ( abs(sens[9]-target[0])<5 and abs(sens[10]-target[1])<5 and abs(sens[11]-target[2])<5 ):
                     ssmr.write('-')
                     ssmr.write('4')
-                    
+
 
         if (data == '!'):
             obj.ip = address[0]
@@ -205,7 +205,7 @@ while(True):
 
         if (data == 'Q'):
             sensesensor = (not sensesensor)
-        if (data == 'M'):
+        if (data == 'K'):
             automode = (not automode)
         if (data == 'N'):
             ssmr.write('H')
