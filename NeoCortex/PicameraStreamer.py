@@ -1,3 +1,4 @@
+#coding: latin-1
 # ShinkeyBot PiCamera streamer
 
 # This program runs as a standalone thread and capture blocks of 640x480
@@ -22,8 +23,6 @@ import socket
 import sys
 
 import Configuration as conf
-
-start = time.time()
 
 class VideoStreamer:
 	def __init__(self):
@@ -60,6 +59,7 @@ class VideoStreamer:
 			time.sleep(0.1)
 
 			frm = 0
+                        start = time.time()
 
 			# capture frames from the camera
 			for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -76,7 +76,7 @@ class VideoStreamer:
 				end = time.time()
 				# Time elapsed
 				seconds = end - start
-				#print "Time taken : {0} seconds".format(seconds)
+				print "Time taken : {0} seconds".format(seconds)
 
 				frm = frm + 1
 				if (frm >= 256):
