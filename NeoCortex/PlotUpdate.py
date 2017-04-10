@@ -2,6 +2,9 @@
 
 # Run me with frameworkpython
 
+# This program receives telemetry information from ShinkeyBot in real time
+# You only need to send the Q command and data will start flushing.
+
 import matplotlib.pyplot as plt
 import numpy as np
 

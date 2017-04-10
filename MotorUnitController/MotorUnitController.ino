@@ -385,7 +385,7 @@ void loop() {
   // Limit The movement of the wrist rolling.
   tesakicounter = tesakicounter + 1;
 
-  if (tesakicounter > 100) {
+  if (tesakicounter > 50) {
     tesaki->setSpeed(0);
     tesakicounter = 0;
   }

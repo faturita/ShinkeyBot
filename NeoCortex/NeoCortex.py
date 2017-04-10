@@ -4,7 +4,7 @@
 # It handles basic USB-Serial comm with other modules and handles
 # the basic operation of ShinkeyBot
 #
-#  x) Transmit TCP/IP images through CameraStreamer.
+# x) Transmit TCP/IP images through CameraStreamer.
 # x) Captures sensor data from SensorimotorLogger
 # x) Handles output to motor unit and sensorimotor commands through Proprioceptive
 # x) Receives high-level commands from ShinkeyBotController.
@@ -31,7 +31,7 @@ import MCast
 import fcntl
 import struct
 
-# First create a witness token to guarantee only one running instance
+# First create a witness token to guarantee only one instance running
 if (os.access("running.wt", os.R_OK)):
     print >> sys.stderr, 'Another instance is running. Cancelling.'
     quit(1)
@@ -41,7 +41,6 @@ ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
 
 runningtoken.write(st)
-
 runningtoken.close()
 
 
@@ -56,9 +55,9 @@ def get_ip_address(ifname):
 
 
 # Get PiCamera stream and read everything in another thread.
-obj = pcs.VideoStreamer()
+vst = pcs.VideoStreamer()
 try:
-    thread.start_new_thread( obj.connect, () )
+    thread.start_new_thread( vst.connect, () )
     pass
 except:
     pass
@@ -66,8 +65,7 @@ except:
 # Ok, so the first thing to do is to broadcast my own IP address.
 dobroadcastip = True
 
-# Initialize UDP Controller Server on port 10001
-# This receives high-level commands from ShinkeyBotController.
+# Initialize UDP Controller Server on port 10001 (ShinkeyBotController)
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('0.0.0.0', 10001)
 print >> sys.stderr, 'Starting up Controller Server on %s port %s', server_address
@@ -104,7 +102,7 @@ if (dobroadcastip):
 
 print 'Connection to Remote Controller established.'
 
-# Open connection to tilt sensor.
+# Open connection to tilt sensor (@deprecated)
 #hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
 [ssmr, mtrn] = prop.serialcomm()
@@ -120,6 +118,8 @@ elbowpos = 150
 # Pan and tilt
 visualpos = [90,95]
 
+# Enables the sensor telemetry.  Arduinos will send telemetry data that will be
+#  sent to listening servers.
 sensesensor = True
 
 # Connect remotely to any client that is waiting for sensor loggers.
@@ -173,6 +173,7 @@ automode = False;
 while(True):
     try:
         data = ''
+        # TCP/IP server is configured as non-blocking
         sur.getcommand()
         data, address = sur.data, sur.address
 
@@ -193,8 +194,8 @@ while(True):
 
 
         if (data == '!'):
-            obj.ip = address[0]
-            print "Reloading target ip for stream:"+obj.ip
+            vst.ip = address[0]
+            print "Reloading target ip for stream:"+vst.ip
 
             sensorimotor.ip = address[0]
             sensorimotor.restart()
@@ -202,7 +203,7 @@ while(True):
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
             try:
-                thread.start_new_thread( obj.connect, () )
+                thread.start_new_thread( vst.connect, () )
             except:
                 pass
 
@@ -341,7 +342,7 @@ while(True):
         # Instruct the Sensorimotor Cortex to stop wandering.
         ssmr.write('C')
 
-obj.keeprunning = False
+vst.keeprunning = False
 sur.keeprunning = False
 time.sleep(2)
 
