@@ -76,13 +76,13 @@ class VideoStreamer:
 				end = time.time()
 				# Time elapsed
 				seconds = end - start
-				print "Time taken : {0} seconds".format(seconds)
+				#print "Time taken : {0} seconds".format(seconds)
 
 				frm = frm + 1
 				if (frm >= 256):
 					# Calculate frames per second
 					self.fps  = frm / seconds;
-					print "Estimated frames per second : {0}".format(fps);
+					print "Estimated frames per second : {0}".format(self.fps);
 					frm = 0
 					start = time.time()
 
