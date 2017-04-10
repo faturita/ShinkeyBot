@@ -1,5 +1,11 @@
+#coding: latin-1
+
+# Read the sensor data captured by SensorimotorLogger and plot the data.
+
+
+
 import matplotlib.pyplot as plt
-f = open('sensor.dat', 'rw')
+f = open('sensor.2017-04-07-22-09-00.dat', 'rw')
 dat = f.readline()
 
 x = []
@@ -9,9 +15,9 @@ z = []
 while len(dat) > 0:
    data = dat.split('\n')[0].split(' ')
 
-   x.append( float(data[0]) )
-   y.append( float(data[1]) )
-   z.append( float(data[2]) )
+   x.append( float(data[12]) )
+   y.append( float(data[13]) )
+   z.append( float(data[14]) )
 
    dat = f.readline()
 

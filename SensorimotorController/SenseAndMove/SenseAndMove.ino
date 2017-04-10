@@ -82,7 +82,7 @@ struct sensortype
   int sound;        // +2 = 38
   int freq;         // +2 = 40
   int counter;      // +2 = 42
-  long distance;    // +4 = 46
+  int distance;     // +2 = 44
 
 } sensor;
 
