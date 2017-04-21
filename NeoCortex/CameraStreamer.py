@@ -10,9 +10,9 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('127.0.0.1', 10000)
 server_address = ('10.17.13.84', 10000)
 
-#cap = cv2.VideoCapture(0)
-#cap.set(3,640)
-#cap.set(4,480)
+cap = cv2.VideoCapture(0)
+cap.set(3,640)
+cap.set(4,480)
 
 frm = 0
 
@@ -20,8 +20,8 @@ sock.connect(server_address)
 
 while(True):
    # Capture frame-by-frame
-   #ret, frame = cap.read()
-   frame = cv2.imread("screenshot1.png")
+   ret, frame = cap.read()
+   #frame = cv2.imread("screenshot1.png")
 
    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 

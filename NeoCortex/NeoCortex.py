@@ -86,6 +86,7 @@ else:
     myip = 'None'
 
 # Shinkeybot truly does nothing until it gets the remote controlling connection
+whenistarted = time.time()
 print 'Multicasting my own IP address:' + myip
 while dobroadcastip:
     noticer.send()
@@ -93,8 +94,20 @@ while dobroadcastip:
         data, address = sock.recvfrom(1)
         if (len(data)>0):
             break
+        if (abs(time.time()-whenistarted)>60):
+            print 'Giving up broadcasting ip... Lets get started.'
+            break
     except:
         data = None
+
+from threading import Timer
+
+def timeout(noticers):
+    noticers.send()
+
+t = Timer(5 * 60, timeout, args=noticer)
+t.start()
+
 
 if (dobroadcastip):
     sock.setblocking(1)
