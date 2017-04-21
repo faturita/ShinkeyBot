@@ -17,6 +17,7 @@
 #   int sound;        // +2 = 38
 #   int freq;         // +2 = 40
 #   int counter;      // +2 = 42
+#   int distance;     // +2 = 44
 #
 # } sensor;
 
@@ -110,7 +111,7 @@ class Sensorimotor:
               sent = self.sock.sendto(data, self.server_address)
               #print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
               self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
-              
+
               return new_values
 
     def close(self):

@@ -201,15 +201,21 @@ while(True):
                     target = sens[9], sens[10], sens[11]
 
                 if (automode):
-                    print "Moving to :" + str(target[0]) + '\t' + str(target[1]) + '\t' + str(target[2])
-                    print "From:     :" + str(sens[9])   + '\t' + str(sens[10])  + '\t' + str(sens[11])
-                    if (not ( abs(sens[9]-target[0])<10) ):
-                        ssmr.write('-')
-                        ssmr.write('4')
-                        time.sleep(0.2)
-                        ssmr.write('5')
-                        time.sleep(0.1)
+                    #print "Moving to :" + str(target[0]) + '\t' + str(target[1]) + '\t' + str(target[2])
+                    #print "From:     :" + str(sens[9])   + '\t' + str(sens[10])  + '\t' + str(sens[11])
+                    #if (not ( abs(sens[9]-target[0])<10) ):
+                    #    ssmr.write('-')
+                    #    ssmr.write('4')
+                    #    time.sleep(0.2)
+                    #    ssmr.write('5')
+                    #    time.sleep(0.1)
 
+                    ssmr.write('+')
+                    ssmr.write('2')
+                    time.sleep(5)
+                    if (sens[15]<10):
+                        ssmr.write('5')
+                        time.sleep(3)
 
         if (data == '!'):
             vst.ip = address[0]
@@ -373,3 +379,4 @@ if (not mtrn == None):
     mtrn.close()
 
 os.remove('running.wt')
+print 'ShinkeyBot has stopped.'
