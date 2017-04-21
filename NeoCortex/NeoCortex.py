@@ -213,7 +213,7 @@ while(True):
                     print 'Auto:Sensing distance:'+str(sens[15])
                     ssmr.write('+')
                     ssmr.write('2')
-                    if (sens[15]<10):
+                    if (sens[15]<90):
                         ssmr.write('5')
 
 
@@ -379,5 +379,6 @@ sock.close()
 if (not mtrn == None):
     mtrn.close()
 
+t.cancel()
 os.remove('running.wt')
 print 'ShinkeyBot has stopped.'
