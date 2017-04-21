@@ -210,7 +210,7 @@ while(True):
                     #    ssmr.write('5')
                     #    time.sleep(0.1)
 
-                    print 'Auto:Sensing distance:'+sens[15]
+                    print 'Auto:Sensing distance:'+str(sens[15])
                     ssmr.write('+')
                     ssmr.write('2')
                     if (sens[15]<10):
@@ -358,9 +358,10 @@ while(True):
     except Exception as e:
         print "Error:" + e.message
         print "Waiting for serial connection to reestablish..."
-        time.sleep(2)
-        ssmr.close()
-        mtrn.close()
+        if (not ssmr == None):
+            ssmr.close()
+        if (not mtrn == None):
+            mtrn.close()
         [ssmr, mtrn] = prop.serialcomm()
 
         # Instruct the Sensorimotor Cortex to stop wandering.
