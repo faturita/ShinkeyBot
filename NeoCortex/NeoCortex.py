@@ -94,18 +94,20 @@ while dobroadcastip:
         data, address = sock.recvfrom(1)
         if (len(data)>0):
             break
-        if (abs(time.time()-whenistarted)>60):
-            print 'Giving up broadcasting ip... Lets get started.'
-            break
     except:
         data = None
 
+    if (abs(time.time()-whenistarted)>60):
+        print 'Giving up broadcasting ip... Lets get started.'
+        break
+
 from threading import Timer
 
-def timeout(noticers):
-    noticers.send()
+def timeout():
+    print 'Sending multicast update of my own ip address:'+myip
+    noticer.send()
 
-t = Timer(5 * 60, timeout, args=noticer)
+t = Timer(5 * 60, timeout)
 t.start()
 
 
