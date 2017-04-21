@@ -210,12 +210,12 @@ while(True):
                     #    ssmr.write('5')
                     #    time.sleep(0.1)
 
+                    print 'Auto:Sensing distance:'+sens[15]
                     ssmr.write('+')
                     ssmr.write('2')
-                    time.sleep(5)
                     if (sens[15]<10):
                         ssmr.write('5')
-                        time.sleep(3)
+
 
         if (data == '!'):
             vst.ip = address[0]
