@@ -18,7 +18,7 @@ import sys, select
 import socket
 import Configuration
 
-serialconnected = False
+serialconnected = True
 
 if (not serialconnected):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -76,62 +76,72 @@ line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the c
 line2, = ax.plot(y,'g', label='Y')
 line3, = ax.plot(z,'b', label='Z')
 
-ax.axis([0, 500, -500, 1200])
+ax.axis([0, 500, -100, 200])
 
 
 plcounter = 0
 
 plotx = []
 
-while True:
-  # read
-  if (serialconnected):
-      ser.write('S')
-      ser.write('P')
-      myByte = ser.read(1)
-  else:
-      myByte = 'S'
 
-  if myByte == 'S':
+counter = 0
+
+ser.write('A7180')
+
+try:
+    while True:
+      # read
       if (serialconnected):
-         data = ser.read(42)
-         myByte = ser.read(1)
+          ser.write('S')
+          ser.write('P')
+          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(46)
-         myByte = 'E'
+          myByte = 'S'
 
-      if myByte == 'E':
-          # is  a valid message struct
-          new_values = unpack('ffffffhhhhhhhhhh', data)
-          print str(new_values[9]) + '\t' + str(new_values[10]) + '\t' + str(new_values[11])
-          f.write( str(new_values[12]) + ' ' + str(new_values[3]) + ' ' + str(new_values[5]) + '\n')
+      if myByte == 'S':
+          if (serialconnected):
+             data = ser.read(24) # 44
+             myByte = ser.read(1)
+          else:
+             data, address = sock.recvfrom(46)
+             myByte = 'E'
 
-          x.append( float(new_values[9]))
-          y.append( float(new_values[10]))
-          z.append( float(new_values[11]))
+          if myByte == 'E':
+              # is  a valid message struct
+              new_values = unpack('hhffffhh',data)
+              #new_values = unpack('ffffffhhhhhhhhhh', data)
+              print str(new_values)
+              #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
+              f.write( str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + '\n')
 
-          plotx.append( plcounter )
+              x.append( float(new_values[5]))
+              y.append( float(new_values[1]))
+              z.append( float(new_values[0]))
 
-          line1.set_ydata(x)
-          line2.set_ydata(y)
-          line3.set_ydata(z)
+              plotx.append( plcounter )
 
-          line1.set_xdata(plotx)
-          line2.set_xdata(plotx)
-          line3.set_xdata(plotx)
+              line1.set_ydata(x)
+              line2.set_ydata(y)
+              line3.set_ydata(z)
 
-          fig.canvas.draw()
-          plt.pause(0.0001)
+              line1.set_xdata(plotx)
+              line2.set_xdata(plotx)
+              line3.set_xdata(plotx)
 
-          plcounter = plcounter+1
+              fig.canvas.draw()
+              plt.pause(0.00001)
 
-          if plcounter > 500:
-              plcounter = 0
-              plotx[:] = []
-              x[:] = []
-              y[:] = []
-              z[:] = []
+              plcounter = plcounter+1
 
+              if plcounter > 500:
+                  plcounter = 0
+                  plotx[:] = []
+                  x[:] = []
+                  y[:] = []
+                  z[:] = []
+except:
+    pass
 
 f.close()
 ser.close()
+print 'Everything successfully closed.'

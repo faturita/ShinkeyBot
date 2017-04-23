@@ -54,13 +54,13 @@ void checksensors()
   {
     counter = 0;
   }
-  sensor.counter = counter;
+  sensor.counter = counter++;
 
   sensor.cx = accel.cx;
   sensor.cy = accel.cy;
   sensor.cz = accel.cz;
 
-  sensor.angle = getTilt();
+  sensor.angle = getTilt()*180.0/PI;
 
   sensor.encoder = getEncoderPos();
 }

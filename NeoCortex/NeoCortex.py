@@ -130,6 +130,8 @@ wristpos=48
 
 elbowpos = 150
 
+shoulderpos = 0
+
 # Pan and tilt
 visualpos = [90,95]
 
@@ -250,10 +252,12 @@ while(True):
             #Camera nose down
         elif (data == 'Y'):
             # Move shoulder up
-            mtrn.write('A7160')
+            shoulderpos = shoulderpos + 1
+            mtrn.write('A7'+'{:3d}'.format(shoulderpos))
         elif (data == 'H'):
             # Move shoulder down.
-            mtrn.write('A7140')
+            shoulderpos = shoulderpos - 1
+            mtrn.write('A7'+'{:3d}'.format(shoulderpos))
         elif (data=='<'):
             # Move elbows up (by increasing its torque)
             elbowpos = elbowpos + 1
@@ -312,7 +316,7 @@ while(True):
             mtrn.write('L')
             # Laser on
         elif (data=='l'):
-            ssmr.write('l')
+            mtrn.write('l')
             # Laser off
         elif (data=='+'):
             tgt = tgt + 100

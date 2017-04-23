@@ -61,14 +61,15 @@ int speeds = 255;
 
 
 struct sensortype {
-  int counter;
-  int encoder;
-  float cx;
-  float cy;
-  float cz;
-  float angle;
-  int fps;
-} sensor;
+  int counter; // 2
+  int encoder; // 2
+  float cx;    // 4
+  float cy;    // 4
+  float cz;    // 4
+  float angle; // 4
+  int wrist;   // 2
+  int fps;     // 2
+} sensor; // 24
 
 
 void setup() {
@@ -112,7 +113,7 @@ void update(Servo servo) {
       direction = -1;
     }
 
-    if (pos <= 48)
+    if (pos <= 10)
     {
       //Serial.print("Reset up:");
       //Serial.println(counter++);
@@ -298,12 +299,13 @@ void loop() {
 
   // Update the servo wrist position.
   update(wrist);
+  sensor.wrist = pos;
 
   updateEncoder();
 
   updatedc(shoulder, getEncoderPos());
 
-  //updaterotservo(elbow, getTilt());
+  //updaterotservo(elbow, getTilt());                                                           
 
   switch (state)
   {
