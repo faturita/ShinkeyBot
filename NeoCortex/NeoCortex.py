@@ -130,7 +130,7 @@ wristpos=48
 
 elbowpos = 150
 
-shoulderpos = 0
+shoulderpos = 150
 
 # Pan and tilt
 visualpos = [90,95]
