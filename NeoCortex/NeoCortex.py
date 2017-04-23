@@ -250,14 +250,10 @@ while(True):
             #Camera nose down
         elif (data == 'Y'):
             # Move shoulder up
-            mtrn.write('A3250')
-            time.sleep(0.5) # This time depends on the weight
-            mtrn.write('A3000')
+            mtrn.write('A7160')
         elif (data == 'H'):
             # Move shoulder down.
-            mtrn.write('A4250')
-            time.sleep(0.2)
-            mtrn.write('A4000')
+            mtrn.write('A7140')
         elif (data=='<'):
             # Move elbows up (by increasing its torque)
             elbowpos = elbowpos + 1
@@ -282,22 +278,14 @@ while(True):
             # wrist down
         elif (data=='\''):
             mtrn.write('A8120')
-            time.sleep(0.6)
-            mtrn.write('A8000')
         elif (data=='?'):
             mtrn.write('A9120')
-            time.sleep(0.6)
-            mtrn.write('A9000')
         elif (data=='G'):
             # Grip close
-            mtrn.write('A1200')
-            time.sleep(2)
-            mtrn.write('A1000')
+            mtrn.write('A1220')
         elif (data=='R'):
             # Grip open
             mtrn.write('A2200')
-            time.sleep(2)
-            mtrn.write('A2000')
             # Gripper Release
         elif (data==' '):
             ssmr.write('1')
@@ -321,7 +309,7 @@ while(True):
             ssmr.write('+')
             # Move coarsely
         elif (data=='L'):
-            ssmr.write('L')
+            mtrn.write('L')
             # Laser on
         elif (data=='l'):
             ssmr.write('l')
