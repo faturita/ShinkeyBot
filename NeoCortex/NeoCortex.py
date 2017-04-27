@@ -128,7 +128,7 @@ ssmr.write('C')
 tgt = -300
 wristpos=48
 
-elbowpos = 150
+elbowpos = 180
 
 shoulderpos = 150
 
@@ -268,7 +268,7 @@ while(True):
             mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='Z'):
             # Reset Elbow position (no force)
-            elbowpos = 150
+            elbowpos = 180
             mtrn.write('AA'+'{:3d}'.format(elbowpos))
         elif (data=='J'):
             # mtrn.write('A6180')

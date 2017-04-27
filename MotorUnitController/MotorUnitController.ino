@@ -52,12 +52,58 @@ Adafruit_DCMotor *grip = AFMS.getMotor(1);
 Adafruit_DCMotor *tesaki = AFMS.getMotor(4);
 Adafruit_DCMotor *shoulder = AFMS.getMotor(2);
 
-Servo wrist;
-Servo elbow;
+class ControlledServo {
+public:
+  Servo servo;
+  int pos;
+  int tgtPos;
+  int direction = 1;
+  int minPos=0;
+  int maxPos=180;
+
+  void loop() {
+      // Update desired position.
+      if (pos<tgtPos)
+        direction = 1;
+      else
+        direction =-1;  
+  }
+
+  void update() {
+
+    loop();
+    if (tgtPos != pos)
+    {
+      //Serial.print(pos);Serial.print("--");
+      //Serial.println(desiredpos);
+      servo.write(pos);
+    
+      pos+=direction;
+      
+      if (pos>=minPos)
+      {
+        //Serial.print("Reset down:");
+        //Serial.println(counter++);
+        direction=-1;
+      }
+    
+      if (pos<=maxPos)
+      {
+        //Serial.print("Reset up:");
+        //Serial.println(counter++);
+        direction=1;    
+      }
+    }
+
+  } 
+};
+
+ControlledServo wrist;
+ControlledServo elbow;
 
 
 int state = 0;
-int speeds = 255;
+int controlvalue = 255;
 
 
 struct sensortype {
@@ -68,8 +114,9 @@ struct sensortype {
   float cz;    // 4
   float angle; // 4
   int wrist;   // 2
+  int elbow;   // 2
   int fps;     // 2
-} sensor; // 24
+} sensor; // 26
 
 
 void setup() {
@@ -79,8 +126,8 @@ void setup() {
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
-  wrist.attach(10);
-  elbow.attach(9);
+  wrist.servo.attach(10);
+  elbow.servo.attach(9);
 
   pinMode(laserPin, OUTPUT);
 
@@ -92,36 +139,6 @@ int incomingByte = 0;
 
 char buffer[5];
 
-int direction = 0;
-int pos = 48;
-int desiredpos = 48;
-
-void update(Servo servo) {
-
-  if (desiredpos != pos)
-  {
-    //Serial.print(pos);Serial.print("--");
-    //Serial.println(desiredpos);
-    servo.write(pos);
-
-    pos += direction;
-
-    if (pos >= 185)
-    {
-      //Serial.print("Reset down:");
-      //Serial.println(counter++);
-      direction = -1;
-    }
-
-    if (pos <= 10)
-    {
-      //Serial.print("Reset up:");
-      //Serial.println(counter++);
-      direction = 1;
-    }
-  }
-
-}
 
 void push(Adafruit_DCMotor *motor) {
   motor->run(FORWARD);
@@ -143,13 +160,13 @@ int elbowcounter = 0;
 int tesakicounter = 0;
 int grippercounter = 0;
 
+// =========== DC Control using the encoder.
 int targetpos = 0;
 
 void setTargetPos(int newtargetpos)
 {
   targetpos = newtargetpos;
 }
-
 
 void updatedc(Adafruit_DCMotor *dcmotor, int currentpos)
 {
@@ -193,7 +210,7 @@ void updaterotservo(Servo servo, float currentpos)
     //Serial.println( (fdet(targetposelbow*180.0/PI))+10*direction );
 
   //} else {
-    //servo->writeMicroseconds(speeds * 10);
+    //servo->writeMicroseconds(controlvalue * 10);
   }
 
 }
@@ -203,7 +220,7 @@ void setTargetPosElbow(float newtargetpos)
   targetposelbow = newtargetpos;  
 }
 
-void readcommand(int &state, int &speeds)
+void readcommand(int &state, int &controlvalue)
 {
   // Format A1000 >> A1220   --> Close grip
   // A2255 >> Open Grip
@@ -211,7 +228,7 @@ void readcommand(int &state, int &speeds)
   // A3220 or A4220 Move forward backward shoulder
   // A7150 will keep the elbow at zero encoder angle arm vertical. So AA140 will pull it up
   // A8220 clockwise A9220 counter
-  // AA150 -> Keep elbow steady, AA140 backward AA160 forward (AA100 --> AA150 --> AA200)
+  // AA180 -> Elbow is now a degree based encoder.  Not rotational.
   // Format A5000  Reset everything.
   memset(buffer, 0, 5);
   int readbytes = Serial.readBytes(buffer, 4);
@@ -227,14 +244,14 @@ void readcommand(int &state, int &speeds)
     int b = buffer[2] - 48;
     int c = buffer[3] - 48;
 
-    speeds = atoi(buffer + 1);
+    controlvalue = atoi(buffer + 1);
     state = action;
 
     if (debug) {
       Serial.print("Action:");
       Serial.print(action);
       Serial.print("/");
-      Serial.println(speeds);
+      Serial.println(controlvalue);
     }
   }
 }
@@ -289,7 +306,7 @@ void loop() {
         targetpos=0;
         break;
       case 'A':
-        readcommand(state,speeds);
+        readcommand(state,controlvalue);
         break;
       default:
         break;
@@ -298,8 +315,8 @@ void loop() {
   }
 
   // Update the servo wrist position.
-  update(wrist);
-  sensor.wrist = pos;
+  wrist.update();
+  sensor.wrist = wrist.pos;
 
   updateEncoder();
 
@@ -307,65 +324,65 @@ void loop() {
 
   //updaterotservo(elbow, getTilt());                                                           
 
+  elbow.update();
+  sensor.elbow = elbow.pos;
+  
   switch (state)
   {
     case 1:
-      //grip->write(speeds);
-      grip->setSpeed(speeds);
+      //grip->write(controlvalue);
+      grip->setSpeed(controlvalue);
       grip->run(FORWARD);
       grippercounter = 1;
       break;
     case 2:
-      //grip->write(-speeds);
-      grip->setSpeed(speeds);
+      //grip->write(-controlvalue);
+      grip->setSpeed(controlvalue);
       grip->run(BACKWARD);
       grippercounter = 1;
       break;
     case 3:
       // Go up
-      shoulder->setSpeed(speeds);
+      shoulder->setSpeed(controlvalue);
       shoulder->run(FORWARD);
       break;
     case 4:
-      shoulder->setSpeed(speeds);
+      shoulder->setSpeed(controlvalue);
       shoulder->run(BACKWARD);
       break;
     case 7:
-      setTargetPos(speeds - 150);
+      setTargetPos(controlvalue - 150);
       break;
     case 5:
       grip->run(RELEASE);
       tesaki->run(RELEASE);
       shoulder->run(RELEASE);
-      elbow.detach();
-      wrist.detach();
+      elbow.servo.detach();
+      wrist.servo.detach();
       state = 0;
       break;
     case 6:
       // Update desired position.
-      desiredpos = speeds;
-      if (pos < desiredpos)
-        direction = 1;
-      else
-        direction = -1;
+      wrist.tgtPos = controlvalue;
       break;
     case 8:
       tesakicounter = 1;
-      tesaki->setSpeed(speeds);
+      tesaki->setSpeed(controlvalue);
       tesaki->run(BACKWARD);
       break;
     case 9:
       tesakicounter = 1;
-      tesaki->setSpeed(speeds);
+      tesaki->setSpeed(controlvalue);
       tesaki->run(FORWARD);
       break;
     case 0x0a:
       // 150x10 is no movement. 360 servo.
-      elbow.writeMicroseconds(speeds * 10);
+      //elbow.writeMicroseconds(controlvalue * 10);
+      elbow.tgtPos=controlvalue;
       elbowcounter = 1;
       break;
     case 0x0b:
-      setTargetPosElbow(((float)speeds)*PI/180.0);
+      setTargetPosElbow(((float)controlvalue)*PI/180.0);
       elbowcounter = 1;
     default:
       // Do Nothing
