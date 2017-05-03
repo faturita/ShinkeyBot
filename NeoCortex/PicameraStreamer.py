@@ -53,6 +53,7 @@ class VideoStreamer:
 			camera = PiCamera()
 			camera.resolution = (640, 480)
 			camera.framerate = 32
+                        camera.color_effects = (128,128)
 			rawCapture = PiRGBArray(camera, size=(640, 480))
 
 			# allow the camera to warmup
@@ -66,6 +67,7 @@ class VideoStreamer:
 				# grab the raw NumPy array representing the image, then initialize the timestamp
 				# and occupied/unoccupied text
 				image = frame.array
+                                print 'Capturing.'+str(frm)
 
 				gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -118,3 +120,7 @@ class VideoStreamer:
 		if (camera):
 			print "Picamera released..."
 			camera.close()
+
+if __name__ == "__main__":
+   vd = VideoStreamer()
+   vd.connect()
