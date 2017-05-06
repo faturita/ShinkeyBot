@@ -221,17 +221,14 @@ while(True):
 
 
         if (data == '!'):
-            vst.ip = address[0]
-            print "Reloading target ip for stream:"+vst.ip
-
-
             sensorimotor.ip = address[0]
             sensorimotor.restart()
 
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
-            vst.interrupt()
-            vst.startAndConnect()
+            # Vst VideoStream should be likely restarted in order to check
+            # if something else can be enabled.
+
 
         if (data == 'Q'):
             sensesensor = (not sensesensor)

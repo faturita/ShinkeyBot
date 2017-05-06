@@ -22,7 +22,7 @@ class H264VideoStreamer:
 
     def startAndConnect(self):
         try:
-            self.thread = thread.start_new_thread( self.connect )
+            self.thread = thread.start_new_thread( self.connect, () )
         except Exception as e:
             print "Error:" + e.message
             print "Error: unable to start thread"
