@@ -55,9 +55,9 @@ def get_ip_address(ifname):
 
 
 # Get PiCamera stream and read everything in another thread.
-vst = pcs.VideoStreamer()
+vst = pcs.H264VideoStreamer()
 try:
-    thread.start_new_thread( vst.connect, () )
+    vst.startAndConnect()
     pass
 except:
     pass
@@ -223,15 +223,14 @@ while(True):
             vst.ip = address[0]
             print "Reloading target ip for stream:"+vst.ip
 
+
             sensorimotor.ip = address[0]
             sensorimotor.restart()
 
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
-            try:
-                thread.start_new_thread( vst.connect, () )
-            except:
-                pass
+            vst.interrupt()
+            vst.startAndConnect()
 
         if (data == 'Q'):
             sensesensor = (not sensesensor)
