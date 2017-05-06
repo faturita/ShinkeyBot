@@ -5,25 +5,25 @@ import time
 import picamera
 
 class H264VideoStreamer:
-	def __init__(self):
-		self.name = 'streamer'
-		self.keeprunning = True
-		self.ip = conf.shinkeybotip
-		self.videoport = conf.videoport
-		self.fps = 1
+    def __init__(self):
+        self.name = 'streamer'
+        self.keeprunning = True
+        self.ip = conf.shinkeybotip
+        self.videoport = conf.videoport
+        self.fps = 1
         self.thread = None
 
     def interrupt(self):
         print 'Interrupting stream h264 server...'
         self.thread.exit()
 
-	def startAndConnect(self):
-		try:
-		   self.thread = thread.start_new_thread( self.connect )
-		except:
-		   print "Error: unable to start thread"
+    def startAndConnect(self):
+        try:
+            self.thread = thread.start_new_thread( self.connect )
+        except:
+            print "Error: unable to start thread"
 
-	def connect(self):
+    def connect(self):
         print "Openning single-client H264 streaming server:"+self.ip
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
@@ -46,5 +46,5 @@ class H264VideoStreamer:
 
 
 if __name__ == "__main__":
-   vd = H264VideoStreamer()
-   vd.connect()
+    vd = H264VideoStreamer()
+    vd.connect()
