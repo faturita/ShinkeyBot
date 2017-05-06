@@ -25,7 +25,7 @@ import socket
 import Proprioceptive as prop
 import thread
 #import PicameraStreamer as pcs
-import H264VideoStreamer as pcs
+import H264Streamer as pcs
 import SensorimotorLogger as senso
 import MCast
 
