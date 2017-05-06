@@ -17,6 +17,9 @@ for i in range(1,80000):
    # Capture frame-by-frame
    ret, frame = cap.read()
 
+   if (frame.size.width == 0 || frame.size.height == 0):
+       continue
+
    frame = cv2.flip(frame,0)
    frame = cv2.flip(frame,1)
 
@@ -26,12 +29,12 @@ for i in range(1,80000):
    gray = frame;
 
    #Using AKAZE descriptors.
-   detector = cv2.AKAZE_create()
-   (kps, descs) = detector.detectAndCompute(gray, None)
-   print("keypoints: {}, descriptors: {}".format(len(kps), descs.shape))
+   #detector = cv2.AKAZE_create()
+   #(kps, descs) = detector.detectAndCompute(gray, None)
+   #print("keypoints: {}, descriptors: {}".format(len(kps), descs.shape))
 
    # draw the keypoints and show the output image
-   cv2.drawKeypoints(frame, kps, frame, (0, 255, 0))
+   #cv2.drawKeypoints(frame, kps, frame, (0, 255, 0))
 
    cv2.imshow("ShinkeyBot Eye", frame)
 
