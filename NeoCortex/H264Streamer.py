@@ -4,6 +4,8 @@ import socket
 import time
 import picamera
 
+import Configuration as conf
+
 class H264VideoStreamer:
     def __init__(self):
         self.name = 'streamer'
