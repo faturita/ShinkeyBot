@@ -3,6 +3,7 @@
 import socket
 import time
 import picamera
+import thread
 
 import Configuration as conf
 
@@ -22,7 +23,8 @@ class H264VideoStreamer:
     def startAndConnect(self):
         try:
             self.thread = thread.start_new_thread( self.connect )
-        except:
+        except Exception as e:
+            print "Error:" + e.message
             print "Error: unable to start thread"
 
     def connect(self):
