@@ -45,8 +45,10 @@ class H264VideoStreamer:
                 camera.wait_recording(100000)
                 camera.stop_recording()
             finally:
+                camera.close()
                 connection.close()
                 server_socket.close()
+                print 'Connection closed.  Camera released.'
 
 
 if __name__ == "__main__":
