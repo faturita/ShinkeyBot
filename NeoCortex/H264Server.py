@@ -3,7 +3,7 @@ import time
 import picamera
 import thread
 
-print "Openning single-client H264 streaming server:"+8000
+print "Openning single-client H264 streaming server:"+str(8000)
 with picamera.PiCamera() as camera:
     camera.resolution = (640, 480)
     camera.framerate = 10
