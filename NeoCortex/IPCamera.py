@@ -17,7 +17,7 @@ for i in range(1,80000):
    # Capture frame-by-frame
    ret, frame = cap.read()
 
-   if (frame.size.width == 0 || frame.size.height == 0):
+   if (frame != None or frame.size.width == 0 or frame.size.height == 0):
        continue
 
    frame = cv2.flip(frame,0)
