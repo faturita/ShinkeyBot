@@ -57,7 +57,7 @@ class Sensorimotor:
     def __init__(self):
         self.name = 'sensorimotor'
         self.keeprunning = True
-        self.ip = Configuration.ip
+        self.ip = Configuration.controllerip
         self.telemetryport = Configuration.telemetryport
         self.sensors = None
 
