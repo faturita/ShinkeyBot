@@ -17,8 +17,8 @@ for i in range(1,80000):
    # Capture frame-by-frame
    ret, frame = cap.read()
 
-   frame = cv2.flip(frame,0)
-   frame = cv2.flip(frame,1)
+   #frame = cv2.flip(frame,0)
+   #frame = cv2.flip(frame,1)
 
    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
    #cv2.imwrite('01.png', gray)

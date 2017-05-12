@@ -32,6 +32,8 @@ class H264VideoStreamer:
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
             camera.framerate = 10
+            camera.hflip = True
+            camera.vflip = True
             camera.color_effects = (128,128)
 
             # Accept a single connection and make a file-like object out of it
@@ -44,7 +46,8 @@ class H264VideoStreamer:
             finally:
                 try:
                     socketconnection.close()
-                    camera.close()
+                    sleep(2)
+                    #camera.close()
                     print 'Connection closed.'
                 except:
                     pass
