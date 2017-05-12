@@ -45,7 +45,7 @@ class H264VideoStreamer:
                 camera.stop_recording()
             finally:
                 try:
-                    socketconnection.close()
+                    #socketconnection.close()
                     sleep(2)
                     #camera.close()
                     print 'Connection closed.'
@@ -58,9 +58,9 @@ class H264VideoStreamer:
         server_socket.listen(1)
         doWait = True
         while(doWait):
-            self.connectMe(server_socket)
-            try:
 
+            try:
+                self.connectMe(server_socket)
                 doWait = False
             except KeyboardInterrupt:
                 doWait = False
