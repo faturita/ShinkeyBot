@@ -48,14 +48,15 @@ class H264VideoStreamer:
                 except:
                     pass
 
-    def connect(self):
+    def connect(self, server_socket):
         server_socket = socket.socket()
         server_socket.bind(('0.0.0.0', self.videoport))
         server_socket.listen(1)
         doWait = True
         while(doWait):
+            self.connectMe(server_socket)
             try:
-                self.connectMe(server_socket)
+
                 doWait = False
             except KeyboardInterrupt:
                 doWait = False
