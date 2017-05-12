@@ -55,11 +55,12 @@ class H264VideoStreamer:
         doWait = True
         while(doWait):
             try:
-                connectMe(server_socket)
+                self.connectMe(server_socket)
                 doWait = False
             except KeyboardInterrupt:
                 doWait = False
             except:
+                print 'error!!'
                 doWait=True
 
 
