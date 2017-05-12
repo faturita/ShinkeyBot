@@ -8,7 +8,7 @@ import Configuration as conf
 #cap = cv2.VideoCapture('tcp://192.168.1.1:5555')
 #cap = cv2.VideoCapture('tcp://192.168.0.3/cgi-bin/fwstream.cgi?FwModId=0&PortId=1&PauseTime=0&FwCgiVer=0x0001')
 #cap = cv2.VideoCapture('rtsp://192.168.0.3/cam0_0')
-cap = cv2.VideoCapture('tcp://192.168.0.110:8000')
+cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
 #cap = cv2.VideoCapture('tcp://'+str(conf.shinkeybotip)+':'+str(conf.videoport))
 
 print ("Connecting..")
@@ -22,8 +22,6 @@ for i in range(1,80000):
 
    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
    #cv2.imwrite('01.png', gray)
-
-   gray = frame;
 
    #Using AKAZE descriptors.
    #detector = cv2.AKAZE_create()

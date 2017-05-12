@@ -27,16 +27,12 @@ class H264VideoStreamer:
             print "Error:" + e.message
             print "Error: unable to start thread"
 
-    def connect(self):
+    def connectMe(self):
         print "Openning single-client H264 streaming server:"+self.videoport
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
             camera.framerate = 10
             camera.color_effects = (128,128)
-
-            server_socket = socket.socket()
-            server_socket.bind(('0.0.0.0', self.videoport))
-            server_socket.listen(0)
 
             # Accept a single connection and make a file-like object out of it
             connection = server_socket.accept()[0].makefile('wb')
@@ -45,10 +41,26 @@ class H264VideoStreamer:
                 camera.wait_recording(100000)
                 camera.stop_recording()
             finally:
-                camera.close()
-                connection.close()
-                server_socket.close()
-                print 'Connection closed.  Camera released.'
+                try:
+                    connection.close()
+                    camera.close()
+                    print 'Connection closed.'
+                except:
+                    pass
+
+    def connect(self):
+        server_socket = socket.socket()
+        server_socket.bind(('0.0.0.0', self.videoport))
+        server_socket.listen(1)
+        doWait = True
+        while(doWait):
+            try:
+                connectMe(server_socket)
+                doWait = False
+            except KeyboardInterrupt:
+                doWait = False
+            except:
+                doWait=True
 
 
 if __name__ == "__main__":
