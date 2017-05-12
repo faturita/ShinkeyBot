@@ -27,7 +27,7 @@ class H264VideoStreamer:
             print "Error:" + e.message
             print "Error: unable to start thread"
 
-    def connectMe(self):
+    def connectMe(self, server_socket):
         print "Openning single-client H264 streaming server:"+str(self.videoport)
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
@@ -48,7 +48,7 @@ class H264VideoStreamer:
                 except:
                     pass
 
-    def connect(self, server_socket):
+    def connect(self):
         server_socket = socket.socket()
         server_socket.bind(('0.0.0.0', self.videoport))
         server_socket.listen(1)
