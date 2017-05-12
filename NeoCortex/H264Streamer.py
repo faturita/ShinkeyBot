@@ -42,16 +42,16 @@ class H264VideoStreamer:
             try:
                 camera.start_recording(connection, format='h264')
                 camera.wait_recording(100000)
-                sleep(5)
+                time.sleep(5)
                 camera.stop_recording()
             finally:
                 try:
                     camera.close()
                     print 'Camera closed'
-                    sleep(2)
+                    time.sleep(2)
                     connection.flush()
                     socketconnection.close()
-                    sleep(2)
+                    time.sleep(2)
                     print 'Connection closed.'
                 except:
                     pass
@@ -64,7 +64,7 @@ class H264VideoStreamer:
         doWait = True
         while(doWait):
             print 'Trying to reconnect....'
-            sleep(5)
+            time.sleep(5)
             try:
                 self.connectMe(server_socket)
                 doWait = False
