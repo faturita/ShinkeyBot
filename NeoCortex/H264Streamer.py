@@ -35,14 +35,15 @@ class H264VideoStreamer:
             camera.color_effects = (128,128)
 
             # Accept a single connection and make a file-like object out of it
-            connection = server_socket.accept()[0].makefile('wb')
+            socketconnection = server_socket.accept()
+            connection = socketconnection[0].makefile('wb')
             try:
                 camera.start_recording(connection, format='h264')
                 camera.wait_recording(100000)
                 camera.stop_recording()
             finally:
                 try:
-                    connection.close()
+                    socketconnection.close()
                     camera.close()
                     print 'Connection closed.'
                 except:
