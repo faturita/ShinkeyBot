@@ -1,5 +1,6 @@
 #coding: latin-1
 import cv2
+import time
 
 import Configuration as conf
 
@@ -41,4 +42,6 @@ print ('Done.')
 
 #When everything done, release the capture
 cap.release()
+time.sleep(5)
+
 cv2.destroyAllWindows()

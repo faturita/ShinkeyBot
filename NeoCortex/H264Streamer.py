@@ -42,6 +42,7 @@ class H264VideoStreamer:
             try:
                 camera.start_recording(connection, format='h264')
                 camera.wait_recording(100000)
+                sleep(5)
                 camera.stop_recording()
             finally:
                 try:
@@ -50,26 +51,26 @@ class H264VideoStreamer:
                     camera.close()
                     print 'Connection closed.'
                 except:
-                    server_socket.close()
+                    pass
 
     def connect(self):
         server_socket = socket.socket()
         server_socket.bind(('0.0.0.0', self.videoport))
         server_socket.listen(1)
 
-        self.connectMe(server_socket)
+        doWait = True
+        while(doWait):
+
+            try:
+                self.connectMe(server_socket)
+                doWait = False
+            except KeyboardInterrupt:
+                doWait = False
+            except:
+                print 'error!!'
+                doWait=True
 
 
 if __name__ == "__main__":
-    doWait = True
-    while(doWait):
-
-        try:
-            vd = H264VideoStreamer()
-            vd.connect()
-            doWait = False
-        except KeyboardInterrupt:
-            doWait = False
-        except:
-            print 'error!!'
-            doWait=True
+    vd = H264VideoStreamer()
+    vd.connect()
