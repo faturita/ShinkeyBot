@@ -57,6 +57,8 @@ class H264VideoStreamer:
         server_socket.bind(('0.0.0.0', self.videoport))
         server_socket.listen(1)
 
+        self.connectMe(server_socket)
+
 
 if __name__ == "__main__":
     doWait = True
