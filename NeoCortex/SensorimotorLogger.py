@@ -60,6 +60,7 @@ class Sensorimotor:
         self.ip = Configuration.controllerip
         self.telemetryport = Configuration.telemetryport
         self.sensors = None
+        self.data = None
         self.length = length
         self.mapping = mapping
 
@@ -94,7 +95,7 @@ class Sensorimotor:
 
 
     def send(self,data):
-        sent = self.sock.sendto(pack(self.mapping,data), self.server_address)
+        sent = self.sock.sendto(data, self.server_address)
 
     def picksensorsample(self, ser):
         # read  Embed this in a loop.
@@ -107,7 +108,7 @@ class Sensorimotor:
         if myByte == 'S':
           readcount = 0
           #data = readsomething(ser,44)
-          data = readsomething(ser,self.length)
+          self.data = readsomething(ser,self.length)
           myByte = readsomething(ser,1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct

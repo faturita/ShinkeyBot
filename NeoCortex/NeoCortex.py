@@ -203,8 +203,7 @@ while(True):
             mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
-                sensorimotor.send(sens)
-                motorneuron.send(mots)
+                sensorimotor.send(sens.data+mots.data)
 
             if (sens != None and target != None):
                 if (target[0] == 0):
