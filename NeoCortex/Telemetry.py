@@ -103,20 +103,20 @@ while True:
          data = ser.read(24) # 44
          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(46)
+         data, address = sock.recvfrom(26)
          myByte = 'E'
 
-      if myByte == 'E' and len(data)>0:
+      if myByte == 'E' and len(data)>0 and len(data) == 26:
           # is  a valid message struct
-          #new_values = unpack('hhffffhh',data)
-          new_values = unpack('ffffffhhhhhhhhhh', data)
+          new_values = unpack('hhffffhhh',data)
+          #new_values = unpack('ffffffhhhhhhhhhh', data)
           print str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
-          f.write( str(new_values[15]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + '\n')
+          f.write( str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + '\n')
 
-          x.append( float(new_values[15]))
-          y.append( float(new_values[14]))
-          z.append( float(new_values[13]))
+          x.append( float(new_values[5]))
+          y.append( float(new_values[6]))
+          z.append( float(new_values[7]))
 
           plotx.append( plcounter )
 
