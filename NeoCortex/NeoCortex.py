@@ -143,7 +143,7 @@ sensorimotor.start()
 sensorimotor.cleanbuffer(ssmr)
 
 if (mtrn):
-    motorneuron = senso.Sensorimotor('motorneuron',24,'hhffffhh')
+    motorneuron = senso.Sensorimotor('motorneuron',26,'hhffffhhh')
     motorneuron.start()
     motorneuron.cleanbuffer(mtrn)
 
