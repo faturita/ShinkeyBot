@@ -199,8 +199,10 @@ while(True):
 
         # If someone asked for it, send sensor information.
         if (sensesensor):
-            sens = sensorimotor.sendsensorsample(ssmr)
-            mots = motorneuron.sendsensorsample(mtrn)
+            sens = sensorimotor.picksensorsample(ssmr)
+            mots = motorneuron.picksensorsample(mtrn)
+
+            sensorimotor.send(sens+mots)
 
             if (sens != None and target != None):
                 if (target[0] == 0):
