@@ -94,7 +94,7 @@ class Sensorimotor:
 
 
     def send(self,data):
-        sent = self.sock.sendto(data, self.server_address)
+        sent = self.sock.sendto(pack(self.mapping,data), self.server_address)
 
     def picksensorsample(self, ser):
         # read  Embed this in a loop.

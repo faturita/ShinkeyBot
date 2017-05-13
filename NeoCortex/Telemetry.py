@@ -103,12 +103,12 @@ while True:
          data = ser.read(24) # 44
          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(26)
+         data, address = sock.recvfrom(44+26)
          myByte = 'E'
 
-      if myByte == 'E' and len(data)>0 and len(data) == 26:
+      if myByte == 'E' and len(data)>0 and len(data) == 44+26:
           # is  a valid message struct
-          new_values = unpack('hhffffhhh',data)
+          new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
           #new_values = unpack('ffffffhhhhhhhhhh', data)
           print str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
