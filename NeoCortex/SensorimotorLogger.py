@@ -54,18 +54,20 @@ def gimmesomething(ser):
 
 
 class Sensorimotor:
-    def __init__(self):
-        self.name = 'sensorimotor'
+    def __init__(self, name, length, mapping):
+        self.name = name
         self.keeprunning = True
         self.ip = Configuration.controllerip
         self.telemetryport = Configuration.telemetryport
         self.sensors = None
+        self.length = length
+        self.map = mapping
 
     def start(self):
         # Sensor Recording
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
-        self.f = open('../data/sensor.'+st+'.dat', 'w')
+        self.f = open('../data/sensor.'+self.name+'.'+st+'.dat', 'w')
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = (self.ip, self.telemetryport)
@@ -101,17 +103,18 @@ class Sensorimotor:
         myByte = ser.read(1)
         if myByte == 'S':
           readcount = 0
-          data = readsomething(ser,44)
+          #data = readsomething(ser,44)
+          data = readsomething(ser,self.length)
           myByte = readsomething(ser,1)
           if len(myByte) >= 1 and myByte == 'E':
               # is  a valid message struct
-              new_values = unpack('ffffffhhhhhhhhhh', data)
+              #new_values = unpack('ffffffhhhhhhhhhh', data)
+              new_values = unpack(self.mapping, data)
               #print new_values
               self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)
-              #print str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + '\n'
-              self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
-
+              #self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
+              self.f.write(' '.join(map(str, new_values)) + '\n'
               return new_values
 
     def close(self):

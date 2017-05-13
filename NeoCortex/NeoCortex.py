@@ -44,8 +44,6 @@ st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
 runningtoken.write(st)
 runningtoken.close()
 
-
-
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -86,7 +84,7 @@ if (len(myip)>0):
 else:
     myip = 'None'
 
-# Shinkeybot truly does nothing until it gets the remote controlling connection
+# Shinkeybot truly does nothing until it gets connected to ShinkeyBotController
 whenistarted = time.time()
 print 'Multicasting my own IP address:' + myip
 while dobroadcastip:
@@ -105,12 +103,11 @@ while dobroadcastip:
 from threading import Timer
 
 def timeout():
-    print 'Sending multicast update of my own ip address:'+myip
+    print 'Sending a multicast update of my own ip address:'+myip
     noticer.send()
 
 t = Timer(5 * 60, timeout)
 t.start()
-
 
 if (dobroadcastip):
     sock.setblocking(1)
@@ -141,9 +138,14 @@ visualpos = [90,95]
 sensesensor = True
 
 # Connect remotely to any client that is waiting for sensor loggers.
-sensorimotor = senso.Sensorimotor()
+sensorimotor = senso.Sensorimotor('sensorimotor',44,'ffffffhhhhhhhhhh')
 sensorimotor.start()
 sensorimotor.cleanbuffer(ssmr)
+
+if (mtrn):
+    motorneuron = senso.Sensorimotor('motorneuron',24,'hhffffhh')
+    motorneuron.start()
+    motorneuron.cleanbuffer(mtrn)
 
 
 class Surrogator:
@@ -198,6 +200,7 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sens = sensorimotor.sendsensorsample(ssmr)
+            mots = motorneuron.sendsensorsample(mtrn)
 
             if (sens != None and target != None):
                 if (target[0] == 0):
@@ -221,8 +224,12 @@ while(True):
 
 
         if (data == '!'):
+            # IP Address exchange.
             sensorimotor.ip = address[0]
             sensorimotor.restart()
+
+            motorneuron.ip = address[0]
+            motorneuron.restart()
 
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
@@ -231,8 +238,10 @@ while(True):
 
 
         if (data == 'Q'):
+            # Activate/Deactivate sensor data.
             sensesensor = (not sensesensor)
         if (data == 'K'):
+            # Automode
             automode = (not automode)
         if (data == 'N'):
             ssmr.write('H')
@@ -278,8 +287,10 @@ while(True):
             mtrn.write('A6'+'{:3d}'.format(wristpos))
             # wrist down
         elif (data=='\''):
+            # Wrist clockwise
             mtrn.write('A8120')
         elif (data=='?'):
+            # Wrist anticlockwise
             mtrn.write('A9120')
         elif (data=='G'):
             # Grip close
@@ -311,9 +322,11 @@ while(True):
             # Move coarsely
         elif (data=='L'):
             mtrn.write('L')
+            ssmr.write('L')
             # Laser on
         elif (data=='l'):
             mtrn.write('l')
+            ssmr.write('l')
             # Laser off
         elif (data=='+'):
             tgt = tgt + 100
@@ -322,24 +335,28 @@ while(True):
             tgt = tgt - 100
             # Pull down tesaki target
         elif (data=='{'):
+            # Camera left
             visualpos[0]=visualpos[0]+1;
             ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
         elif (data=='}'):
+            # Camera right
             visualpos[0]=visualpos[0]-1;
             ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
         elif (data=='['):
+            # Nose down
             visualpos[1]=visualpos[1]-1;
             ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
         elif (data==']'):
+            # Nose up
             visualpos[1]=visualpos[1]+1;
             ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
         elif (data=='M'):
-            prop.moveto(mtrn, hidraw, tgt)
+            #prop.moveto(mtrn, hidraw, tgt)
             # PID to desired position
         elif (data=='E'):
             ssmr.write('E')
             # Empire song
-        elif (data=='B'):
+        elif (data=='P'):
             ssmr.write('B')
             # Buzz
         elif (data=='X'):
@@ -368,6 +385,12 @@ sock.close()
 if (not mtrn == None):
     mtrn.close()
 
-t.cancel()
+try:
+    t.cancel()
+    print 'Thread successfully closed.'
+except Exception as e:
+    print 'Exception while closing video stream thread.'
+    traceback.print_exc(file=sys.stdout)
+
 os.remove('running.wt')
 print 'ShinkeyBot has stopped.'
