@@ -204,7 +204,7 @@ while(True):
 
             if (sens != None and mots != None):
                 sensorimotor.send(sens)
-                sensorimotor.send(mots)
+                motorneuron.send(mots)
 
             if (sens != None and target != None):
                 if (target[0] == 0):
