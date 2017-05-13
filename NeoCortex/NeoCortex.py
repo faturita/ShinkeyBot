@@ -351,6 +351,7 @@ while(True):
             visualpos[1]=visualpos[1]+1;
             ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
         elif (data=='M'):
+            pass
             #prop.moveto(mtrn, hidraw, tgt)
             # PID to desired position
         elif (data=='E'):

@@ -61,7 +61,7 @@ class Sensorimotor:
         self.telemetryport = Configuration.telemetryport
         self.sensors = None
         self.length = length
-        self.map = mapping
+        self.mapping = mapping
 
     def start(self):
         # Sensor Recording
@@ -114,7 +114,7 @@ class Sensorimotor:
               self.sensors = new_values
               sent = self.sock.sendto(data, self.server_address)
               #self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
-              self.f.write(' '.join(map(str, new_values)) + '\n'
+              self.f.write(' '.join(map(str, new_values)) + '\n')
               return new_values
 
     def close(self):
