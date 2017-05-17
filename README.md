@@ -21,7 +21,7 @@ gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4
 * http://www.startech.com/faq/usb_hubs_industrial_power_adapter
 
 # To DO
-
+* Reset and calibrate the arm at startup using the tilt sensor.
 * Power Consumption from USB hub.
   * Adding the current sensor and voltage sensor for the batteries.
   * Integrate everything into a power source
@@ -30,14 +30,13 @@ gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4
 * Enable the program to work without camera.
 * Hook up the robot to the brain signals.
 
-# Benchmarks
-
+# Benchmarks
 * Follow the gripper's laser with the pan-and-tilt camera.
 * Autohook to battery charger (feeding benchmark).
 * Follow light and sound sources.
 * Perform basic SLAM
 
-# Keyes Sensors
+# References
 * http://www.johnboucha.com/arduino-photoresistor/
 * https://gist.github.com/tagliati
 * https://tkkrlab.nl/wiki/Arduino_KY-012_Active_buzzer_module
