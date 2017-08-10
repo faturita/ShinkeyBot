@@ -75,19 +75,19 @@ public:
     if (tgtPos != pos)
     {
       //Serial.print(pos);Serial.print("--");
-      //Serial.println(desiredpos);
+      //Serial.println(tgtPos);
       servo.write(pos);
     
       pos+=direction;
       
-      if (pos>=minPos)
+      if (pos<minPos)
       {
         //Serial.print("Reset down:");
         //Serial.println(counter++);
         direction=-1;
       }
     
-      if (pos<=maxPos)
+      if (pos>maxPos)
       {
         //Serial.print("Reset up:");
         //Serial.println(counter++);
@@ -127,7 +127,11 @@ void setup() {
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
   wrist.servo.attach(10);
+  wrist.pos=90;
+  wrist.tgtPos=90;
   elbow.servo.attach(9);
+  elbow.pos=90;
+  elbow.tgtPos=90;
 
   pinMode(laserPin, OUTPUT);
 
@@ -162,25 +166,29 @@ int grippercounter = 0;
 
 // =========== DC Control using the encoder.
 int targetpos = 0;
+int TORQUE=200;
 
 void setTargetPos(int newtargetpos)
 {
   targetpos = newtargetpos;
 }
 
-void updatedc(Adafruit_DCMotor *dcmotor, int currentpos)
+bool updatedc(Adafruit_DCMotor *dcmotor, int currentpos)
 {
   if (targetpos != currentpos)
   {
-    dcmotor->setSpeed(90);
+    dcmotor->setSpeed(TORQUE);
 
     if (targetpos < currentpos)
       dcmotor->run(FORWARD);
     else
       dcmotor->run(BACKWARD);
 
+    return false;
+
   } else {
     dcmotor->setSpeed(0);
+    return true;
   }
 
 }
@@ -225,8 +233,9 @@ void readcommand(int &state, int &controlvalue)
   // Format A1000 >> A1220   --> Close grip
   // A2255 >> Open Grip
   // A6090 >> 90 deg wrist A6010 --> A6180
-  // A3220 or A4220 Move forward backward shoulder
-  // A7150 will keep the elbow at zero encoder angle arm vertical. So AA140 will pull it up
+  // A3220 or A4220 Move forward backward shoulder NO LONGER
+  // A7150 will keep the shoulder at zero encoder angle arm vertical. 
+  //       So AA140 will pull it up
   // A8220 clockwise A9220 counter
   // AA180 -> Elbow is now a degree based encoder.  Not rotational.
   // Format A5000  Reset everything.
@@ -256,6 +265,13 @@ void readcommand(int &state, int &controlvalue)
   }
 }
 
+/**
+ * Homing works by setting servos to 90 degrees, and later to pull 
+ * or push the shoulder DC so that the angle on the arm reads 90 degrees
+ * 
+ * Then homing is stopped and the encoder is reset to zero.
+ */
+bool homing=false;
 
 void loop() {
   if (accel.available())
@@ -304,6 +320,10 @@ void loop() {
       case '=':
         resetEncoderPos();
         targetpos=0;
+        setTargetPos(90/10);
+        elbow.tgtPos=90;
+        wrist.tgtPos=90;
+        homing=true;
         break;
       case 'A':
         readcommand(state,controlvalue);
@@ -320,8 +340,18 @@ void loop() {
 
   updateEncoder();
 
-  updatedc(shoulder, getEncoderPos());
-
+  if (homing) {
+    homing = !(updatedc(shoulder, (int)((getTilt()*180.0/PI)/(10.0))));
+  
+    if (!homing) {
+      resetEncoderPos();
+      setTargetPos(0);
+    }
+  
+  }
+  else {
+    updatedc(shoulder, getEncoderPos());
+  }
   //updaterotservo(elbow, getTilt());                                                           
 
   elbow.update();
