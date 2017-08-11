@@ -124,8 +124,8 @@ print 'Connection to Remote Controller established.'
 ssmr.write('C')
 
 tgt = -300
-wristpos=48
 
+wristpos=90
 elbowpos = 90
 
 shoulderpos = 150
@@ -259,6 +259,9 @@ while(True):
         elif (data == 'C'):
             ssmr.write('T')
             #Camera nose down
+        elif (data == '='):
+            #Home position.
+            mtrn.write('=')
         elif (data == 'Y'):
             # Move shoulder up
             shoulderpos = shoulderpos + 1
