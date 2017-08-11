@@ -21,6 +21,18 @@
 #
 # } sensor;
 
+# struct sensortype {
+#   int counter; // 2
+#   int encoder; // 2
+#   float cx;    // 4
+#   float cy;    // 4
+#   float cz;    // 4
+#   float angle; // 4
+#   int wrist;   // 2
+#   int elbow;   // 2
+#   int fps;     // 2
+# } sensor; // 26
+
 import serial
 import time
 import datetime

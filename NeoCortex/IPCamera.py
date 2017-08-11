@@ -11,7 +11,8 @@ import Configuration as conf
 #cap = cv2.VideoCapture('tcp://192.168.1.1:5555')
 #cap = cv2.VideoCapture('tcp://192.168.0.3/cgi-bin/fwstream.cgi?FwModId=0&PortId=1&PauseTime=0&FwCgiVer=0x0001')
 #cap = cv2.VideoCapture('rtsp://192.168.0.3/cam0_0')
-cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
+#cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
+cap = cv2.VideoCapture('tcp://10.17.48.204:10000')
 #cap = cv2.VideoCapture('tcp://'+str(conf.shinkeybotip)+':'+str(conf.videoport))
 
 print ("Connecting..")
@@ -62,22 +63,22 @@ for i in range(1,80000):
 
 	# Convert BGR to HSV
 	# Convert BGR to HSV
-	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	##hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 	# define range of blue color in HSV
-	lower_blue = np.array([160,50,50])
-	upper_blue = np.array([185,255,255])
+	##lower_blue = np.array([160,50,50])
+	##upper_blue = np.array([185,255,255])
 
 
 	# Threshold the HSV image to get only blue colors
-	mask = cv2.inRange(hsv, lower_blue, upper_blue)
+	##mask = cv2.inRange(hsv, lower_blue, upper_blue)
 	# Bitwise-AND mask and original image
-	res = cv2.bitwise_and(frame,frame, mask= mask)
-	res = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-	hough(res)
+	##res = cv2.bitwise_and(frame,frame, mask= mask)
+	##res = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
+	##hough(res)
 
 	#print frame[474,37]
 
-	cv2.imshow("ShinkeyBot Eye", res)
+	cv2.imshow("ShinkeyBot Eye", frame)
 
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 	    break
