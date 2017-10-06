@@ -127,7 +127,6 @@ tgt = -300
 
 wristpos=90
 elbowpos = 90
-
 shoulderpos = 150
 
 # Pan and tilt
@@ -262,6 +261,9 @@ while(True):
         elif (data == '='):
             #Home position.
             mtrn.write('=')
+            wristpos=90
+            elbowpos=90
+            shoulderpos=150
         elif (data == 'Y'):
             # Move shoulder up
             shoulderpos = shoulderpos + 1
