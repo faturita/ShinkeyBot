@@ -32,6 +32,8 @@ import MCast
 import fcntl
 import struct
 
+from Fps import Fps
+
 # First create a witness token to guarantee only one instance running
 if (os.access("running.wt", os.R_OK)):
     print >> sys.stderr, 'Another instance is running. Cancelling.'
@@ -188,9 +190,14 @@ sur = Surrogator(sock)
 target = [0,0,0]
 automode = False;
 
+fps = Fps()
+fps.tic()
+
 # Live
 while(True):
     try:
+        fps.steptoc()
+        print "Estimated frames per second: {0}".format(ffps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
         sur.getcommand()
