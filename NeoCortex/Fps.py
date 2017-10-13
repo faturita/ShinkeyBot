@@ -12,7 +12,7 @@ class Fps:
 
     def toc(self):
         self.end = time.time()
-        self.seconds = end - start
+        self.seconds = self.end - self.start
 
         ffps = self.num_frames / self.seconds
 
