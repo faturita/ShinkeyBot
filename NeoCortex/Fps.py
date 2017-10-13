@@ -29,6 +29,19 @@ class Fps:
             self.tic()
 
 if __name__ == "__main__":
+
+
+    ffps = Fps()
+    ffps.tic()
+    for i in range(1,1000):
+        ffps.step()
+
+    print "Estimated frames per second: {0}".format(ffps.toc())
+
+    for i in range(1,1000000):
+        ffps.steptoc()
+        print "Estimated frames per second: {0}".format(ffps.fps)
+
     # Start time
     start = time.time()
 
@@ -52,14 +65,3 @@ if __name__ == "__main__":
     # Calculate frames per second
     fps  = num_frames / seconds;
     print "Estimated frames per second : {0}".format(fps);
-
-    ffps = Fps()
-    ffps.tic()
-    for i in range(1,1000):
-        ffps.step()
-
-    print "Estimated frames per second: {0}".format(ffps.toc())
-
-    for i in range(1,1000000):
-        ffps.steptoc()
-        print "Estimated frames per second: {0}".format(ffps.fps)

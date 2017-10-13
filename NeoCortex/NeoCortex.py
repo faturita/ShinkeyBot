@@ -197,7 +197,7 @@ fps.tic()
 while(True):
     try:
         fps.steptoc()
-        print "Estimated frames per second: {0}".format(ffps.fps)
+        print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
         sur.getcommand()
