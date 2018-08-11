@@ -271,6 +271,13 @@ while(True):
             wristpos=90
             elbowpos=90
             shoulderpos=150
+            mtrn.write('AC000')
+        elif (data == '$'):
+            pitpos = 250
+            mtrn.write('AC'+'{:3d}'.format(pitpos))
+        elif (data == '%'):
+            pitpos=250
+            mtrn.write('AD'+'{:3d}'.format(pitpos))
         elif (data == 'Y'):
             # Move shoulder up
             shoulderpos = shoulderpos + 1
