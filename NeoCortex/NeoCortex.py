@@ -206,7 +206,9 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sens = sensorimotor.picksensorsample(ssmr)
-            mots = motorneuron.picksensorsample(mtrn)
+
+            if (mtrn):
+                mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
@@ -237,8 +239,9 @@ while(True):
             sensorimotor.ip = address[0]
             sensorimotor.restart()
 
-            motorneuron.ip = address[0]
-            motorneuron.restart()
+            if (mtrn):
+                motorneuron.ip = address[0]
+                motorneuron.restart()
 
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
