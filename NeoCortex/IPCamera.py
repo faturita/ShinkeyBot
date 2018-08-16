@@ -1,10 +1,30 @@
 #coding: latin-1
 import cv2
 import time
+import datetime
 import numpy as np
 import argparse
 
+import sys
+
 import Configuration as conf
+
+savevideo = True
+
+
+if (len(sys.argv)<2):
+	ip = conf.shinkeybotip
+	port = conf.videoport
+
+elif sys.argv[1] == '-f':
+	print "Forcing IP Address"
+	ip = '192.168.0.110'
+	port = 10000
+else:
+	ip = sys.argv[1]
+	print "Using IP:"+ip
+	port = 10000
+
 
 #cap = cv2.VideoCapture(0)
 #cap = cv2.VideoCapture('/Users/rramele/Documents/AppleStore.Subiendo.I.mov')
@@ -12,8 +32,16 @@ import Configuration as conf
 #cap = cv2.VideoCapture('tcp://192.168.0.3/cgi-bin/fwstream.cgi?FwModId=0&PortId=1&PauseTime=0&FwCgiVer=0x0001')
 #cap = cv2.VideoCapture('rtsp://192.168.0.3/cam0_0')
 #cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
-cap = cv2.VideoCapture('tcp://10.17.48.112:10000')
-#cap = cv2.VideoCapture('tcp://'+str(conf.shinkeybotip)+':'+str(conf.videoport))
+#cap = cv2.VideoCapture('tcp://10.17.48.177:10000')
+cap = cv2.VideoCapture('tcp://'+str(ip)+':'+str(port))
+
+if (savevideo):
+	w = cap.get(cv2.CAP_PROP_FRAME_WIDTH);
+	h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT);
+	fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+	ts = time.time()
+	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+	out = cv2.VideoWriter('../data/output.'+st+'.avi',fourcc, 24.0, (int(w),int(h)))
 
 print ("Connecting..")
 
@@ -80,6 +108,9 @@ for i in range(1,80000):
 
 	cv2.imshow("ShinkeyBot Eye", frame)
 
+	if (savevideo):
+		out.write(frame)
+
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 	    break
 
@@ -88,5 +119,7 @@ print ('Done.')
 #When everything done, release the capture
 cap.release()
 time.sleep(5)
+
+out.release()
 
 cv2.destroyAllWindows()
