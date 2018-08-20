@@ -120,7 +120,22 @@ print 'Connection to Remote Controller established.'
 # Open connection to tilt sensor (@deprecated)
 #hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
-[ssmr, mtrn] = prop.serialcomm()
+def doserial():
+    retries=1
+    ssmr=None
+    mtrn=None
+    while (retries<5):
+        try:
+            [ssmr, mtrn] = prop.serialcomm()
+            print 'Connection established'
+            return [ssmr, mtrn]
+        except Exception as e:
+            print 'Error while establishing serial connection.'
+            retries=retries+1
+
+    return [ssmr, mtrn]
+
+[ssmr, mtrn] = doserial()
 
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
@@ -197,7 +212,7 @@ fps.tic()
 while(True):
     try:
         fps.steptoc()
-        print "Estimated frames per second: {0}".format(fps.fps)
+        #print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
         sur.getcommand()
@@ -395,10 +410,11 @@ while(True):
             ssmr.close()
         if (not mtrn == None):
             mtrn.close()
-        [ssmr, mtrn] = prop.serialcomm()
+        [ssmr, mtrn] = doserial()
 
         # Instruct the Sensorimotor Cortex to stop wandering.
-        ssmr.write('C')
+        if (ssmr != None):
+            ssmr.write('C')
 
 vst.keeprunning = False
 sur.keeprunning = False
