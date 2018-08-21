@@ -86,6 +86,9 @@ plotx = []
 
 counter = 0
 
+length = 26
+unpackcode = 'hhffffhhh'
+
 if (serialconnected):
    ser.write('A7180')
 
@@ -100,23 +103,24 @@ while True:
 
   if myByte == 'S':
       if (serialconnected):
-         data = ser.read(24) # 44
+         data = ser.read(length) # 24
          myByte = ser.read(1)
       else:
-         data, address = sock.recvfrom(44+26)
+         data, address = sock.recvfrom(length) # 44+26
          myByte = 'E'
 
-      if myByte == 'E' and len(data)>0 and len(data) == 44+26:
+      if myByte == 'E' and len(data)>0 and len(data) == length:
           # is  a valid message struct
-          new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
+          new_values = unpack(unpackcode,data)
+          #new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
           #new_values = unpack('ffffffhhhhhhhhhh', data)
           print str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
-          f.write( str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + '\n')
+          f.write( str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + '\n')
 
-          x.append( float(new_values[21]))
-          y.append( float(new_values[22]))
-          z.append( float(new_values[23]))
+          x.append( float(new_values[2]))
+          y.append( float(new_values[3]))
+          z.append( float(new_values[4]))
 
           plotx.append( plcounter )
 
