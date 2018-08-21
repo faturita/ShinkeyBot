@@ -10,7 +10,7 @@ int pinALast;
 int aVal;
 boolean bCW;
 
-void setupEncoder() {
+void asetupEncoder() {
   pinMode (pinA, INPUT);
   pinMode (pinB, INPUT);
   encoderPosCount = 0;
@@ -21,7 +21,7 @@ void setupEncoder() {
   //Serial.begin (9600);
 }
 
-void updateEncoder() {
+void aupdateEncoder() {
   aVal = digitalRead(pinA);
   if (aVal != pinALast) { // Means the knob is rotating
     // if the knob is rotating, we need to determine direction
@@ -47,13 +47,15 @@ void updateEncoder() {
 }
 
 
-int getEncoderPos()
+int agetEncoderPos()
 {
   return encoderPosCount;
 }
 
-void resetEncoderPos()
+void aresetEncoderPos()
 {
   encoderPosCount=0;
 }
+
+
 
