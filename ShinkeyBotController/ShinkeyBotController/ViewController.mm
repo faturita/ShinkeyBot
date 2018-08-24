@@ -21,7 +21,7 @@
 #import <mach/mach_time.h>
 
 // These are the default address where ShinkeyBot listens.
-#define SHINKEYBOTADDRESS   @"192.168.0.110"
+#define SHINKEYBOTADDRESS   @"192.168.0.109"
 #define dshinkeybotaddress   @"10.17.13.89"
 
 // Multicast port and group IP

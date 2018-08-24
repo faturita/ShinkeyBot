@@ -5,6 +5,7 @@
 
    Gripper 1 DC Motor -> M1
    Shoulder 2 DC Motor 12 V -> M2
+   Shoulder Arm 3 DC Motor 12 V -> M3
    Tesaki 4 DC Motor from the broken servo 6 V -> M4
 
    Servo Wrist 9V 180 -> Servo 1 Pin 10  White, Grey Violet
@@ -51,6 +52,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *grip = AFMS.getMotor(1);
 Adafruit_DCMotor *tesaki = AFMS.getMotor(4);
 Adafruit_DCMotor *shoulder = AFMS.getMotor(2);
+Adafruit_DCMotor *clavicle = AFMS.getMotor(3);
 
 class ControlledServo {
 public:
@@ -387,6 +389,7 @@ void loop() {
       grip->run(RELEASE);
       tesaki->run(RELEASE);
       shoulder->run(RELEASE);
+      clavicle->run(RELEASE);
       elbow.servo.detach();
       wrist.servo.detach();
       state = 0;
@@ -414,6 +417,15 @@ void loop() {
     case 0x0b:
       setTargetPosElbow(((float)controlvalue)*PI/180.0);
       elbowcounter = 1;
+      break;
+    case 0x0c:
+      clavicle->setSpeed(controlvalue);
+      clavicle->run(FORWARD);
+      break;
+    case 0x0d:
+      clavicle->setSpeed(controlvalue);
+      clavicle->run(BACKWARD);
+      break;    
     default:
       // Do Nothing
       state = 0;
