@@ -3,7 +3,7 @@
 
 # ShinkeyBot
 
-Shinkeybot is a robot and testbed platform for robotics and STEM.
+Shinkeybot is a cognitive computing robot and testbed platform for robotics and STEM.
 
 # Library:
 * http://www.ladyada.net/learn/arduino/lesson5.html
@@ -15,8 +15,10 @@ Shinkeybot is a robot and testbed platform for robotics and STEM.
 * https://github.com/Anilm3/ADXL345-Accelerometer
 * http://blog.oscarliang.net/use-gy80-arduino-adxl345-accelerometer/
 
-gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4  
+# Sensors
+* gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4  
 
+# USB-powered
 * http://www.startech.com/faq/usb_hubs_industrial_power_adapter
 
 # Features
@@ -25,9 +27,12 @@ gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4
 * Autodiscovery with multicast signal.
 * Remote controlling mode via UDP.
 * Real-time H264 streaming to iPhone app or to whatever you want.
+* Isolated power source.
+
+# Motor Unit Arm
+
 * The arm, motorunit controlled, is now a 6th dof 0.5 kg payload arm.  Works quite good.
 * Homing.
-* Isolated power source.
 
 ![ShinkeyBot motorunit control](motorunitarm.jpg)
 
