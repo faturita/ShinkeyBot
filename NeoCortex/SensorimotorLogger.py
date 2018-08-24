@@ -75,6 +75,8 @@ class Sensorimotor:
         self.data = None
         self.length = length
         self.mapping = mapping
+        self.sensorlocalburst=10000
+        self.sensorburst=1
 
     def start(self):
         # Sensor Recording
@@ -112,7 +114,7 @@ class Sensorimotor:
     def picksensorsample(self, ser):
         # read  Embed this in a loop.
         self.counter=self.counter+1
-        if (self.counter>100):
+        if (self.counter>self.sensorlocalburst):
             ser.write('P')
             ser.write('S')
             self.counter=0
@@ -126,7 +128,7 @@ class Sensorimotor:
               # is  a valid message struct
               #new_values = unpack('ffffffhhhhhhhhhh', data)
               new_values = unpack(self.mapping, self.data)
-              #print new_values
+              print new_values
               self.sensors = new_values
               #self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
               self.f.write(' '.join(map(str, new_values)) + '\n')
@@ -141,11 +143,19 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [smnr, mtrn] = prop.serialcomm()
+    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1431')
 
-    sensorimotor = Sensorimotor()
+    # Weird, long values (4) should go first.
+    sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
+    sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
-    sensorimotor.cleanbuffer(smnr)
+    sensorimotor.cleanbuffer(ssmr)
+
 
     while True:
-        sensorimotor.sendsensorsample(smnr)
+        sens = sensorimotor.picksensorsample(ssmr)
+        mots = None
+        sensorimotor.sensorlocalburst=10000
+        sensorimotor.sensorburst=10
+        if (sens != None):
+            sensorimotor.send(sensorimotor.data)

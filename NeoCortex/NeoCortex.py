@@ -120,7 +120,22 @@ print 'Connection to Remote Controller established.'
 # Open connection to tilt sensor (@deprecated)
 #hidraw = prop.setupsensor()
 # Open serial connection to MotorUnit and Sensorimotor Arduinos.
-[ssmr, mtrn] = prop.serialcomm()
+def doserial():
+    retries=1
+    ssmr=None
+    mtrn=None
+    while (retries<5):
+        try:
+            [ssmr, mtrn] = prop.serialcomm()
+            print 'Connection established'
+            return [ssmr, mtrn]
+        except Exception as e:
+            print 'Error while establishing serial connection.'
+            retries=retries+1
+
+    return [ssmr, mtrn]
+
+[ssmr, mtrn] = doserial()
 
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
@@ -136,7 +151,7 @@ visualpos = [90,95]
 
 # Enables the sensor telemetry.  Arduinos will send telemetry data that will be
 #  sent to listening servers.
-sensesensor = True
+sensesensor = False
 
 # Connect remotely to any client that is waiting for sensor loggers.
 sensorimotor = senso.Sensorimotor('sensorimotor',44,'ffffffhhhhhhhhhh')
@@ -197,7 +212,7 @@ fps.tic()
 while(True):
     try:
         fps.steptoc()
-        print "Estimated frames per second: {0}".format(fps.fps)
+        #print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
         sur.getcommand()
@@ -206,7 +221,10 @@ while(True):
         # If someone asked for it, send sensor information.
         if (sensesensor):
             sens = sensorimotor.picksensorsample(ssmr)
-            mots = motorneuron.picksensorsample(mtrn)
+            mots = None
+
+            if (mtrn):
+                mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
@@ -237,8 +255,9 @@ while(True):
             sensorimotor.ip = address[0]
             sensorimotor.restart()
 
-            motorneuron.ip = address[0]
-            motorneuron.restart()
+            if (mtrn):
+                motorneuron.ip = address[0]
+                motorneuron.restart()
 
             print "Reloading target ip for telemetry:"+sensorimotor.ip
 
@@ -271,6 +290,13 @@ while(True):
             wristpos=90
             elbowpos=90
             shoulderpos=150
+            mtrn.write('AC000')
+        elif (data == '$'):
+            pitpos = 250
+            mtrn.write('AC'+'{:3d}'.format(pitpos))
+        elif (data == '%'):
+            pitpos=250
+            mtrn.write('AD'+'{:3d}'.format(pitpos))
         elif (data == 'Y'):
             # Move shoulder up
             shoulderpos = shoulderpos + 1
@@ -384,10 +410,11 @@ while(True):
             ssmr.close()
         if (not mtrn == None):
             mtrn.close()
-        [ssmr, mtrn] = prop.serialcomm()
+        [ssmr, mtrn] = doserial()
 
         # Instruct the Sensorimotor Cortex to stop wandering.
-        ssmr.write('C')
+        if (ssmr != None):
+            ssmr.write('C')
 
 vst.keeprunning = False
 sur.keeprunning = False

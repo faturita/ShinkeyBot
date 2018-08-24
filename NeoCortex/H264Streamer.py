@@ -34,7 +34,7 @@ class H264VideoStreamer:
             camera.framerate = 10
             camera.hflip = True
             camera.vflip = True
-            camera.color_effects = (128,128)
+            #camera.color_effects = (128,128)
 
             # Accept a single connection and make a file-like object out of it
             socketconnection = server_socket.accept()

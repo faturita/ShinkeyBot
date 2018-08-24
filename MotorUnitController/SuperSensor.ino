@@ -62,7 +62,7 @@ void checksensors()
 
   sensor.angle = getTilt()*180.0/PI;
 
-  sensor.encoder = getEncoderPos();
+  sensor.encoder = shoulderEncoder.getEncoderPos();
 }
 
 bool sensorburst = false;

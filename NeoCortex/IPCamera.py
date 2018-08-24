@@ -1,12 +1,16 @@
 #coding: latin-1
 import cv2
 import time
+import datetime
 import numpy as np
 import argparse
 
 import sys
 
 import Configuration as conf
+
+savevideo = True
+
 
 if (len(sys.argv)<2):
 	ip = conf.shinkeybotip
@@ -30,6 +34,14 @@ else:
 #cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
 #cap = cv2.VideoCapture('tcp://10.17.48.177:10000')
 cap = cv2.VideoCapture('tcp://'+str(ip)+':'+str(port))
+
+if (savevideo):
+	w = cap.get(cv2.CAP_PROP_FRAME_WIDTH);
+	h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT);
+	fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+	ts = time.time()
+	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+	out = cv2.VideoWriter('../data/output.'+st+'.avi',fourcc, 24.0, (int(w),int(h)))
 
 print ("Connecting..")
 
@@ -96,6 +108,9 @@ for i in range(1,80000):
 
 	cv2.imshow("ShinkeyBot Eye", frame)
 
+	if (savevideo):
+		out.write(frame)
+
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 	    break
 
@@ -104,5 +119,7 @@ print ('Done.')
 #When everything done, release the capture
 cap.release()
 time.sleep(5)
+
+out.release()
 
 cv2.destroyAllWindows()

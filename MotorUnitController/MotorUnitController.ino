@@ -17,13 +17,19 @@
    + to Arduino 5V
    GND to Arduino GND
 
+   Encoder (Clavicle)
+   Pin 6 connected to CLK on KY-040
+   Pin 5 connected to DT  on KY-040
+   + to Arduino 5V
+   GND to Arduino GND
+
 
    Tilt Sensor (Elbow)
    SCL connected to SCL on MMA8452
    SDA connected to SDA on MMA8452   (I2C port is 60)
    3.3V connected to Arduino 3.3 V
-   GND to Arduino GND 
-   
+   GND to Arduino GND
+
 */
 
 
@@ -68,7 +74,7 @@ public:
       if (pos<tgtPos)
         direction = 1;
       else
-        direction =-1;  
+        direction =-1;
   }
 
   void update() {
@@ -79,30 +85,88 @@ public:
       //Serial.print(pos);Serial.print("--");
       //Serial.println(tgtPos);
       servo.write(pos);
-    
+
       pos+=direction;
-      
+
       if (pos<minPos)
       {
         //Serial.print("Reset down:");
         //Serial.println(counter++);
         direction=-1;
       }
-    
+
       if (pos>maxPos)
       {
         //Serial.print("Reset up:");
         //Serial.println(counter++);
-        direction=1;    
+        direction=1;
       }
     }
 
-  } 
+  }
 };
 
 ControlledServo wrist;
 ControlledServo elbow;
 
+class EncoderDC {
+public:
+  int pinA = 6;  // Connected to CLK on KY-040
+  int pinB = 5;  // Connected to DT on KY-040
+  int encoderPosCount;
+  int pinALast;
+  int aVal;
+  boolean bCW;
+  void setupEncoder(int cPinA, int cPinB) {
+    pinA = cPinA;
+    pinB = cPinB;
+    pinMode (pinA, INPUT);
+    pinMode (pinB, INPUT);
+    encoderPosCount = 0;
+    /* Read Pin A
+      Whatever state it's in will reflect the last position
+    */
+    pinALast = digitalRead(pinA);
+  }
+  void updateEncoder() {
+    aVal = digitalRead(pinA);
+    if (aVal != pinALast) { // Means the knob is rotating
+      // if the knob is rotating, we need to determine direction
+      // We do that by reading pin B.
+      if (digitalRead(pinB) != aVal) {  // Means pin A Changed first - We're Rotating Clockwise
+        encoderPosCount ++;
+        bCW = true;
+      } else {// Otherwise B changed first and we're moving CCW
+        bCW = false;
+        encoderPosCount--;
+      }
+      if (debug) Serial.print ("Rotated: ");
+      if (bCW) {
+        if (debug) Serial.println ("clockwise");
+      } else {
+        if (debug) Serial.println("counterclockwise");
+      }
+      if (debug) Serial.print("Encoder Position: ");
+      if (debug) Serial.println(encoderPosCount);
+
+    }
+    pinALast = aVal;
+  }
+
+
+  int getEncoderPos()
+  {
+    return encoderPosCount;
+  }
+
+  void resetEncoderPos()
+  {
+    encoderPosCount=0;
+  }
+};
+
+EncoderDC clavicleEncoder;
+EncoderDC shoulderEncoder;
 
 int state = 0;
 int controlvalue = 255;
@@ -137,7 +201,8 @@ void setup() {
 
   pinMode(laserPin, OUTPUT);
 
-  setupEncoder();
+  shoulderEncoder.setupEncoder(12,13);
+  clavicleEncoder.setupEncoder(6,5);
   accel.init();
 }
 
@@ -166,22 +231,27 @@ int elbowcounter = 0;
 int tesakicounter = 0;
 int grippercounter = 0;
 
+int targetPosShoulder=0;
+int targetPosClavicle=0;
+
+
 // =========== DC Control using the encoder.
-int targetpos = 0;
+//int targetpos = 0;
 int TORQUE=200;
 
-void setTargetPos(int newtargetpos)
+
+int setThisTargetPos(int newtargetpos)
 {
-  targetpos = newtargetpos;
+  return newtargetpos;
 }
 
-bool updatedc(Adafruit_DCMotor *dcmotor, int currentpos)
+bool updatethisdc(Adafruit_DCMotor *dcmotor, int torque,int thistargetpos,int currentpos)
 {
-  if (targetpos != currentpos)
+  if (thistargetpos != currentpos)
   {
-    dcmotor->setSpeed(TORQUE);
+    dcmotor->setSpeed(torque);
 
-    if (targetpos < currentpos)
+    if (thistargetpos < currentpos)
       dcmotor->run(FORWARD);
     else
       dcmotor->run(BACKWARD);
@@ -206,7 +276,7 @@ float fdet(float val)
 void updaterotservo(Servo servo, float currentpos)
 {
   //Serial.print(currentpos);Serial.print("->");Serial.print(targetposelbow);Serial.print("--");Serial.print(accel.cx);Serial.print(":");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.print("Angle:");Serial.println(getTilt()*180.0/PI);
-  
+
   //if (true || abs(targetposelbow-currentpos)<0.20)
   //if (abs(targetposelbow-currentpos)>0.1)
   {
@@ -215,7 +285,7 @@ void updaterotservo(Servo servo, float currentpos)
       direction=1;
     else
       direction=-1;
-      
+
     servo.writeMicroseconds((fdet(targetposelbow*180.0/PI)+10*direction) * 10);
     //Serial.println( (fdet(targetposelbow*180.0/PI))+10*direction );
 
@@ -227,19 +297,19 @@ void updaterotservo(Servo servo, float currentpos)
 
 void setTargetPosElbow(float newtargetpos)
 {
-  targetposelbow = newtargetpos;  
+  targetposelbow = newtargetpos;
 }
 
 void readcommand(int &state, int &controlvalue)
 {
-  // Format A1000 >> A1220   --> Close grip
+  // A1220 >> Close grip
   // A2255 >> Open Grip
   // A6090 >> 90 deg wrist A6010 --> A6180
-  // A3220 or A4220 Move forward backward shoulder NO LONGER
-  // A7150 will keep the shoulder at zero encoder angle arm vertical. 
+  // A7150 will keep the shoulder at zero encoder angle arm vertical.
   //       So AA140 will pull it up
-  // A8220 clockwise A9220 counter
-  // AA180 -> Elbow is now a degree based encoder.  Not rotational.
+  // A8220 Wrist clockwise A9220 counter
+  // AA090 -> Elbow is now servo.
+  // AC150 -> Clavicle resting
   // Format A5000  Reset everything.
   memset(buffer, 0, 5);
   int readbytes = Serial.readBytes(buffer, 4);
@@ -268,9 +338,9 @@ void readcommand(int &state, int &controlvalue)
 }
 
 /**
- * Homing works by setting servos to 90 degrees, and later to pull 
+ * Homing works by setting servos to 90 degrees, and later to pull
  * or push the shoulder DC so that the angle on the arm reads 90 degrees
- * 
+ *
  * Then homing is stopped and the encoder is reset to zero.
  */
 bool homing=false;
@@ -288,15 +358,15 @@ void loop() {
   checksensors();
   burstsensors();
 
-  if (Serial.available() > 0) 
+  if (Serial.available() > 0)
   {
 
     char syncbyte = Serial.read();
 
-    switch (syncbyte) 
+    switch (syncbyte)
     {
       case 'I':
-        Serial.println("MTRN");
+        Serial.println("MTRN2");
         break;
       case 'S':
         startburst();
@@ -314,15 +384,16 @@ void loop() {
         digitalWrite(laserPin, LOW);
         break;
       case 'Q':
-        Serial.println( getEncoderPos() );
+        Serial.println( shoulderEncoder.getEncoderPos() );
+        Serial.println( clavicleEncoder.getEncoderPos() );
         break;
       case 'U':
         Serial.print(accel.cx);Serial.print(":");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.print("Angle:");Serial.println(getTilt()*180.0/PI);
         break;
       case '=':
-        resetEncoderPos();
-        targetpos=0;
-        setTargetPos(90/10);
+        shoulderEncoder.resetEncoderPos();
+        targetPosShoulder=0;
+        targetPosShoulder=setThisTargetPos(90/10);
         elbow.tgtPos=90;
         wrist.tgtPos=90;
         homing=true;
@@ -340,25 +411,28 @@ void loop() {
   wrist.update();
   sensor.wrist = wrist.pos;
 
-  updateEncoder();
+  shoulderEncoder.updateEncoder();
+  clavicleEncoder.updateEncoder();
 
   if (homing) {
-    homing = !(updatedc(shoulder, (int)((getTilt()*180.0/PI)/(10.0))));
-  
+    homing = !(updatethisdc(shoulder, TORQUE,targetPosShoulder, (int)((getTilt()*180.0/PI)/(10.0))));
+
     if (!homing) {
-      resetEncoderPos();
-      setTargetPos(0);
+      shoulderEncoder.resetEncoderPos();
+      targetPosShoulder=setThisTargetPos(0);
     }
-  
+
   }
   else {
-    updatedc(shoulder, getEncoderPos());
+    updatethisdc(shoulder, TORQUE,targetPosShoulder,shoulderEncoder.getEncoderPos());
   }
-  //updaterotservo(elbow, getTilt());                                                           
+  //updaterotservo(elbow, getTilt());
+
+  updatethisdc(clavicle, 80,targetPosClavicle,clavicleEncoder.getEncoderPos());
 
   elbow.update();
   sensor.elbow = elbow.pos;
-  
+
   switch (state)
   {
     case 1:
@@ -383,7 +457,7 @@ void loop() {
       shoulder->run(BACKWARD);
       break;
     case 7:
-      setTargetPos(controlvalue - 150);
+      targetPosShoulder=setThisTargetPos(controlvalue - 150);
       break;
     case 5:
       grip->run(RELEASE);
@@ -417,15 +491,9 @@ void loop() {
     case 0x0b:
       setTargetPosElbow(((float)controlvalue)*PI/180.0);
       elbowcounter = 1;
-      break;
     case 0x0c:
-      clavicle->setSpeed(controlvalue);
-      clavicle->run(FORWARD);
+      targetPosClavicle=setThisTargetPos(controlvalue - 150);
       break;
-    case 0x0d:
-      clavicle->setSpeed(controlvalue);
-      clavicle->run(BACKWARD);
-      break;    
     default:
       // Do Nothing
       state = 0;
