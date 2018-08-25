@@ -5,6 +5,7 @@
 
    Gripper 1 DC Motor -> M1
    Shoulder 2 DC Motor 12 V -> M2
+   Shoulder Arm 3 DC Motor 12 V -> M3
    Tesaki 4 DC Motor from the broken servo 6 V -> M4
 
    Servo Wrist 9V 180 -> Servo 1 Pin 10  White, Grey Violet
@@ -29,8 +30,8 @@
    SCL connected to SCL on MMA8452
    SDA connected to SDA on MMA8452   (I2C port is 60)
    3.3V connected to Arduino 3.3 V
-   GND to Arduino GND 
-   
+   GND to Arduino GND
+
 */
 
 
@@ -76,7 +77,7 @@ public:
       if (pos<tgtPos)
         direction = 1;
       else
-        direction =-1;  
+        direction =-1;
   }
 
   void update() {
@@ -87,25 +88,25 @@ public:
       //Serial.print(pos);Serial.print("--");
       //Serial.println(tgtPos);
       servo.write(pos);
-    
+
       pos+=direction;
-      
+
       if (pos<minPos)
       {
         //Serial.print("Reset down:");
         //Serial.println(counter++);
         direction=-1;
       }
-    
+
       if (pos>maxPos)
       {
         //Serial.print("Reset up:");
         //Serial.println(counter++);
-        direction=1;    
+        direction=1;
       }
     }
 
-  } 
+  }
 };
 
 ControlledServo wrist;
@@ -150,17 +151,17 @@ public:
       }
       if (debug) Serial.print("Encoder Position: ");
       if (debug) Serial.println(encoderPosCount);
-  
+
     }
     pinALast = aVal;
   }
-  
-  
+
+
   int getEncoderPos()
   {
     return encoderPosCount;
   }
-  
+
   void resetEncoderPos()
   {
     encoderPosCount=0;
@@ -279,7 +280,7 @@ float fdet(float val)
 void updaterotservo(Servo servo, float currentpos)
 {
   //Serial.print(currentpos);Serial.print("->");Serial.print(targetposelbow);Serial.print("--");Serial.print(accel.cx);Serial.print(":");Serial.print(accel.cz);Serial.print(",");Serial.print(accel.cy);Serial.print(",");Serial.print("Angle:");Serial.println(getTilt()*180.0/PI);
-  
+
   //if (true || abs(targetposelbow-currentpos)<0.20)
   //if (abs(targetposelbow-currentpos)>0.1)
   {
@@ -288,7 +289,7 @@ void updaterotservo(Servo servo, float currentpos)
       direction=1;
     else
       direction=-1;
-      
+
     servo.writeMicroseconds((fdet(targetposelbow*180.0/PI)+10*direction) * 10);
     //Serial.println( (fdet(targetposelbow*180.0/PI))+10*direction );
 
@@ -300,7 +301,7 @@ void updaterotservo(Servo servo, float currentpos)
 
 void setTargetPosElbow(float newtargetpos)
 {
-  targetposelbow = newtargetpos;  
+  targetposelbow = newtargetpos;
 }
 
 void readcommand(int &state, int &controlvalue)
@@ -308,7 +309,7 @@ void readcommand(int &state, int &controlvalue)
   // A1220 >> Close grip
   // A2255 >> Open Grip
   // A6090 >> 90 deg wrist A6010 --> A6180
-  // A7150 will keep the shoulder at zero encoder angle arm vertical. 
+  // A7150 will keep the shoulder at zero encoder angle arm vertical.
   //       So AA140 will pull it up
   // A8220 Wrist clockwise A9220 counter
   // AA090 -> Elbow is now servo.
@@ -341,9 +342,9 @@ void readcommand(int &state, int &controlvalue)
 }
 
 /**
- * Homing works by setting servos to 90 degrees, and later to pull 
+ * Homing works by setting servos to 90 degrees, and later to pull
  * or push the shoulder DC so that the angle on the arm reads 90 degrees
- * 
+ *
  * Then homing is stopped and the encoder is reset to zero.
  */
 bool homing=false;
@@ -377,12 +378,12 @@ void loop() {
   checksensors();
   burstsensors();
 
-  if (Serial.available() > 0) 
+  if (Serial.available() > 0)
   {
 
     char syncbyte = Serial.read();
 
-    switch (syncbyte) 
+    switch (syncbyte)
     {
       case 'I':
         Serial.println("MTRN2");
@@ -436,17 +437,17 @@ void loop() {
 
   if (homing) {
     homing = !(updatethisdc(shoulder, TORQUE,targetPosShoulder, (int)((getTilt()*180.0/PI)/(10.0))));
-  
+
     if (!homing) {
       shoulderEncoder.resetEncoderPos();
       targetPosShoulder=setThisTargetPos(0);
     }
-  
+
   }
   else {
     updatethisdc(shoulder, TORQUE,targetPosShoulder,shoulderEncoder.getEncoderPos());
   }
-  //updaterotservo(elbow, getTilt());   
+  //updaterotservo(elbow, getTilt());
 
   if (checkSwitch())
   {
@@ -467,7 +468,7 @@ void loop() {
 
   elbow.update();
   sensor.elbow = elbow.pos;
-  
+
   switch (state)
   {
     case 1:
@@ -498,6 +499,7 @@ void loop() {
       grip->run(RELEASE);
       tesaki->run(RELEASE);
       shoulder->run(RELEASE);
+      clavicle->run(RELEASE);
       elbow.servo.detach();
       wrist.servo.detach();
       state = 0;
