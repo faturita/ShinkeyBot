@@ -22,6 +22,8 @@
    + to Arduino 5V
    GND to Arduino GND
 
+   Button Gate
+   4 with pull down resistor
 
    Tilt Sensor (Elbow)
    SCL connected to SCL on MMA8452
@@ -47,6 +49,7 @@ MMA8452Q accel;
 bool debug = false;
 
 const int laserPin = 8;
+const int switchPin = 4;
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -199,6 +202,7 @@ void setup() {
   elbow.tgtPos=90;
 
   pinMode(laserPin, OUTPUT);
+  pinMode(switchPin, INPUT);
 
   shoulderEncoder.setupEncoder(12,13);
   clavicleEncoder.setupEncoder(6,5);
@@ -343,6 +347,22 @@ void readcommand(int &state, int &controlvalue)
  * Then homing is stopped and the encoder is reset to zero.
  */
 bool homing=false;
+bool homing2=false;
+
+bool checkSwitch()
+{
+  // read the state of the pushbutton value:
+   int switchState = digitalRead(switchPin);
+
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (switchState == HIGH) {
+    // turn LED on:
+    return true;
+  } else {
+    // turn LED off:
+    return false;
+  }
+}
 
 void loop() {
   if (accel.available())
@@ -395,6 +415,7 @@ void loop() {
         targetPosShoulder=setThisTargetPos(90/10);
         elbow.tgtPos=90;
         wrist.tgtPos=90;
+        targetPosClavicle=setThisTargetPos(220-150);
         homing=true;
         break;
       case 'A':
@@ -427,6 +448,21 @@ void loop() {
   }
   //updaterotservo(elbow, getTilt());   
 
+  if (checkSwitch())
+  {
+    clavicleEncoder.resetEncoderPos();
+    targetPosClavicle = setThisTargetPos(113-150);
+    state=0;
+    homing2=true;
+  }
+
+  if (homing2 && targetPosClavicle == clavicleEncoder.getEncoderPos())
+  {
+    clavicleEncoder.resetEncoderPos();
+    targetPosClavicle=0;
+    homing2=false;
+  }
+    
   updatethisdc(clavicle, 80,targetPosClavicle,clavicleEncoder.getEncoderPos());
 
   elbow.update();
