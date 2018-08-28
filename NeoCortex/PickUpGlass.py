@@ -13,12 +13,6 @@ buf = ser.read(25)
 
 print str(buf)
 
-# for spd in range(1,251):
-#     cmd = 'A4'
-#
-#     val = cmd+('%03d' % spd)
-#     print val
-#     ser.write(val)
 
 ser.write('AC100')
 time.sleep(2)
