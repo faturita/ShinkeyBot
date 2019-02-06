@@ -9,11 +9,16 @@ import sys
 
 import Configuration as conf
 
+import ConfigMe
+import io
+
+import os
+
 savevideo = True
 
-
 if (len(sys.argv)<2):
-	ip = conf.shinkeybotip
+	# Load the configuration file
+	ip = ConfigMe.readconfig("config.ini")
 	port = conf.videoport
 
 elif sys.argv[1] == '-f':
