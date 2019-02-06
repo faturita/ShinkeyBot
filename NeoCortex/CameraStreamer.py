@@ -1,3 +1,14 @@
+# Camera Streamer
+#
+# Picks data from the VideoCapture device and transmit frame by frame directly
+# through TCP/IP
+#
+# Marks each frame to understand how the data should be read on the other side
+#
+# It's extremly inefficient
+#
+# 
+
 import numpy as np
 import cv2
 

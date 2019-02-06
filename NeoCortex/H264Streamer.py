@@ -1,4 +1,12 @@
 #coding: latin-1
+#
+#
+# H264 Streamer
+#
+# This class can act as a thread receiving TCP/IP connections on the specified
+# port and start to transmit the video streaming information
+#
+# This works exclusively for RPi.
 
 import socket
 import time

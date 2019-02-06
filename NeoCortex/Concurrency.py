@@ -1,3 +1,5 @@
+# Test concurrency issues
+
 import Queue
 import thread
 
