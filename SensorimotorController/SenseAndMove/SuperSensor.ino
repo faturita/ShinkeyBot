@@ -96,14 +96,8 @@ void initializeBarometricSensor()
 }
 
 
-void checksensors()
+void updateSuperSensor()
 {
-  static int counter = 0;
-  if (counter>=255)
-  {
-    counter=0;
-  }
-  sensor.counter = counter++;
   float temperature=0, pressure=0;
 
   // NO SE CARGA TEMPERATURA NI INFO BAROMETRICA
@@ -230,36 +224,6 @@ void checksensors()
   sensor.pitch = gyroy;
   sensor.roll = gyroz;
 
-}
-
-void transmitsensors() {
-  int len = sizeof(sensor);
-  char aux[len];  //46
-  memcpy(&aux,&sensor,len);
-
-  Serial.write('S');
-  Serial.write((uint8_t *)&aux,len);
-  Serial.write('E');
-
-  if (debug) {
-    Serial.println('S');
-    Serial.print("Rot Yaw:");Serial.println(sensor.onYaw);
-    Serial.print("Rot Pitch:");Serial.println(sensor.onPitch);
-    Serial.print("Rot Roll:");Serial.println(sensor.onRoll);
-    Serial.print("Yaw:");Serial.println(sensor.yaw);
-    Serial.print("Pitch:");Serial.println(sensor.pitch);
-    Serial.print("Roll:");Serial.println(sensor.roll);
-    Serial.print("Geo Yaw:");Serial.println(sensor.geoYaw);
-    Serial.print("Geo Pitch:");Serial.println(sensor.geoPitch);
-    Serial.print("Geo Roll:");Serial.println(sensor.geoRoll);
-    Serial.print("Temperature:");Serial.println(sensor.T);
-    Serial.print("Pressure:");Serial.println(sensor.P);
-    Serial.println(']');
-  }
-  
-
-  //Aguarda 5 segundos e reinicia o processo
-  //delay(5000);
 }
 
 

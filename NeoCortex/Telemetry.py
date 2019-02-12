@@ -89,6 +89,9 @@ counter = 0
 length = 26
 unpackcode = 'hhffffhhh'
 
+length = 52
+unpackcode='ffffffhhhhhhhhhhhhhh'
+
 if (serialconnected):
    ser.write('A7180')
 
@@ -118,9 +121,9 @@ while True:
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
           f.write( str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + '\n')
 
-          x.append( float(new_values[2]))
-          y.append( float(new_values[3]))
-          z.append( float(new_values[4]))
+          x.append( float(new_values[5]))
+          y.append( float(new_values[0]))
+          z.append( float(new_values[19]))
 
           plotx.append( plcounter )
 

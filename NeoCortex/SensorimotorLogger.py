@@ -104,6 +104,7 @@ class Sensorimotor:
         buf = ser.readline()
         print str(buf)
 
+        ser.write('AB'+'{:3d}'.format(self.sensorburst))
         # Reactive sensor information
         ser.write('S')
 
@@ -143,10 +144,11 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1431')
+    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1421')
 
     # Weird, long values (4) should go first.
-    sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
+    #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
+    sensorimotor = Sensorimotor('sensorimotor',52,'ffffffhhhhhhhhhhhhhh')
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.cleanbuffer(ssmr)

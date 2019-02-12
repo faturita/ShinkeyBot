@@ -18,6 +18,9 @@
 
        Pan And Tilt Controller: Analog 0(14) tilt, Analog 1(15) pan (on Arduino)
        Digital 6 tilt, Digital 7 Pan on Mega.
+
+       Scan Servo: 27
+       Trigger and Echo pin for scan: 28 and 29
 */
 
 #include <stdarg.h>
@@ -38,6 +41,11 @@ void p(char *fmt, ... ){
 
 #define tiltServoPin 24
 #define panServoPin  25
+
+
+#define scanServoPin 27
+#define scanTrigPin  28
+#define scanEchoPin  29
 
 bool debug = false;
 
@@ -83,13 +91,15 @@ struct sensortype
   int freq;         // +2 = 40
   int counter;      // +2 = 42
   int distance;     // +2 = 44
+  int pan;          // +2 = 46
+  int tilt;         // +2 = 48
+  int scan;         // +2 = 50
+  int scanned;      // +2 = 52
 
 } sensor;
 
 
 bool serialOpen = 1;
-
-bool sensorburst = false;
 
 
 void dump(char *msg)
@@ -119,7 +129,7 @@ void setupMotor()
 
   randomSeed(analogRead(0));
 
-  sensorburst = false;
+  stopburst();
   initsensors();
 }
 
@@ -149,7 +159,6 @@ int const WANDERING = 1;
 
 // L3 &&  L1 is BACKWARDS
 int motorstate = QUIET;
-int sampleCounter = 0;
 
 int noAction = STAYSTILL;
 
@@ -160,55 +169,6 @@ int const PHONOTROPISM = 2;
 int const MAGNETOTROPISM = 3;
 
 int limbic = RELAXED;
-
-char buffer[4];
-int value=0;
-
-char readcommand()
-{
-  int readbytes = Serial.readBytes(buffer,4);
-  char action = 0;
-  
-  if (readbytes == 4) {
-    action = buffer[0];
-    
-    value = atoi(buffer+1); 
-
-    if (debug) {
-      Serial.print("Action:");
-      Serial.print(action);
-      Serial.print("/");
-      Serial.println(value);
-    }  
-  }
-  return action;
-}
-
-int fps()
-{
-  static int freqValue=200;
-  static int freqCounter=0;
-  static unsigned long myPreviousMillis = millis();
-  unsigned long myCurrentMillis=0;
-
-  myCurrentMillis = millis();
-  
-  if ((myCurrentMillis - myPreviousMillis)>1000)
-  {
-    if (debug) 
-    {
-      Serial.print("Frequency:");Serial.println(freqCounter);
-    }
-    myPreviousMillis = myCurrentMillis;
-    freqValue = freqCounter;
-    freqCounter=0;
-  }
-  else
-  {
-    freqCounter++;
-  }  
-  return freqValue;
-}
 
 void blinkme()
 {
@@ -224,19 +184,13 @@ void blinkme()
 
   int incomingByte;
 
-  char action;
-  
-  if (sensorburst)
+  int action, controlvalue;
+
+  if (checksensors())
   {
-    checksensors();
-    transmitsensors();
-    sampleCounter++;
-    if (sampleCounter > MAX_SIZE_SENSOR_BURST)
-    {
-      sensorburst = false;
-      sampleCounter = 0;
-    }
+    updateSuperSensor();
   }
+  burstsensors();
 
   loopPanAndTilt();
 
@@ -263,13 +217,19 @@ void blinkme()
         debug = (!debug);
         break;
       case 'A':
-        action = readcommand();
+        readcommand(action, controlvalue);
         switch (action) {
           case 'F':
-            setPanTgtPos(value);
+            setPanTgtPos(controlvalue);
             break;
           case 'T':
-            setTiltTgtPos(value);
+            setTiltTgtPos(controlvalue);
+            break;
+          case 'O':
+            setScanTgtPos(controlvalue);
+            break;
+          case 0x0b:
+            setBurstSize(controlvalue);
             break;
           default:
             break;
@@ -304,12 +264,17 @@ void blinkme()
         getBarometricData(sensor.T, sensor.P);
         break;
       case 'S':
-        sensorburst = true;
-        // Reset counter to avoid loosing data.
-        sampleCounter=0;
+        startburst();
         break;
       case 'X':
-        sensorburst = false;
+        stopburst();
+        break;
+      case 'U':
+        updateSuperSensor();
+        Serial.print(sensor.onYaw);Serial.print("/");Serial.print(sensor.onPitch);Serial.print("/");Serial.print(sensor.onRoll);Serial.print("T:");Serial.print(sensor.T);Serial.print("/");Serial.print(sensor.P);Serial.print("-");Serial.print(sensor.light);Serial.println("");
+        break;
+      case 'K':
+        updateSuperSensor();
         break;
       case 'W':
         if (debug) {
@@ -340,11 +305,19 @@ void blinkme()
           Serial.println("Empire");
         }
         march();
+        break;
       case 'B':
         if (debug) {
           Serial.println("Buzzer");
         }
         buzz();
+        break;
+      case 'O':
+        if (debug) {
+          sensor.scanned = doScan();
+          Serial.print("Scan:");Serial.println(sensor.scanned);
+        }
+        break;
       case '-':
         interval = 100;
         break;
