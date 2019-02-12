@@ -396,11 +396,11 @@ while(True):
             visualpos[1]=visualpos[1]+1;
             ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
         elif (data=='a'):
-            # Nose down
+            # Scan right
             scan=scan-1;
             ssmr.write('AO'+'{:3d}'.format(scan))
         elif (data=='d'):
-            # Nose up
+            # Scan left
             scan=scan+1;
             ssmr.write('AO'+'{:3d}'.format(scan))
         elif (data=='M'):
@@ -417,6 +417,8 @@ while(True):
             sensorimotor.sensorlocalburst = 100
         elif (data==')'):
             sensorimotor.sensorlocalburst = 10000
+        elif (data=='O'):
+            ssmr.write('O')
         elif (data=='X'):
             break
     except Exception as e:
