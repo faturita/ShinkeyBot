@@ -211,7 +211,7 @@ fps = Fps()
 fps.tic()
 
 # Live
-while(True):
+while(ssmr != None and mtrn != None):
     try:
         fps.steptoc()
         #print "Estimated frames per second: {0}".format(fps.fps)
