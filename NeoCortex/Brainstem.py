@@ -291,8 +291,8 @@ while(True):
         elif (data == 'q'):
             sensesensor = False
         if (data == 'K'):
-            # Automode
-            automode = (not automode)
+            #Scan
+            ssmr.write('K')
         if (data == 'N'):
             ssmr.write('H')
             #Camera Right
