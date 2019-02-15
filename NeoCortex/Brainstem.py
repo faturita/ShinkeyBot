@@ -246,6 +246,9 @@ while(True):
             if (sens != None and mots != None):
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
 
+            if (sens != None)
+                sensorimotor.send(sensorimotr.data)
+
             if (sens != None and target != None):
                 if (target[0] == 0):
                     target = sens[9], sens[10], sens[11]
