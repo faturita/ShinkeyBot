@@ -137,6 +137,21 @@ def doserial():
 
 [ssmr, mtrn] = doserial()
 
+def terminateme():
+    try:
+        t.cancel()
+        print 'Thread successfully closed.'
+    except Exception as e:
+        print 'Exception while closing video stream thread.'
+        traceback.print_exc(file=sys.stdout)
+
+    os.remove('running.wt')
+    print 'ShinkeyBot has stopped.'
+
+
+if (ssmr == None and mtrn == None):
+    terminateme()
+
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
 
@@ -211,7 +226,7 @@ fps = Fps()
 fps.tic()
 
 # Live
-while(ssmr != None and mtrn != None):
+while(True):
     try:
         fps.steptoc()
         #print "Estimated frames per second: {0}".format(fps.fps)
@@ -446,12 +461,4 @@ sock.close()
 if (not mtrn == None):
     mtrn.close()
 
-try:
-    t.cancel()
-    print 'Thread successfully closed.'
-except Exception as e:
-    print 'Exception while closing video stream thread.'
-    traceback.print_exc(file=sys.stdout)
-
-os.remove('running.wt')
-print 'ShinkeyBot has stopped.'
+terminateme()
