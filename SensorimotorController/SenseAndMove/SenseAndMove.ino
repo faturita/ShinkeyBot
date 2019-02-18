@@ -313,8 +313,8 @@ void blinkme()
         buzz();
         break;
       case 'O':
+        sensor.scanned = doScan();
         if (debug) {
-          sensor.scanned = doScan();
           Serial.print("Scan:");Serial.println(sensor.scanned);
         }
         break;
