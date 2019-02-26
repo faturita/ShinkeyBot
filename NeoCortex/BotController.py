@@ -80,7 +80,7 @@ while (True):
       sock.close()
       quit()
 
-  sent = sock.sendto(data, server_address)
+  sent = sock.sendto('U'+data+'000', server_address)
 
   if (data.startswith('!')):
       print "Letting know Bot that I want streaming...."
@@ -90,6 +90,6 @@ while (True):
 
 print "Insisting...."
 for i in range(1,100):
-    sent = sock.sendto(data, server_address)
+    sent = sock.sendto('U'+data+'000', server_address)
 
 sock.close()

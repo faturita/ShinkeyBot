@@ -86,6 +86,9 @@ sd.set(20)
 
 q = Queue.Queue()
 
+
+state = []
+
 while (True):
 
     data, address = socktelemetry.recvfrom(length)
