@@ -253,7 +253,7 @@ while(True):
         #print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
-        sur.getcommand()
+        sur.getmessage()
         data, address = sur.data, sur.address
 
         # If someone asked for it, send sensor information.
@@ -293,6 +293,7 @@ while(True):
             if (len(sur.message)==5):
                 # Sending the message that was received.
                 ssmr.write(sur.message)
+                sur.message = ''
 
         elif (sur.command == 'U'):
 
