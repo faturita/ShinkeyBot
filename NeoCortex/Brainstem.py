@@ -185,6 +185,9 @@ class Surrogator:
     def __init__(self, sock):
         print 'Remote controlling ShinkeyBot'
         self.data = ''
+        self.message = ''
+        self.controlvalue = 0
+        self.command = ''
         self.sock = sock
         self.address = None
         self.keeprunning = True
@@ -197,6 +200,18 @@ class Surrogator:
         try:
             # Read from the UDP controller socket non blocking
             self.data, self.address = self.sock.recvfrom(1)
+        except Exception as e:
+            pass
+
+    def getmessage(self):
+        self.data = ''
+        try:
+            # Read from the UDP controller socket non blocking
+            # The message format is AANNN
+            self.message, self.address = self.sock.recvfrom(5)
+            self.command = self.message[0]
+            self.data = self.message[1]
+            self.controlvalue = int(self.message[2:5])
         except Exception as e:
             pass
 
@@ -225,10 +240,16 @@ automode = False;
 fps = Fps()
 fps.tic()
 
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
+runninglog = open('../data/brainstem.'+st+'.dat', 'w')
+
 # Live
 while(True):
     try:
         fps.steptoc()
+        ts = int(time.time())
+        runninglog.write(str(ts) + ',' + fps.fps + '\n')
         #print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
@@ -268,177 +289,182 @@ while(True):
                     ssmr.write('2')
                     if (sens[15]<90):
                         ssmr.write('5')
+        if (sur.command == 'A'):
+            if (len(sur.message)==5):
+                # Sending the message that was received.
+                ssmr.write(sur.message)
+
+        elif (sur.command == 'U'):
+
+            if (data == '!'):
+                # IP Address exchange.
+                sensorimotor.ip = address[0]
+                sensorimotor.restart()
+
+                if (mtrn):
+                    motorneuron.ip = address[0]
+                    motorneuron.restart()
+
+                print "Reloading target ip for telemetry:"+sensorimotor.ip
+
+                # Vst VideoStream should be likely restarted in order to check
+                # if something else can be enabled.
 
 
-        if (data == '!'):
-            # IP Address exchange.
-            sensorimotor.ip = address[0]
-            sensorimotor.restart()
-
-            if (mtrn):
-                motorneuron.ip = address[0]
-                motorneuron.restart()
-
-            print "Reloading target ip for telemetry:"+sensorimotor.ip
-
-            # Vst VideoStream should be likely restarted in order to check
-            # if something else can be enabled.
-
-
-        if (data == 'Q'):
-            # Activate/Deactivate sensor data.
-            sensesensor = True
-        elif (data == 'q'):
-            sensesensor = False
-        if (data == 'K'):
-            #Scan
-            ssmr.write('K')
-        if (data == 'N'):
-            ssmr.write('H')
-            #Camera Right
-        elif (data == 'B'):
-            ssmr.write('G')
-            #Camera Center
-            visualpos = [90,95]
-        elif (data == 'V'):
-            ssmr.write('F')
-            #Camera Left
-        elif (data == 'C'):
-            ssmr.write('T')
-            #Camera nose down
-        elif (data == '='):
-            #Home position.
-            mtrn.write('=')
-            wristpos=90
-            elbowpos=90
-            shoulderpos=150
-            mtrn.write('AC000')
-        elif (data == '$'):
-            pitpos = 250
-            mtrn.write('AC'+'{:3d}'.format(pitpos))
-        elif (data == '%'):
-            pitpos=250
-            mtrn.write('AD'+'{:3d}'.format(pitpos))
-        elif (data == 'Y'):
-            # Move shoulder up
-            shoulderpos = shoulderpos + 1
-            mtrn.write('A7'+'{:3d}'.format(shoulderpos))
-        elif (data == 'H'):
-            # Move shoulder down.
-            shoulderpos = shoulderpos - 1
-            mtrn.write('A7'+'{:3d}'.format(shoulderpos))
-        elif (data=='<'):
-            # Move elbows up (by increasing its torque)
-            elbowpos = elbowpos + 1
-            mtrn.write('AA'+'{:3d}'.format(elbowpos))
-        elif (data=='>'):
-            # Move elbows dow (by decreasing its torque)
-            elbowpos = elbowpos - 1
-            mtrn.write('AA'+'{:3d}'.format(elbowpos))
-        elif (data=='Z'):
-            # Reset Elbow position (no force)
-            elbowpos = 90
-            mtrn.write('AA'+'{:3d}'.format(elbowpos))
-        elif (data=='J'):
-            # mtrn.write('A6180')
-            wristpos = wristpos + 1
-            mtrn.write('A6'+'{:3d}'.format(wristpos))
-            # wrist Up
-        elif (data=='j'):
-            # mtrn.write('A6090')
-            wristpos = wristpos - 1
-            mtrn.write('A6'+'{:3d}'.format(wristpos))
-            # wrist down
-        elif (data=='\''):
-            # Wrist clockwise
-            mtrn.write('A8120')
-        elif (data=='?'):
-            # Wrist anticlockwise
-            mtrn.write('A9120')
-        elif (data=='G'):
-            # Grip close
-            mtrn.write('A1220')
-        elif (data=='R'):
-            # Grip open
-            mtrn.write('A2200')
-            # Gripper Release
-        elif (data==' '):
-            ssmr.write('1')
-            # Quiet
-        elif (data=='W'):
-            ssmr.write('2')
-            # Forward
-        elif (data=='S'):
-            ssmr.write('3')
-            # Backward
-        elif (data=='D'):
-            ssmr.write('4')
-            # Right
-        elif (data=='A'):
-            ssmr.write('5')
-            # Left
-        elif (data=='.'):
-            ssmr.write('-')
-            # Move slowly
-        elif (data==','):
-            ssmr.write('+')
-            # Move coarsely
-        elif (data=='L'):
-            mtrn.write('L')
-            ssmr.write('L')
-            # Laser on
-        elif (data=='l'):
-            mtrn.write('l')
-            ssmr.write('l')
-            # Laser off
-        elif (data=='+'):
-            tgt = tgt + 100
-            # Pull up tesaki target
-        elif (data=='-'):
-            tgt = tgt - 100
-            # Pull down tesaki target
-        elif (data=='{'):
-            # Camera left
-            visualpos[0]=visualpos[0]+1;
-            ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
-        elif (data=='}'):
-            # Camera right
-            visualpos[0]=visualpos[0]-1;
-            ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
-        elif (data=='['):
-            # Nose down
-            visualpos[1]=visualpos[1]-1;
-            ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
-        elif (data==']'):
-            # Nose up
-            visualpos[1]=visualpos[1]+1;
-            ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
-        elif (data=='a'):
-            # Scan right
-            scan=scan-1;
-            ssmr.write('AO'+'{:3d}'.format(scan))
-        elif (data=='d'):
-            # Scan left
-            scan=scan+1;
-            ssmr.write('AO'+'{:3d}'.format(scan))
-        elif (data=='M'):
-            pass
-            #prop.moveto(mtrn, hidraw, tgt)
-            # PID to desired position
-        elif (data=='E'):
-            ssmr.write('E')
-            # Empire song
-        elif (data=='P'):
-            ssmr.write('B')
-            # Buzz
-        elif (data=='('):
-            sensorimotor.sensorlocalburst = 100
-        elif (data==')'):
-            sensorimotor.sensorlocalburst = 10000
-        elif (data=='O'):
-            ssmr.write('O')
-        elif (data=='X'):
-            break
+            if (data == 'Q'):
+                # Activate/Deactivate sensor data.
+                sensesensor = True
+            elif (data == 'q'):
+                sensesensor = False
+            if (data == 'K'):
+                #Scan
+                ssmr.write('K')
+            if (data == 'N'):
+                ssmr.write('H')
+                #Camera Right
+            elif (data == 'B'):
+                ssmr.write('G')
+                #Camera Center
+                visualpos = [90,95]
+            elif (data == 'V'):
+                ssmr.write('F')
+                #Camera Left
+            elif (data == 'C'):
+                ssmr.write('T')
+                #Camera nose down
+            elif (data == '='):
+                #Home position.
+                mtrn.write('=')
+                wristpos=90
+                elbowpos=90
+                shoulderpos=150
+                mtrn.write('AC000')
+            elif (data == '$'):
+                pitpos = 250
+                mtrn.write('AC'+'{:3d}'.format(pitpos))
+            elif (data == '%'):
+                pitpos=250
+                mtrn.write('AD'+'{:3d}'.format(pitpos))
+            elif (data == 'Y'):
+                # Move shoulder up
+                shoulderpos = shoulderpos + 1
+                mtrn.write('A7'+'{:3d}'.format(shoulderpos))
+            elif (data == 'H'):
+                # Move shoulder down.
+                shoulderpos = shoulderpos - 1
+                mtrn.write('A7'+'{:3d}'.format(shoulderpos))
+            elif (data=='<'):
+                # Move elbows up (by increasing its torque)
+                elbowpos = elbowpos + 1
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='>'):
+                # Move elbows dow (by decreasing its torque)
+                elbowpos = elbowpos - 1
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='Z'):
+                # Reset Elbow position (no force)
+                elbowpos = 90
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='J'):
+                # mtrn.write('A6180')
+                wristpos = wristpos + 1
+                mtrn.write('A6'+'{:3d}'.format(wristpos))
+                # wrist Up
+            elif (data=='j'):
+                # mtrn.write('A6090')
+                wristpos = wristpos - 1
+                mtrn.write('A6'+'{:3d}'.format(wristpos))
+                # wrist down
+            elif (data=='\''):
+                # Wrist clockwise
+                mtrn.write('A8120')
+            elif (data=='?'):
+                # Wrist anticlockwise
+                mtrn.write('A9120')
+            elif (data=='G'):
+                # Grip close
+                mtrn.write('A1220')
+            elif (data=='R'):
+                # Grip open
+                mtrn.write('A2200')
+                # Gripper Release
+            elif (data==' '):
+                ssmr.write('1')
+                # Quiet
+            elif (data=='W'):
+                ssmr.write('2')
+                # Forward
+            elif (data=='S'):
+                ssmr.write('3')
+                # Backward
+            elif (data=='D'):
+                ssmr.write('4')
+                # Right
+            elif (data=='A'):
+                ssmr.write('5')
+                # Left
+            elif (data=='.'):
+                ssmr.write('-')
+                # Move slowly
+            elif (data==','):
+                ssmr.write('+')
+                # Move coarsely
+            elif (data=='L'):
+                mtrn.write('L')
+                ssmr.write('L')
+                # Laser on
+            elif (data=='l'):
+                mtrn.write('l')
+                ssmr.write('l')
+                # Laser off
+            elif (data=='+'):
+                tgt = tgt + 100
+                # Pull up tesaki target
+            elif (data=='-'):
+                tgt = tgt - 100
+                # Pull down tesaki target
+            elif (data=='{'):
+                # Camera left
+                visualpos[0]=visualpos[0]+1;
+                ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
+            elif (data=='}'):
+                # Camera right
+                visualpos[0]=visualpos[0]-1;
+                ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
+            elif (data=='['):
+                # Nose down
+                visualpos[1]=visualpos[1]-1;
+                ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
+            elif (data==']'):
+                # Nose up
+                visualpos[1]=visualpos[1]+1;
+                ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
+            elif (data=='a'):
+                # Scan right
+                scan=scan-1;
+                ssmr.write('AO'+'{:3d}'.format(scan))
+            elif (data=='d'):
+                # Scan left
+                scan=scan+1;
+                ssmr.write('AO'+'{:3d}'.format(scan))
+            elif (data=='M'):
+                pass
+                #prop.moveto(mtrn, hidraw, tgt)
+                # PID to desired position
+            elif (data=='E'):
+                ssmr.write('E')
+                # Empire song
+            elif (data=='P'):
+                ssmr.write('B')
+                # Buzz
+            elif (data=='('):
+                sensorimotor.sensorlocalburst = 100
+            elif (data==')'):
+                sensorimotor.sensorlocalburst = 10000
+            elif (data=='O'):
+                ssmr.write('O')
+            elif (data=='X'):
+                break
     except Exception as e:
         print "Error:" + e.message
         print "Waiting for serial connection to reestablish..."

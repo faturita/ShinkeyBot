@@ -11,10 +11,10 @@ void readcommand(int &state, int &controlvalue)
   if (readbytes == 4) {
     if (debug) Serial.println ( (int)buffer[0] );
     int action = 0;
-    if (buffer[0] >= 65)  // send alpha hexa actions.
+    if (buffer[0] == 'B')  // send alpha hexa actions.
       action = buffer[0] - 65 + 10;
     else
-      action = buffer[0] - 48;
+      action = buffer[0];
     int a = buffer[1] - 48;
     int b = buffer[2] - 48;
     int c = buffer[3] - 48;

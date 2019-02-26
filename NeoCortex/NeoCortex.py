@@ -86,6 +86,9 @@ sd.set(20)
 
 q = Queue.Queue()
 
+
+state = []
+
 while (True):
 
     data, address = socktelemetry.recvfrom(length)
@@ -100,132 +103,13 @@ while (True):
     # Analyze incoming data...
     data = ''
 
-    distance = new_values[2]
-    angle = new_values[13]
+    distance = new_values[19]
+    angle = new_values[18]
 
     print (distance)
     print (angle)
 
-    if (angle<30 and distance>0):
-        dst[0] = distance
-    elif ((angle>=79 and angle<=90) and distance>0):
-        dst[1] = distance
-    elif (angle>115 and distance>0):
-        dst[2] = distance
-
-    print dst
-
-    if (dst[1] < 20):
-        sendmulticommand(' ',2)
-
-    if (sd.check()):
-        # Firing check command
-        print ('Firing check command')
-        q.put(Cmd('1',4))
-        q.put(Cmd('2',4))
-        q.put(Cmd('3',4))
-        q.put(Cmd('X',1))
-
-        sd.set(30)
-
-    if (t.check()):
-        if (q.qsize()>0):
-            Cmdand = q.get()
-            if (Cmdand.cmd == 'X'):
-                dirval = max(dst)
-                dir = dst.index(dirval)
-                if (dir == 2):
-                    q.put(Cmd('A',0.5))
-                    q.put(Cmd('2',0.5))
-                    q.put(Cmd('W',7))
-                    q.put(Cmd(' ',5))
-                elif (dir == 0):
-                    q.put(Cmd('D',0.5))
-                    q.put(Cmd('2',0.5))
-                    q.put(Cmd('W',7))
-                    q.put(Cmd(' ',5))
-                else:
-                    q.put(Cmd('W',7))
-                    q.put(Cmd('2',0.5))
-                    q.put(Cmd(' ',5))
-            else:
-                sendmulticommand(Cmdand.cmd,2)
-
-            t.set(Cmdand.delay)
-        else:
-            t.set(10)
-
-
-    # if (state == 0 and t.check()):
-    #     sendmulticommand('1',2)
-    #
-    #     if (angle<30):
-    #         state = 1
-    #         t.set(delay)
-    # elif (state == 1 and t.check()):
-    #     sendmulticommand('K',10)
-    #     state = 2
-    #     t.set(delay)
-    # elif (state == 2 and t.check()):
-    #     sendmulticommand('2',2)
-    #
-    #     if (angle>=89 and angle<=91):
-    #         state = 3
-    #         t.set(delay)
-    # elif (state == 3 and t.check()):
-    #     sendmulticommand('K',10)
-    #     state = 4
-    #     t.set(delay)
-    #
-    # elif (state == 4 and t.check()):
-    #     sendmulticommand('3',2)
-    #
-    #     if (angle>160):
-    #         state = 5
-    #         t.set(delay)
-    # elif (state == 5 and t.check()):
-    #     sendmulticommand('K',10)
-    #     state = 0
-    #     t.set(delay)
-
-
-    # if (state == 0 and t.check()):
-    #     sendmulticommand('<',7)
-    #
-    #     if (angle<30):
-    #         state = 1
-    #         t.set(delay)
-    # elif (state == 1 and t.check()):
-    #     sendmulticommand('K',2)
-    #     state = 2
-    #     t.set(delay)
-    # elif (state == 2 and t.check()):
-    #     sendmulticommand('>',7)
-    #
-    #     if (angle<85):
-    #         sendmulticommand('>',2)
-    #
-    #     if (angle>95):
-    #         sendmulticommand('<',2)
-    #
-    #     if (angle>85 and angle<95):
-    #         state = 3
-    #         t.set(delay)
-    # elif (state == 3 and t.check()):
-    #     sendmulticommand('K',2)
-    #     state = 4
-    #     t.set(delay)
-    #
-    # elif (state == 4 and t.check()):
-    #     sendmulticommand('>',7)
-    #
-    #     if (angle>140):
-    #         state = 5
-    #         t.set(delay)
-    # elif (state == 5 and t.check()):
-    #     sendmulticommand('K',2)
-    #     state = 0
-    #     t.set(delay)
+    data = 'O'
 
     if (len(data)>0 and t.check()):
         # Determine action command and send it.

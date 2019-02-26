@@ -18,6 +18,17 @@ import sys, select
 import socket
 import Configuration
 
+data1 = 1
+data2 = 2
+data3 = 3
+
+if (len(sys.argv)>=2):
+    print "Reading which data to shown"
+    data1 = int(sys.argv[1])
+    data2 = int(sys.argv[2])
+    data3 = int(sys.argv[3])
+
+
 serialconnected = False
 
 if (not serialconnected):
@@ -76,7 +87,7 @@ line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the c
 line2, = ax.plot(y,'g', label='Y')
 line3, = ax.plot(z,'b', label='Z')
 
-ax.axis([0, 500, -100, 200])
+ax.axis([0, 500, -10, 200])
 
 
 plcounter = 0
@@ -119,11 +130,11 @@ while True:
           #new_values = unpack('ffffffhhhhhhhhhh', data)
           print str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
-          f.write( str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + '\n')
+          f.write( str(new_values[data1]) + ' ' + str(new_values[data2]) + ' ' + str(new_values[data3]) + '\n')
 
-          x.append( float(new_values[5]))
-          y.append( float(new_values[0]))
-          z.append( float(new_values[19]))
+          x.append( float(new_values[data1]))
+          y.append( float(new_values[data2]))
+          z.append( float(new_values[data3]))
 
           plotx.append( plcounter )
 
