@@ -249,7 +249,7 @@ while(True):
     try:
         fps.steptoc()
         ts = int(time.time())
-        runninglog.write(str(ts) + ',' + fps.fps + '\n')
+        runninglog.write(str(ts) + ',' + str(fps.fps) + '\n')
         #print "Estimated frames per second: {0}".format(fps.fps)
         data = ''
         # TCP/IP server is configured as non-blocking
