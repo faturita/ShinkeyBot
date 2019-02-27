@@ -65,9 +65,9 @@ time.sleep(10)
 
 for i in range(1,2):
     print('Letting know Bot that I want telemetry.')
-    sent = sockcmd.sendto('!', server_address)
+    sent = sockcmd.sendto('U!000', server_address)
 
-sent = sockcmd.sendto('Q', server_address)
+sent = sockcmd.sendto('UQ000', server_address)
 
 print '>'
 
@@ -78,16 +78,16 @@ dst = [0,0,0]
 olddst = dst
 
 t = Asynctimer()
-t.set(10)
+t.set(5)
 delay=10
 
 sd = Asynctimer()
-sd.set(20)
+sd.set(10)
 
 q = Queue.Queue()
 
 
-state = []
+state = 0
 
 while (True):
 
@@ -106,13 +106,73 @@ while (True):
     distance = new_values[19]
     angle = new_values[18]
 
+    gYaw = new_values[9]
+    gPitch = new_values[10]
+    gRoll = new_values[11]
+
+    near = new_values[15]
+
     print (distance)
     print (angle)
 
-    data = 'O'
+    #print (str(gYaw) + '-' + str(gPitch) + '-' + str(gRoll))
+
+
+    if (angle<30 and distance>0 and state==2):
+        dst[0] = distance
+        state = 3
+    elif ((angle>=79 and angle<=90) and distance>0 and state==4):
+        dst[1] = distance
+        state = 5
+    elif (angle>115 and distance>0 and state==6):
+        dst[2] = distance
+        state =7
+
+    print (dst)
+    print (near)
+
+    if (near < 30 and state ==0):
+        data = 'U 000'
+        state = 1
+
+    if (state == 0):
+        data = 'UW000'
+
+    if (sd.check()):
+        # Firing check command
+        print ('Firing check command')
+        sd.set(2)
+        if (state == 1):
+            data = 'AO010'
+            state = 2
+            sd.set(15)
+        elif (state == 3):
+            data = 'AO090'
+            state = 4
+            sd.set(15)
+        elif (state == 5):
+            data = 'AO170'
+            state = 6
+            sd.set(15)
+        elif (state == 7):
+            dirval = max(dst)
+            dir = dst.index(dirval)
+            if (dir==2):
+                data = 'UA000'
+            elif (dir==0):
+                data = 'UD000'
+            else:
+                data = 'UW000'
+            state = 0
+            sd.set(2)
+
+    else:
+        data = 'UO000'
+
 
     if (len(data)>0 and t.check()):
         # Determine action command and send it.
+        print data
         sent = sockcmd.sendto(data, server_address)
 
     if (data.startswith('!')):
