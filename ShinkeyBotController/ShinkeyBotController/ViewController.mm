@@ -21,7 +21,7 @@
 #import <mach/mach_time.h>
 
 // These are the default address where ShinkeyBot listens.
-#define SHINKEYBOTADDRESS   @"192.168.0.109"
+#define SHINKEYBOTADDRESS   @"10.17.10.22"
 #define dshinkeybotaddress   @"10.17.13.89"
 
 // Multicast port and group IP
@@ -123,7 +123,7 @@ GCDAsyncSocket *_streamSocket;
 {
     NSData* data = [[NSString stringWithString:message] dataUsingEncoding:NSASCIIStringEncoding];
     
-    NSLog(@"Send message %@", message);
+    NSLog(@"Send message %@ to %@", message, host);
     
     [_udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:1];
 }
@@ -299,7 +299,7 @@ NSMutableData *consolidated;
     // Do any additional setup after loading the view, typically from a nib.
     
     _shinkeybotaddress = SHINKEYBOTADDRESS;
-    [self recoverStoredAddress];
+    //[self recoverStoredAddress];
     
     [_commandText setDelegate:self];
     
@@ -431,18 +431,32 @@ NSMutableData *consolidated;
     return YES;
 }
 
+- (IBAction)doRotateLeft:(id)sender {
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"UK000"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"U 000"]];
+}
+
+- (IBAction)doRotateRight:(id)sender {
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"UL000"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"U 000"]];
+}
+
+- (IBAction)doStop:(id)sender {
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"U 000"]];
+}
+
 - (IBAction)doUp:(id)sender {
-    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"W"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"UW000"]];
 }
 - (IBAction)doDown:(id)sender {
-    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"S"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"US000"]];
 }
 
 - (IBAction)doRight:(id)sender {
-    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"D"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"UD000"]];
 }
 - (IBAction)doLeft:(id)sender {
-    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"A"]];
+    [ViewController send:_shinkeybotaddress withMessage:[NSString stringWithFormat:@"UA000"]];
 }
 
 
