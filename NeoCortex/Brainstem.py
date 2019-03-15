@@ -234,7 +234,7 @@ sur = Surrogator(sock)
 #except:
 #    pass
 
-target = [0,0,0]
+target = [0,1,0]
 automode = False;
 
 fps = Fps()
