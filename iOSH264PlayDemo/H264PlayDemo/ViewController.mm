@@ -28,6 +28,8 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *connectionButton;
+@property (weak, nonatomic) IBOutlet UIImageView *aliveButton;
+@property (weak, nonatomic) IBOutlet UITextField *commandText;
 
 @end
 
@@ -49,7 +51,9 @@ bool _connect;
     _shinkeybotaddress = SHINKEYBOTADDRESS;
     [self recoverStoredAddress];
     
-    //    [_commandText setDelegate:self];
+    [_commandText setDelegate:self];
+    
+    [_commandText setText:_shinkeybotaddress];
     
     [self setupSocket];
     
@@ -158,6 +162,10 @@ bool _connect;
         NSLog(@"Message = %@, Adress = %@ %i",msg,host,port);
         _shinkeybotaddress = host;
         [self storeAddress:host];
+        
+        // This is the confirmation that ShinkeyBot is alive.
+        [_aliveButton setImage:[UIImage imageNamed:@"online"]];
+        
     }
     else
     {
@@ -259,6 +267,17 @@ bool _connect;
     [recognizer translationInView:self.view];
         
     
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    
+    NSLog(@"Send message %@", textField.text);
+    
+    _shinkeybotaddress = textField.text;
+    
+    return YES;
 }
 
 @end

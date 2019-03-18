@@ -77,10 +77,30 @@
                                     <action selector="doConnect:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GbL-jU-tVG"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="offline" translatesAutoresizingMaskIntoConstraints="NO" id="3Xz-G9-DbI">
+                                <rect key="frame" x="324" y="381" width="35" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="h7O-eJ-R73">
+                                <rect key="frame" x="278" y="343" width="97" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="IP" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p6Z-I6-Tlg">
+                                <rect key="frame" x="260" y="348" width="15" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
+                        <outlet property="aliveButton" destination="3Xz-G9-DbI" id="CPd-D7-Sxn"/>
+                        <outlet property="commandText" destination="h7O-eJ-R73" id="ejm-c1-GLI"/>
                         <outlet property="connectionButton" destination="HJr-IU-P8t" id="BAP-Gb-jCl"/>
                     </connections>
                 </viewController>
@@ -103,6 +123,7 @@
         <image name="button" width="720" height="720"/>
         <image name="connect" width="512" height="512"/>
         <image name="down" width="225" height="225"/>
+        <image name="offline" width="225" height="225"/>
         <image name="up" width="225" height="225"/>
     </resources>
 </document>
