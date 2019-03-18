@@ -154,6 +154,10 @@ if (ssmr == None and mtrn == None):
 
 # Instruct the Sensorimotor Cortex to stop wandering.
 ssmr.write('C')
+ssmr.write('B')
+time.sleep(1)
+ssmr.write('B')
+
 
 tgt = -300
 
