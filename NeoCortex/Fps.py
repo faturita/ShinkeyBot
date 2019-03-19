@@ -40,6 +40,7 @@ if __name__ == "__main__":
 
     for i in range(1,1000000):
         ffps.steptoc()
+        time.sleep(0.5)
         print "Estimated frames per second: {0}".format(ffps.fps)
 
     # Start time

@@ -63,6 +63,33 @@ try:
 except:
     pass
 
+
+# Open connection to tilt sensor (@deprecated)
+#hidraw = prop.setupsensor()
+# Open serial connection to MotorUnit and Sensorimotor Arduinos.
+def doserial():
+    retries=1
+    ssmr=None
+    mtrn=None
+    while (retries<5):
+        try:
+            [ssmr, mtrn] = prop.serialcomm()
+            print 'Connection established'
+            return [ssmr, mtrn]
+        except Exception as e:
+            print 'Error while establishing serial connection.'
+            retries=retries+1
+
+    return [ssmr, mtrn]
+
+[ssmr, mtrn] = doserial()
+
+# Instruct the Sensorimotor Cortex to stop wandering.
+ssmr.write('C')
+ssmr.write('B')
+time.sleep(1)
+ssmr.write('B')
+
 # Ok, so the first thing to do is to broadcast my own IP address.
 dobroadcastip = True
 
@@ -117,25 +144,6 @@ if (dobroadcastip):
 
 print 'Connection to Remote Controller established.'
 
-# Open connection to tilt sensor (@deprecated)
-#hidraw = prop.setupsensor()
-# Open serial connection to MotorUnit and Sensorimotor Arduinos.
-def doserial():
-    retries=1
-    ssmr=None
-    mtrn=None
-    while (retries<5):
-        try:
-            [ssmr, mtrn] = prop.serialcomm()
-            print 'Connection established'
-            return [ssmr, mtrn]
-        except Exception as e:
-            print 'Error while establishing serial connection.'
-            retries=retries+1
-
-    return [ssmr, mtrn]
-
-[ssmr, mtrn] = doserial()
 
 def terminateme():
     try:
@@ -151,12 +159,6 @@ def terminateme():
 
 if (ssmr == None and mtrn == None):
     terminateme()
-
-# Instruct the Sensorimotor Cortex to stop wandering.
-ssmr.write('C')
-ssmr.write('B')
-time.sleep(1)
-ssmr.write('B')
 
 
 tgt = -300
