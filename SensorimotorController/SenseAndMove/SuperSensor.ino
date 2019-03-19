@@ -1,7 +1,12 @@
 #include <Wire.h>
 
+
+// Integrated Sensor Gy9250
+
+// Compass Sensor
 #define HMC5883_ADDRESS 0x1E 
 
+// Barometric and temperature sensor.
 //Define o endereco I2C do BMP085 - 0x77 ou 119 em decimal
 #define BMP085_ADDRESS 0x77  
 // Define o endereco do HMC5883 - 0x1E ou 30 em decimal
@@ -90,7 +95,7 @@ void initializeBarometricSensor()
   //Serial.begin(9600);
   Wire.begin();
 
-  Serial.println("Initializing BMP085 (Pressure and Temp)");
+  Serial.println("BMP085 (Pressure and Temp)");
   // Inicializa o BMP085
   bmp085Calibration();
 }
