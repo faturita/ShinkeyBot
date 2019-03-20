@@ -9,11 +9,16 @@ import sys
 
 import Configuration as conf
 
+import ConfigMe
+import io
+
+import os
+
 savevideo = True
 
-
 if (len(sys.argv)<2):
-	ip = conf.shinkeybotip
+	# Load the configuration file
+	ip = ConfigMe.readconfig("config.ini")
 	port = conf.videoport
 
 elif sys.argv[1] == '-f':
@@ -78,16 +83,18 @@ for i in range(1,80000):
 	#frame = cv2.flip(frame,0)
 	#frame = cv2.flip(frame,1)
 
-	#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	#cv2.imwrite('01.png', gray)
 
 	#Using AKAZE descriptors.
-	#detector = cv2.AKAZE_create()
-	#(kps, descs) = detector.detectAndCompute(gray, None)
-	#print("keypoints: {}, descriptors: {}".format(len(kps), descs.shape))
+	detector = cv2.AKAZE_create()
+	(kps, descs) = detector.detectAndCompute(gray, None)
 
-	# draw the keypoints and show the output image
-	#cv2.drawKeypoints(frame, kps, frame, (0, 255, 0))
+	if (len(kps)>0):
+		print("keypoints: {}, descriptors: {}".format(len(kps), descs.shape))
+
+		# draw the keypoints and show the output image
+		cv2.drawKeypoints(frame, kps, frame, (0, 255, 0))
 
 	#edges = cv2.Canny(frame,100,200)
 	#edges = cv2.Canny(frame,50,150,apertureSize = 3)

@@ -1,7 +1,12 @@
 #include <Wire.h>
 
+
+// Integrated Sensor Gy9250
+
+// Compass Sensor
 #define HMC5883_ADDRESS 0x1E 
 
+// Barometric and temperature sensor.
 //Define o endereco I2C do BMP085 - 0x77 ou 119 em decimal
 #define BMP085_ADDRESS 0x77  
 // Define o endereco do HMC5883 - 0x1E ou 30 em decimal
@@ -90,20 +95,14 @@ void initializeBarometricSensor()
   //Serial.begin(9600);
   Wire.begin();
 
-  Serial.println("Initializing BMP085 (Pressure and Temp)");
+  Serial.println("BMP085 (Pressure and Temp)");
   // Inicializa o BMP085
   bmp085Calibration();
 }
 
 
-void checksensors()
+void updateSuperSensor()
 {
-  static int counter = 0;
-  if (counter>=255)
-  {
-    counter=0;
-  }
-  sensor.counter = counter++;
   float temperature=0, pressure=0;
 
   // NO SE CARGA TEMPERATURA NI INFO BAROMETRICA
@@ -230,36 +229,6 @@ void checksensors()
   sensor.pitch = gyroy;
   sensor.roll = gyroz;
 
-}
-
-void transmitsensors() {
-  int len = sizeof(sensor);
-  char aux[len];  //46
-  memcpy(&aux,&sensor,len);
-
-  Serial.write('S');
-  Serial.write((uint8_t *)&aux,len);
-  Serial.write('E');
-
-  if (debug) {
-    Serial.println('S');
-    Serial.print("Rot Yaw:");Serial.println(sensor.onYaw);
-    Serial.print("Rot Pitch:");Serial.println(sensor.onPitch);
-    Serial.print("Rot Roll:");Serial.println(sensor.onRoll);
-    Serial.print("Yaw:");Serial.println(sensor.yaw);
-    Serial.print("Pitch:");Serial.println(sensor.pitch);
-    Serial.print("Roll:");Serial.println(sensor.roll);
-    Serial.print("Geo Yaw:");Serial.println(sensor.geoYaw);
-    Serial.print("Geo Pitch:");Serial.println(sensor.geoPitch);
-    Serial.print("Geo Roll:");Serial.println(sensor.geoRoll);
-    Serial.print("Temperature:");Serial.println(sensor.T);
-    Serial.print("Pressure:");Serial.println(sensor.P);
-    Serial.println(']');
-  }
-  
-
-  //Aguarda 5 segundos e reinicia o processo
-  //delay(5000);
 }
 
 
