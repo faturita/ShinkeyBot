@@ -23,7 +23,10 @@ elif sys.argv[1] == '-f':
 else:
 	ip = sys.argv[1]
 	print "Using IP:"+ip
-	port = 10000
+	if (len(sys.argv)==3):
+		port = int(sys.argv[2])
+	else:
+		port = 10000
 
 
 #cap = cv2.VideoCapture(0)
