@@ -42,9 +42,9 @@ def serialcomm(serialportname=None):
         return [sera, serb]
 
     # Initialize connection with Arduino
-    idstring = sera.read(250)
+    idstring = sera.read(1000)
     if (serb):
-        idstring = serb.read(250)
+        idstring = serb.read(1000)
 
     for tries in range(1, 10):
         sera.write('I')

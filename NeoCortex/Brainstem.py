@@ -177,7 +177,7 @@ scan = 90
 sensesensor = False
 
 # Connect remotely to any client that is waiting for sensor loggers.
-sensorimotor = senso.Sensorimotor('sensorimotor',52,'ffffffhhhhhhhhhhhhhh')
+sensorimotor = senso.Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
 sensorimotor.start()
 sensorimotor.cleanbuffer(ssmr)
 

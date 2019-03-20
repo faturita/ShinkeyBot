@@ -67,13 +67,15 @@ void initsensors()
 {
   initializeBarometricSensor();
 
+  setupMagSensor();
+
   // Inicializa o HMC5883
-  Wire.beginTransmission(HMC5883_ADDRESS);
+  //Wire.beginTransmission(HMC5883_ADDRESS);
   // Seleciona o modo
-  Wire.write(0x02); 
+  //Wire.write(0x02); 
   // Modo de medicao continuo
-  Wire.write(0x00); 
-  Wire.endTransmission();
+  //Wire.write(0x00); 
+  //Wire.endTransmission();
 
 
     // enable to measute g data
@@ -123,24 +125,24 @@ void updateSuperSensor()
   //Serial.println();
 
 
-  int x,y,z; //triple axis data
+  getMagneticData();
   
   // Indica ao HMC5883 para iniciar a leitura
-  Wire.beginTransmission(HMC5883_ADDRESS);
-  Wire.write(0x03); //select register 3, X MSB register
-  Wire.endTransmission();
+  //Wire.beginTransmission(HMC5883_ADDRESS);
+  //Wire.write(0x03); //select register 3, X MSB register
+  //Wire.endTransmission();
  
   // Le os dados de cada eixo, 2 registradores por eixo
-  Wire.requestFrom(HMC5883_ADDRESS, 6);
-  if(6<=Wire.available())
-  {
-    x = Wire.read()<<8; //X msb
-    x |= Wire.read(); //X lsb
-    z = Wire.read()<<8; //Z msb
-    z |= Wire.read(); //Z lsb
-    y = Wire.read()<<8; //Y msb
-    y |= Wire.read(); //Y lsb
-  }
+  //Wire.requestFrom(HMC5883_ADDRESS, 6);
+  //if(6<=Wire.available())
+  //{
+    //x = Wire.read()<<8; //X msb
+    //x |= Wire.read(); //X lsb
+    //z = Wire.read()<<8; //Z msb
+    //z |= Wire.read(); //Z lsb
+    //y = Wire.read()<<8; //Y msb
+    //y |= Wire.read(); //Y lsb
+  //}
   
   // Dump los valores a serie.
   //Serial.print("x: ");
@@ -150,9 +152,9 @@ void updateSuperSensor()
   //Serial.print("  z: ");
   //Serial.println(z);
 
-  sensor.geoYaw = x;
-  sensor.geoPitch = y;
-  sensor.geoRoll = z;
+  //sensor.geoYaw = x;
+  //sensor.geoPitch = y;
+  //sensor.geoRoll = z;
 
 
   //--------------X

@@ -81,20 +81,22 @@ struct sensortype
   float T;          // +4 = 16
   float P;          // +4 = 20
   double light;     // +4 = 24
-  int yaw;          // +2 = 26
-  int pitch;        // +2 = 28
-  int roll;         // +2 = 30
-  int geoYaw;       // +2 = 32
-  int geoPitch;     // +2 = 34
-  int geoRoll;      // +2 = 36
-  int sound;        // +2 = 38
-  int freq;         // +2 = 40
-  int counter;      // +2 = 42
-  int distance;     // +2 = 44
-  int pan;          // +2 = 46
-  int tilt;         // +2 = 48
-  int scan;         // +2 = 50
-  int scanned;      // +2 = 52
+  float geoYaw;       // +4 = 28
+  float geoPitch;     // +4 = 32
+  float geoRoll;      // +4 = 36
+  float geoHeading; // +4 = 40
+  float fps;        // +4 = 44
+  int yaw;          // +2 = 46
+  int pitch;        // +2 = 48
+  int roll;         // +2 = 50
+  int sound;        // +2 = 52
+  int freq;         // +2 = 54
+  int counter;      // +2 = 56
+  int distance;     // +2 = 58
+  int pan;          // +2 = 60
+  int tilt;         // +2 = 62
+  int scan;         // +2 = 64
+  int scanned;      // +2 = 66
 
 } sensor;
 
@@ -271,7 +273,7 @@ void blinkme()
         break;
       case 'U':
         updateSuperSensor();
-        Serial.print(sensor.onYaw);Serial.print("/");Serial.print(sensor.onPitch);Serial.print("/");Serial.print(sensor.onRoll);Serial.print("T:");Serial.print(sensor.T);Serial.print("/");Serial.print(sensor.P);Serial.print("-");Serial.print(sensor.light);Serial.println("");
+        Serial.print("Heading:");Serial.print(sensor.geoHeading);Serial.print("Geo X:");Serial.print(sensor.geoYaw);Serial.print("Y/P/R");Serial.print(sensor.onYaw);Serial.print("/");Serial.print(sensor.onPitch);Serial.print("/");Serial.print(sensor.onRoll);Serial.print("T:");Serial.print(sensor.T);Serial.print("/");Serial.print(sensor.P);Serial.print("-");Serial.print(sensor.light);Serial.println("");
         break;
       case 'K':
         updateSuperSensor();

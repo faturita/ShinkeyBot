@@ -75,7 +75,7 @@ void stopburst()
 
 void transmitsensors() {
   int len = sizeof(sensor);
-  char aux[len];  //52
+  char aux[len];  //70
   memcpy(&aux,&sensor,len);
 
   if (debug)

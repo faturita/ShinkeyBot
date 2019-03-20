@@ -100,8 +100,8 @@ counter = 0
 length = 26
 unpackcode = 'hhffffhhh'
 
-length = 52
-unpackcode='ffffffhhhhhhhhhhhhhh'
+length = 66
+unpackcode='fffffffffffhhhhhhhhhhh'
 
 if (serialconnected):
    ser.write('A7180')

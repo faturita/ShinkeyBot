@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
-    sensorimotor = Sensorimotor('sensorimotor',52,'ffffffhhhhhhhhhhhhhh')
+    sensorimotor = Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.cleanbuffer(ssmr)
