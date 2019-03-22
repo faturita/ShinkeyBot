@@ -104,7 +104,7 @@ class Sensorimotor:
         buf = ser.readline()
         print str(buf)
 
-        ser.write('AB'+'{:3d}'.format(self.sensorburst))
+        #ser.write('AB'+'{:3d}'.format(self.sensorburst))
         # Reactive sensor information
         ser.write('S')
 

@@ -22,7 +22,7 @@ print str(buf)
 
 ser.write('AC105')
 time.sleep(2)
-ser.write('A7180')
+ser.write('A7160')
 ser.write('A6170')
 time.sleep(6)
 

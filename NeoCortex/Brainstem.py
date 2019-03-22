@@ -166,6 +166,7 @@ tgt = -300
 wristpos=90
 elbowpos = 90
 shoulderpos = 150
+pitpos = 150
 
 # Pan and tilt
 visualpos = [90,95]
@@ -344,14 +345,14 @@ while(True):
                 mtrn.write('=')
                 wristpos=90
                 elbowpos=90
+                pitpos = 150
                 shoulderpos=150
-                mtrn.write('AC000')
             elif (data == '$'):
-                pitpos = 250
+                pitpos = pitpos + 1
                 mtrn.write('AC'+'{:3d}'.format(pitpos))
             elif (data == '%'):
-                pitpos=250
-                mtrn.write('AD'+'{:3d}'.format(pitpos))
+                pitpos = pitpos - 1
+                mtrn.write('AC'+'{:3d}'.format(pitpos))
             elif (data == 'Y'):
                 # Move shoulder up
                 shoulderpos = shoulderpos + 1
