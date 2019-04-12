@@ -46,6 +46,8 @@ import Proprioceptive as prop
 
 import Configuration
 
+from Fps import Fps
+
 def readsomething(ser, length):
     #data = smnr.read(38)
     data = ''
@@ -144,20 +146,28 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1421')
+    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1411')
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
-    sensorimotor = Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
+    sensorimotor = Sensorimotor('sensorimotor',16,'fffhh')
+    sensorimotor.sensorlocalburst=1000
+    sensorimotor.sensorburst=100000
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.cleanbuffer(ssmr)
 
+    fps = Fps()
+    fps.tic()
 
     while True:
+        fps.steptoc()
         sens = sensorimotor.picksensorsample(ssmr)
         mots = None
-        sensorimotor.sensorlocalburst=10000
-        sensorimotor.sensorburst=10
         if (sens != None):
+            new_values = unpack(sensorimotor.mapping, sensorimotor.data)
+            new_values = list(new_values)
+            new_values[0] = fps.fps
+            new_values = tuple(new_values)
+            sensorimotor.data = pack(sensorimotor.mapping, *new_values)
             sensorimotor.send(sensorimotor.data)

@@ -22,11 +22,28 @@ data1 = 1
 data2 = 2
 data3 = 3
 
+min = -10
+max = 200
+
+length = 26
+unpackcode = 'hhffffhhh'
+
+length = 66
+unpackcode='fffffffffffhhhhhhhhhhh'
+
 if (len(sys.argv)>=2):
     print "Reading which data to shown"
     data1 = int(sys.argv[1])
     data2 = int(sys.argv[2])
     data3 = int(sys.argv[3])
+
+if (len(sys.argv)>=5):
+    min = int(sys.argv[4])
+    max = int(sys.argv[5])
+
+if (len(sys.argv)>=7):
+    length = int(sys.argv[6])
+    unpackcode = sys.argv[7]
 
 
 serialconnected = False
@@ -87,7 +104,7 @@ line1, = ax.plot(x,'r', label='X') # Returns a tuple of line objects, thus the c
 line2, = ax.plot(y,'g', label='Y')
 line3, = ax.plot(z,'b', label='Z')
 
-ax.axis([0, 500, -10, 200])
+ax.axis([0, 500, min, max])
 
 
 plcounter = 0
@@ -97,11 +114,7 @@ plotx = []
 
 counter = 0
 
-length = 26
-unpackcode = 'hhffffhhh'
 
-length = 66
-unpackcode='fffffffffffhhhhhhhhhhh'
 
 if (serialconnected):
    ser.write('A7180')
