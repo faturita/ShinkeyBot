@@ -164,6 +164,7 @@ int motorstate = QUIET;
 
 int noAction = STAYSTILL;
 
+bool reactive = true;
 
 int const RELAXED = 0;
 int const PHOTOTROPISM = 1;
@@ -326,6 +327,11 @@ void blinkme()
       case '+':
         interval = 2000;
         break;
+      case 'R':
+        reactive = true;
+        break;
+      case 'r':
+        reactive = false;
       default:
         if (48 < incomingByte && incomingByte < 58)
         {
@@ -461,8 +467,11 @@ void loop() {
       Serial.print("OBSTACLE !");Serial.println(distance);
     }
 
-    motorstate = MOVE_BACKWARDS;
-    interval = 100;
+    if (reactive) 
+    {
+      motorstate = MOVE_BACKWARDS;
+      interval = 100;
+    }
   } else {
     //motorstate=STILL;
     //digitalWrite(led,LOW);
