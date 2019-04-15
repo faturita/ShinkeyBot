@@ -67,6 +67,9 @@ def gimmesomething(ser):
     return line
 
 
+ztime = int(time.time())
+
+
 class Sensorimotor:
     def __init__(self, name, length, mapping):
         self.name = name
@@ -113,6 +116,9 @@ class Sensorimotor:
 
     def send(self,data):
         sent = self.sock.sendto(data, self.server_address)
+	new_values = unpack(self.mapping, data)
+	ts = int(time.time())-ztime
+	self.f.write(str(ts) + ' '+ ' '.join(map(str, new_values)) + '\n')
 
     def picksensorsample(self, ser):
         # read  Embed this in a loop.
@@ -134,7 +140,7 @@ class Sensorimotor:
               print new_values
               self.sensors = new_values
               #self.f.write( str(new_values[0]) + ' ' + str(new_values[1]) + ' ' + str(new_values[2]) + ' ' + str(new_values[3]) + ' ' + str(new_values[4]) + ' ' + str(new_values[5]) + ' ' + str(new_values[6]) + ' ' + str(new_values[7]) + ' ' + str(new_values[8]) + ' ' + str(new_values[9]) + ' ' + str(new_values[10]) + ' ' + str(new_values[11]) + ' ' + str(new_values[12]) + ' ' +  str(new_values[13]) + ' ' + str(new_values[14]) + '\n')
-              self.f.write(' '.join(map(str, new_values)) + '\n')
+              #self.f.write(' '.join(map(str, new_values)) + '\n')
               return new_values
 
     def close(self):
@@ -146,13 +152,13 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1411')
+    [ssmr, mtrn] = prop.serialcomm()
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
     sensorimotor = Sensorimotor('sensorimotor',16,'fffhh')
-    sensorimotor.sensorlocalburst=1000
-    sensorimotor.sensorburst=100000
+    sensorimotor.sensorlocalburst=100
+    sensorimotor.sensorburst=100
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.cleanbuffer(ssmr)
