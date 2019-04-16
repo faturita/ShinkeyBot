@@ -277,11 +277,11 @@ while(True):
                 mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
-                sensorimotor.repack([0],[fps.fps])
+                sensorimotor.repack([10],[fps.fps])
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
 
             if (sens != None):
-                sensorimotor.repack([0],[fps.fps])
+                sensorimotor.repack([10],[fps.fps])
                 sensorimotor.send(sensorimotor.data)
 
             if (sens != None and target != None):
