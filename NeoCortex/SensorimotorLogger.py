@@ -1,6 +1,18 @@
 #coding: latin-1
 #sensorimotor = Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
 
+import serial
+import time
+import datetime
+from struct import *
+import os
+
+import socket
+import sys
+
+import Configuration
+
+
 def readsomething(ser, length):
     #data = smnr.read(38)
     data = ''
