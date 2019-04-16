@@ -102,8 +102,8 @@ class Sensorimotor:
         new_values = list(new_values)
 
         # Update the structure with the values obtained from here.
-        for i in list_pos:
-            new_values[i] = list_values[i]
+        for i,x in enumerate(list_pos,0):
+            new_values[x] = list_values[i]
 
         new_values = tuple(new_values)
         self.data = pack(self.mapping, *new_values)
