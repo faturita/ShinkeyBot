@@ -9,11 +9,25 @@
 import csv
 import numpy as np
 
+import scipy.signal as signal
+
 def moving_average(a, n=3) :
     ret = np.cumsum(a, dtype=float)
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
 
+def corrections(a,n=300):
+    cumlist = []
+    for source in range(1, len(a)-n,n):
+        cum = 0
+        for i in range(source, source+n):
+            if (a[i-1] + 1==a[i]) or (a[i-1] == 254 and a[i]==0):
+                pass
+            else:
+                cum = cum + 1
+        cumlist.append(cum)
+
+    return cumlist
 
 results = []
 
@@ -21,7 +35,7 @@ print 'Este programa tiene que ejecutarse con python 2.7!'
 
 # Esta primera linea, abre el archivo 'blinking.dat' que se grabó
 # al establecerse la conexión con el servidor.
-with open('sensor.dat') as inputfile:
+with open('sensor1.dat') as inputfile:
     for row in csv.reader(inputfile):
         rows = row[0].split(' ')
         results.append(rows[0:])
@@ -57,6 +71,8 @@ fps = moving_average(data[0:,1], n=5000)
 voltages = moving_average(data[0:,2], n=300)
 current = moving_average(data[0:,3],n=300)
 freq = moving_average(data[0:,4], n=5000)
+s = corrections(data[0:,5],n=5000)
+
 
 import matplotlib.pyplot as plt
 fig = plt.figure()
@@ -74,8 +90,12 @@ plt.show()
 
 
 fig = plt.figure()
-ax1 = fig.add_subplot(111)
+ax1 = fig.add_subplot(311)
+ax2 = fig.add_subplot(312)
+ax3 = fig.add_subplot(313)
 
-ax1.plot(data[:-1000,5],'y', label='Sync')
+ax2.plot(freq,'r', label='Freq')
+ax1.plot(fps,'y', label='Fps')
+ax3.plot(s, 'b', label='Errors')
 plt.legend(loc='upper left');
-#plt.show()
+plt.show()

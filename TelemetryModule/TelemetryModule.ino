@@ -59,6 +59,7 @@ void loop() {
   
   if (checksensors())
   {
+    // Put here all the sensor information that you want to do only when you are transmitting the information.
     //senseCurrentAndVoltage();
   }
   senseCurrentAndVoltage();
@@ -91,6 +92,12 @@ void loop() {
         switch (action) {
           case 0x0b:
             setBurstSize(controlvalue);
+            break;
+          case 0x0c:
+            payloadsize();
+            break;
+          case 0x0d:
+            payloadstruct();
             break;
           default:
             break;

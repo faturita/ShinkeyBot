@@ -67,8 +67,6 @@ def gimmesomething(ser):
     return line
 
 
-ztime = int(time.time())
-
 
 class Sensorimotor:
     def __init__(self, name, length, mapping):
@@ -82,6 +80,7 @@ class Sensorimotor:
         self.mapping = mapping
         self.sensorlocalburst=10000
         self.sensorburst=1
+        self.ztime = int(time.time())
 
     def start(self):
         # Sensor Recording
@@ -94,31 +93,53 @@ class Sensorimotor:
         self.counter = 0
 
 
+    def init(self, ser):
+        # Clean buffer
+        ser.read(1000)
+
+        ser.write('AC'+'000')
+        time.sleep(2)
+        leng = readsomething(ser,2) # Reading INT
+
+        datapack=unpack('h',leng)
+        self.length = datapack[0]
+
+        ser.write('AD'+'000')
+        time.sleep(3)
+        self.mapping = gimmesomething(ser)
+
     def cleanbuffer(self, ser):
         # Cancel sensor information.
         ser.write('X')
         time.sleep(6)
 
         # Ser should be configured in non-blocking mode.
-        buf = ser.readline()
-        print str(buf)
-
-        buf = ser.readline()
-        print str(buf)
-
-        buf = ser.readline()
-        print str(buf)
+        ser.read(1000)
 
         ser.write('AB'+'{:3d}'.format(self.sensorburst))
         # Reactive sensor information
         ser.write('S')
 
 
+    def log(self, data):
+        new_values = unpack(self.mapping, data)
+        ts = int(time.time())-self.ztime
+        self.f.write(str(ts) + ' '+ ' '.join(map(str, new_values)) + '\n')
+
     def send(self,data):
         sent = self.sock.sendto(data, self.server_address)
-	new_values = unpack(self.mapping, data)
-	ts = int(time.time())-ztime
-	self.f.write(str(ts) + ' '+ ' '.join(map(str, new_values)) + '\n')
+        self.log(data)
+
+    def repack(self,list_pos,list_values):
+        new_values = unpack(sensorimotor.mapping, sensorimotor.data)
+        new_values = list(new_values)
+
+        # Update the structure with the values obtained from here.
+        for i in list_pos:
+            new_values[i] = list_values[i]
+
+        new_values = tuple(new_values)
+        sensorimotor.data = pack(sensorimotor.mapping, *new_values)
 
     def picksensorsample(self, ser):
         # read  Embed this in a loop.
@@ -152,7 +173,7 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm()
+    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1421')
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
@@ -161,6 +182,9 @@ if __name__ == "__main__":
     sensorimotor.sensorburst=100
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
+    sensorimotor.init(ssmr)
+    print (sensorimotor.mapping)
+    print (sensorimotor.length)
     sensorimotor.cleanbuffer(ssmr)
 
     fps = Fps()
@@ -171,9 +195,5 @@ if __name__ == "__main__":
         sens = sensorimotor.picksensorsample(ssmr)
         mots = None
         if (sens != None):
-            new_values = unpack(sensorimotor.mapping, sensorimotor.data)
-            new_values = list(new_values)
-            new_values[0] = fps.fps
-            new_values = tuple(new_values)
-            sensorimotor.data = pack(sensorimotor.mapping, *new_values)
+            sensorimotor.repack([0],[fps.fps])
             sensorimotor.send(sensorimotor.data)
