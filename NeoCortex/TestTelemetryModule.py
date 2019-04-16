@@ -78,7 +78,7 @@ class Sensorimotor:
         self.data = None
         self.length = length
         self.mapping = mapping
-        self.sensorlocalburst=10000
+        self.sensorlocalburst=1
         self.sensorburst=1
         self.ztime = int(time.time())
 
@@ -173,13 +173,13 @@ class Sensorimotor:
         self.start()
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1421')
+    [ssmr, mtrn] = prop.serialcomm()
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
     sensorimotor = Sensorimotor('sensorimotor',16,'fffhh')
-    sensorimotor.sensorlocalburst=100
-    sensorimotor.sensorburst=100
+    sensorimotor.sensorlocalburst=1
+    sensorimotor.sensorburst=1
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.init(ssmr)
