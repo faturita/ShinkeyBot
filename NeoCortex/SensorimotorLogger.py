@@ -95,7 +95,7 @@ class Sensorimotor:
         sent = self.sock.sendto(data, self.server_address)
 
     def repack(self,list_pos,list_values):
-        new_values = unpack(sensorimotor.mapping, sensorimotor.data)
+        new_values = unpack(self.mapping, self.data)
         new_values = list(new_values)
 
         # Update the structure with the values obtained from here.
@@ -103,7 +103,7 @@ class Sensorimotor:
             new_values[i] = list_values[i]
 
         new_values = tuple(new_values)
-        sensorimotor.data = pack(sensorimotor.mapping, *new_values)
+        self.data = pack(self.mapping, *new_values)
 
     def picksensorsample(self, ser):
         # read  Embed this in a loop.
