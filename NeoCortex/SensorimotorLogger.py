@@ -45,6 +45,7 @@ class Sensorimotor:
         self.mapping = mapping
         self.sensorlocalburst=1
         self.sensorburst=1
+        self.updatefeq=1
         self.ztime = int(time.time())
 
     def start(self):
@@ -73,6 +74,7 @@ class Sensorimotor:
         time.sleep(3)
         self.mapping = gimmesomething(ser)
 
+
     def cleanbuffer(self, ser):
         # Cancel sensor information.
         ser.write('X')
@@ -82,6 +84,7 @@ class Sensorimotor:
         ser.read(1000)
 
         ser.write('AB'+'{:3d}'.format(self.sensorburst))
+        ser.write('AE'+'{:3d}'.format(self.updatefreq))
         # Reactive sensor information
         ser.write('S')
 
@@ -125,6 +128,8 @@ class Sensorimotor:
               print new_values
               self.sensors = new_values
               return new_values
+
+        return None
 
     def close(self):
         self.f.close()
