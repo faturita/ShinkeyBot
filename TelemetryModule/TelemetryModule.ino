@@ -99,6 +99,8 @@ void loop() {
           case 0x0d:
             payloadstruct();
             break;
+          case 0x0e:
+            setUpdateFreq(controlvalue);
           default:
             break;
         }

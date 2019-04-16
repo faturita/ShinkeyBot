@@ -30,10 +30,18 @@ bool sensorburst = false;
 int transmittedCounter = 0;
 int burstsize = MAX_SIZE_SENSOR_BURST;
 
+int updateFreq = 1;
+
 void setBurstSize(int pburstsize)
 {
   burstsize = pburstsize;
 }
+
+void setUpdateFreq(int controlvalue) 
+{
+  updateFreq = controlvalue;
+}
+
 
 bool checksensors()
 {
@@ -51,7 +59,10 @@ bool checksensors()
 void burstsensors() {
   if (sensorburst)
   {
-    transmitsensors();
+    if (transmittedCounter % updateFreq == 0)
+    {
+      transmitsensors();
+    }
     transmittedCounter++;
     if (transmittedCounter >= burstsize || transmittedCounter >= MAX_SIZE_SENSOR_BURST)
     {
