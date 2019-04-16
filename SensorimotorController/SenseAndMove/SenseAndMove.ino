@@ -234,6 +234,14 @@ void blinkme()
           case 0x0b:
             setBurstSize(controlvalue);
             break;
+          case 0x0c:
+            payloadsize();
+            break;
+          case 0x0d:
+            payloadstruct();
+            break;
+          case 0x0e:
+            setUpdateFreq(controlvalue);
           default:
             break;
         }

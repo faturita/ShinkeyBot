@@ -27,13 +27,21 @@ int fps()
 }
 
 bool sensorburst = false;
-int sampleCounter = 0;
+int transmittedCounter = 0;
 int burstsize = MAX_SIZE_SENSOR_BURST;
+
+int updateFreq = 1;
 
 void setBurstSize(int pburstsize)
 {
   burstsize = pburstsize;
 }
+
+void setUpdateFreq(int controlvalue) 
+{
+  updateFreq = controlvalue;
+}
+
 
 bool checksensors()
 {
@@ -51,12 +59,15 @@ bool checksensors()
 void burstsensors() {
   if (sensorburst)
   {
-    transmitsensors();
-    sampleCounter++;
-    if (sampleCounter >= burstsize || sampleCounter >= MAX_SIZE_SENSOR_BURST)
+    if (transmittedCounter % updateFreq == 0)
+    {
+      transmitsensors();
+    }
+    transmittedCounter++;
+    if (transmittedCounter >= burstsize || transmittedCounter >= MAX_SIZE_SENSOR_BURST)
     {
       sensorburst = false;
-      sampleCounter = 0;
+      transmittedCounter = 0;
     }
   }
 }
@@ -65,12 +76,31 @@ void startburst()
 {
   sensorburst = true;
   // Reset counter to avoid loosing data.
-  sampleCounter = 0;
+  transmittedCounter = 0;
 }
 
 void stopburst()
 {
   sensorburst = false;  
+}
+
+void payloadsize()
+{
+  int len = sizeof(sensor);
+  char aux[sizeof(int)];  
+  
+  memcpy(&aux,&len,sizeof(int));
+
+  Serial.write((uint8_t *)&aux,sizeof(int));
+ 
+}
+
+// FIXME: Modify this.
+void payloadstruct()
+{
+  char aux[22];
+  strcpy(aux,"fffffffffffhhhhhhhhhhh");
+  Serial.write(aux);
 }
 
 void transmitsensors() {

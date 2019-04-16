@@ -51,13 +51,14 @@ from Fps import Fps
 import SensorimotorLogger as Senso
 
 if __name__ == "__main__":
-    [ssmr, mtrn] = prop.serialcomm()
+    [ssmr, mtrn] = prop.serialcomm('/dev/cu.usbmodem1411')
 
     # Weird, long values (4) should go first.
     #sensorimotor = Sensorimotor('motorneuron',26,'hhffffhhh')
     sensorimotor = Senso.Sensorimotor('sensorimotor',16,'fffhh')
-    sensorimotor.sensorlocalburst=1
-    sensorimotor.sensorburst=1
+    sensorimotor.sensorlocalburst=100
+    sensorimotor.sensorburst=10
+    sensorimotor.updatefreq=10
     sensorimotor.ip = sys.argv[1]
     sensorimotor.start()
     sensorimotor.init(ssmr)

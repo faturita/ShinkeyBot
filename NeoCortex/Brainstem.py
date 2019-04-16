@@ -181,6 +181,9 @@ sensesensor = False
 sensorimotor = senso.Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
 sensorimotor.start()
 sensorimotor.init(ssmr)
+sensorimotor.sensorlocalburst=100
+sensorimotor.sensorburst=10
+sensorimotor.updatefreq=10
 sensorimotor.cleanbuffer(ssmr)
 
 if (mtrn):
