@@ -18,6 +18,8 @@ import sys, select
 import socket
 import Configuration
 
+from Fps import Fps
+
 data1 = 1
 data2 = 2
 data3 = 3
@@ -119,8 +121,11 @@ counter = 0
 if (serialconnected):
    ser.write('A7180')
 
+fps = Fps()
+fps.tic()
 while True:
   # read
+  fps.steptoc()
   if (serialconnected):
       ser.write('S')
       ser.write('P')
@@ -141,7 +146,7 @@ while True:
           new_values = unpack(unpackcode,data)
           #new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
           #new_values = unpack('ffffffhhhhhhhhhh', data)
-          print str(new_values)
+          print str(fps.fps)+':'+str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
           f.write( str(new_values[data1]) + ' ' + str(new_values[data2]) + ' ' + str(new_values[data3]) + '\n')
 
