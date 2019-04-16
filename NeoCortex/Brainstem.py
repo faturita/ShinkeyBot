@@ -180,11 +180,13 @@ sensesensor = False
 # Connect remotely to any client that is waiting for sensor loggers.
 sensorimotor = senso.Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')
 sensorimotor.start()
+sensorimotor.init(ssmr)
 sensorimotor.cleanbuffer(ssmr)
 
 if (mtrn):
     motorneuron = senso.Sensorimotor('motorneuron',26,'hhffffhhh')
     motorneuron.start()
+    sensorimotor.init(mtrn)
     motorneuron.cleanbuffer(mtrn)
 
 
@@ -272,9 +274,11 @@ while(True):
                 mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
+                sensorimotor.repack([0],[fps.fps])
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
 
             if (sens != None):
+                sensorimotor.repack([0],[fps.fps])
                 sensorimotor.send(sensorimotor.data)
 
             if (sens != None and target != None):
