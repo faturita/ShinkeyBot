@@ -120,7 +120,7 @@ counter = 0
 
 if (serialconnected):
    ser.write('A7180')
-
+address = ''
 fps = Fps()
 fps.tic()
 while True:
@@ -146,7 +146,7 @@ while True:
           new_values = unpack(unpackcode,data)
           #new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
           #new_values = unpack('ffffffhhhhhhhhhh', data)
-          print str(fps.fps)+':'+str(new_values)
+          print str(address)+'-'+str(fps.fps)+':'+str(new_values)
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
           f.write( str(new_values[data1]) + ' ' + str(new_values[data2]) + ' ' + str(new_values[data3]) + '\n')
 

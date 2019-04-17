@@ -135,7 +135,7 @@ def timeout():
     print 'Sending a multicast update of my own ip address:'+myip
     noticer.send()
 
-t = Timer(5 * 60, timeout)
+t = Timer(1 * 30, timeout)
 t.start()
 
 if (dobroadcastip):
@@ -183,7 +183,7 @@ sensorimotor.start()
 sensorimotor.init(ssmr)
 sensorimotor.sensorlocalburst=100
 sensorimotor.sensorburst=10
-sensorimotor.updatefreq=10
+sensorimotor.updatefreq=5
 sensorimotor.cleanbuffer(ssmr)
 
 if (mtrn):
