@@ -57,6 +57,9 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
 * Force Sensor for gripper.
 * Hook up the robot to the brain signals.
 
+# Deploy  
+* https://medium.com/@francoisromain/vps-deploy-with-git-fea605f1303b
+
 # Benchmarks
 * Follow the gripper's laser with the pan-and-tilt camera.
 * Autohook to battery charger (feeding benchmark).
