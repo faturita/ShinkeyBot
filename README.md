@@ -60,6 +60,9 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
 # Deploy  
 * https://medium.com/@francoisromain/vps-deploy-with-git-fea605f1303b
 
+# Firmware update
+* http://www.raspberryvi.org/stories/arduino-cli.html
+
 # Benchmarks
 * Follow the gripper's laser with the pan-and-tilt camera.
 * Autohook to battery charger (feeding benchmark).
