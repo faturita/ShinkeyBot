@@ -28,6 +28,7 @@ import thread
 import H264Streamer as pcs
 import SensorimotorLogger as senso
 import MCast
+import Surrogator
 
 import fcntl
 import struct
@@ -193,51 +194,6 @@ if (mtrn):
     motorneuron.cleanbuffer(mtrn)
 
 
-class Surrogator:
-    def __init__(self, sock):
-        print 'Remote controlling ShinkeyBot'
-        self.data = ''
-        self.message = ''
-        self.controlvalue = 0
-        self.command = ''
-        self.sock = sock
-        self.address = None
-        self.keeprunning = True
-
-    def getdata(self):
-        return self.data
-
-    def getcommand(self):
-        self.data = ''
-        try:
-            # Read from the UDP controller socket non blocking
-            self.data, self.address = self.sock.recvfrom(1)
-        except Exception as e:
-            pass
-
-    def getmessage(self):
-        self.data = ''
-        try:
-            # Read from the UDP controller socket non blocking
-            # The message format is AANNN
-            self.message, self.address = self.sock.recvfrom(5)
-            self.command = self.message[0]
-            self.data = self.message[1]
-            self.controlvalue = int(self.message[2:5])
-        except Exception as e:
-            pass
-
-
-    def hookme(self):
-        while (self.keeprunning):
-            nextdata  = ''
-            self.getcommand()
-
-            if (self.data == 'X'):
-                break
-
-        print 'Stopping surrogate...'
-
 sur = Surrogator(sock)
 
 #try:
@@ -277,6 +233,7 @@ while(True):
                 mots = motorneuron.picksensorsample(mtrn)
 
             if (sens != None and mots != None):
+                # FIX HERE CHECK WHERE TO PUT THE VALUE
                 sensorimotor.repack([10],[fps.fps])
                 sensorimotor.send(sensorimotor.data+motorneuron.data)
 

@@ -50,7 +50,7 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
   
-  sensor.freq = fps();
+  sensor.freq = freq();
   sensor.fps = 0.0;
 
   int incomingByte;
@@ -101,6 +101,7 @@ void loop() {
             break;
           case 0x0e:
             setUpdateFreq(controlvalue);
+            break;
           default:
             break;
         }
