@@ -15,7 +15,7 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
 * https://github.com/Anilm3/ADXL345-Accelerometer
 * http://blog.oscarliang.net/use-gy80-arduino-adxl345-accelerometer/
 
-# Sensors
+# Sensors
 * gy80 sensor, vccin 5v, gnd-gnd, scl a5, sda a4  
 
 # USB-powered
@@ -29,7 +29,7 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
 * Real-time H264 streaming to iPhone app or to whatever you want.
 * Isolated power source.
 
-# Motor Unit Arm
+# Motor Unit Arm
 
 * The arm, motorunit controlled, is now a 6th dof 0.5 kg payload arm.  Works quite good.
 * Homing.
@@ -40,8 +40,10 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
 * Reset and calibrate the clavicle with a button sensor.
 * Accept a command to reset the sensor.
 
+# Real Time OS
+* https://www.get-edi.io/Real-Time-Linux-on-the-Raspberry-Pi/
 
-# Power Unit
+# Power Unit
 * Today the biggest limit factor is the lack of a robust power unit.
 * This is an excellent project: https://github.com/aboudou/picheckvoltage
 * Power Consumption from USB hub.
@@ -51,9 +53,15 @@ Shinkeybot is a cognitive computing robot and testbed platform for robotics and 
   * Find a good 12 V high power battery.
 
 
-# Gripper  
+# Gripper  
 * Force Sensor for gripper.
 * Hook up the robot to the brain signals.
+
+# Deploy  
+* https://medium.com/@francoisromain/vps-deploy-with-git-fea605f1303b
+
+# Firmware update
+* http://www.raspberryvi.org/stories/arduino-cli.html
 
 # Benchmarks
 * Follow the gripper's laser with the pan-and-tilt camera.
