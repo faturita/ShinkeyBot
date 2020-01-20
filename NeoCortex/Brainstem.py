@@ -245,65 +245,65 @@ while(True):
             elif (cmd_data == 'q'):
                 sensesensor = False
 
-            if (data == 'K'):
+            if (cmd_data == 'K'):
                 #Scan
                 motor.connection.send(b'K')
-            if (data == 'N'):
+            if (cmd_data == 'N'):
                 motor.connection.send(b'H')
                 #Camera Right
-            elif (data == 'B'):
+            elif (cmd_data == 'B'):
                 motor.connection.send(b'G')
                 #Camera Center
                 visualpos = [90,95]
-            elif (data == 'V'):
+            elif (cmd_data == 'V'):
                 motor.connection.send(b'F')
                 #Camera Left
-            elif (data == 'C'):
+            elif (cmd_data == 'C'):
                 motor.connection.send(b'T')
                 #Camera nose down
 
 
 
-            elif (data=='L'):
+            elif (cmd_data=='L'):
                 motor.connection.send(b'L')
                 motor.connection.send(b'L')
                 # Laser on
-            elif (data=='l'):
+            elif (cmd_data=='l'):
                 motor.connection.send(b'l')
                 motor.connection.send(b'l')
                 # Laser off
-            elif (data=='{'):
+            elif (cmd_data=='{'):
                 # Camera left
                 visualpos[0]=visualpos[0]+1;
                 motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii'))
-            elif (data=='}'):
+            elif (cmd_data=='}'):
                 # Camera right
                 visualpos[0]=visualpos[0]-1;
                 motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii'))
-            elif (data=='['):
+            elif (cmd_data=='['):
                 # Nose down
                 visualpos[1]=visualpos[1]-1;
                 motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii'))
-            elif (data==']'):
+            elif (cmd_data==']'):
                 # Nose up
                 visualpos[1]=visualpos[1]+1;
                 motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii'))
-            elif (data=='a'):
+            elif (cmd_data=='a'):
                 # Scan right
                 scan=scan-1;
                 motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
-            elif (data=='d'):
+            elif (cmd_data=='d'):
                 # Scan left
                 scan=scan+1;
                 motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
-            elif (data=='M'):
+            elif (cmd_data=='M'):
                 pass
                 #prop.moveto(mtrn, hidraw, tgt)
                 # PID to desired position
-            elif (data=='E'):
+            elif (cmd_data=='E'):
                 motor.connection.send(b'E')
                 # Empire song
-            elif (data=='P'):
+            elif (cmd_data=='P'):
                 motor.connection.send(b'B')
 
             elif (cmd_data == ' '):

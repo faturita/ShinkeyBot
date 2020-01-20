@@ -6,6 +6,7 @@ import picamera
 import threading
 import subprocess
 import os
+import signal
 
 import Configuration as conf
 
@@ -21,8 +22,9 @@ class H264VideoStreamer:
     def interrupt(self):
         print ('Interrupting stream h264 server...')
 
-        if (self.pro != None):
+        if (self.pro):
             os.killpg(os.getpgid(self.pro.pid), signal.SIGTERM)  
+            print('Killing process')
 
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
