@@ -96,7 +96,7 @@ else:
     import H264Streamer as pcs
     portname = None
 
-dosomestreaming = False
+dosomestreaming = True
 
 # Get PiCamera stream and read everything in another thread.
 vst = pcs.H264VideoStreamer()
