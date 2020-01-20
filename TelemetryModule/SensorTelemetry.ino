@@ -1,6 +1,6 @@
 #define MAX_SIZE_SENSOR_BURST 100
 
-int fps()
+int freq()
 {
   static int freqValue = 200;
   static int freqCounter = 0;

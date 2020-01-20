@@ -113,7 +113,7 @@ sensesensor = False
 
 class Surrogator:
     def __init__(self, sock):
-        print ('Remote controlling ALPIBot')
+        print ('Remote controlling ShinkeyBot')
         self.data = ''
         self.message = ''
         self.controlvalue = 0
@@ -215,7 +215,7 @@ while(True):
 
             if (sens != None):
                 # Check where to put the value
-                sensorimotor.repack([0],[fps.fps])
+                sensorimotor.repack([10],[fps.fps])
                 sensorimotor.send(sensorimotor.data)
 
         #if (cmd_data != ''):
