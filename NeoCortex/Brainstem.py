@@ -264,6 +264,8 @@ while(True):
 
 
 
+
+
             elif (cmd_data=='L'):
                 motor.connection.send(b'L')
                 motor.connection.send(b'L')
