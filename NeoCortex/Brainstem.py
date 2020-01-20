@@ -105,15 +105,15 @@ if (dosomestreaming):
         #vst.startAndConnect()
 
         FNULL = open(os.devnull, 'w')
-        pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py',preexec_fn=os.setsid)
+        pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py'],preexec_fn=os.setsid)
         if pro.stderr or pro.returncode:
-            return False
+            quit()
 
 
 
         pass
     except Exception as e:
-        print('Error starting H264 stream thread:'+e)
+        print('Error starting H264 stream thread:'+str(e))
 
 # Enables the sensor telemetry.  Arduinos will send telemetry data that will be
 #  sent to listening servers.
