@@ -277,23 +277,23 @@ while(True):
             elif (data=='}'):
                 # Camera right
                 visualpos[0]=visualpos[0]-1;
-                motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii')))
+                motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii'))
             elif (data=='['):
                 # Nose down
                 visualpos[1]=visualpos[1]-1;
-                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii')))
+                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii'))
             elif (data==']'):
                 # Nose up
                 visualpos[1]=visualpos[1]+1;
-                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii')))
+                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii'))
             elif (data=='a'):
                 # Scan right
                 scan=scan-1;
-                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii')))
+                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
             elif (data=='d'):
                 # Scan left
                 scan=scan+1;
-                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii')))
+                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
             elif (data=='M'):
                 pass
                 #prop.moveto(mtrn, hidraw, tgt)
