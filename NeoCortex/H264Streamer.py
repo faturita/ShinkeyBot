@@ -1,17 +1,9 @@
 #coding: latin-1
-#
-#
-# H264 Streamer
-#
-# This class can act as a thread receiving TCP/IP connections on the specified
-# port and start to transmit the video streaming information
-#
-# This works exclusively for RPi.
 
 import socket
 import time
 import picamera
-import thread
+import threading
 
 import Configuration as conf
 
@@ -19,30 +11,38 @@ class H264VideoStreamer:
     def __init__(self):
         self.name = 'streamer'
         self.keeprunning = True
-        self.ip = conf.shinkeybotip
         self.videoport = conf.videoport
         self.fps = 1
         self.thread = None
 
     def interrupt(self):
-        print 'Interrupting stream h264 server...'
-        self.thread.exit()
+        print ('Interrupting stream h264 server...')
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_address = ('127.0.0.1', self.videoport)
+            sock.connect(server_address)
+            sock.send(b'1')
+            sock.close()
+        except Exception as e:
+            print('Server seems to be down:' + str(e))
+
 
     def startAndConnect(self):
         try:
-            self.thread = thread.start_new_thread( self.connect, () )
+            self.thread = threading.Thread(target=self.connect, args=(1,))
+            self.thread.start()
         except Exception as e:
-            print "Error:" + e.message
-            print "Error: unable to start thread"
+            print ("Error:" + e)
+            print ("Error: unable to start a new thread")
 
     def connectMe(self, server_socket):
-        print "Openning single-client H264 streaming server:"+str(self.videoport)
+        print ("Openning single-client H264 streaming server:"+str(self.videoport))
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
             camera.framerate = 10
             camera.hflip = True
             camera.vflip = True
-            #camera.color_effects = (128,128)
+            camera.color_effects = (128,128)
 
             # Accept a single connection and make a file-like object out of it
             socketconnection = server_socket.accept()
@@ -55,34 +55,38 @@ class H264VideoStreamer:
             finally:
                 try:
                     camera.close()
-                    print 'Camera closed'
+                    print ('Camera closed')
                     time.sleep(2)
                     connection.flush()
                     socketconnection.close()
                     time.sleep(2)
-                    print 'Connection closed.'
+                    print ('Connection closed.')
                 except:
                     pass
 
-    def connect(self):
+    def connect(self, name):
         server_socket = socket.socket()
         server_socket.bind(('0.0.0.0', self.videoport))
         server_socket.listen(1)
 
         doWait = True
-        while(doWait):
-            print 'Trying to reconnect....'
+        while(doWait and self.keeprunning):
+            print ('Restablishing Connection...')
             time.sleep(5)
             try:
                 self.connectMe(server_socket)
                 doWait = False
             except KeyboardInterrupt:
                 doWait = False
-            except:
-                print 'error!!'
+            except Exception as e:
+                print ('Exception:'+str(e))
                 doWait=True
+
+        server_socket.close()
 
 
 if __name__ == "__main__":
     vd = H264VideoStreamer()
-    vd.connect()
+    vd.startAndConnect()
+
+    input()

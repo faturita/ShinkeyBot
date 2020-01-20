@@ -1,25 +1,21 @@
 
-import ConfigParser
+import configparser
 import os
 import io
 
 
 def setconfig(configfile_name,option,value):
-    with open(configfile_name) as f:
-        sample_config = f.read()
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
-    config.readfp(io.BytesIO(sample_config))
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read(['config.ini'],encoding='cp1250')
 
     cfgfile = open(configfile_name, 'w')
-    config.set('server', option, value)
+    config.set('SERVER', option, value)
     config.write(cfgfile)
     cfgfile.close()
 
 def readconfig(configfile_name):
-    with open(configfile_name) as f:
-        sample_config = f.read()
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
-    config.readfp(io.BytesIO(sample_config))
+    config = configparser.RawConfigParser(allow_no_value=True)
+    config.read(['config.ini'],encoding='cp1250')
 
     #print("List all contents")
     for section in config.sections():
@@ -38,10 +34,8 @@ def createconfig(configfile_name):
         cfgfile = open(configfile_name, 'w')
 
         # Add content to the file
-        Config = ConfigParser.ConfigParser()
-        Config.add_section('server')
-        Config.set('server', 'ip', '10.17.66.164')
-        Config.add_section('other')
-        Config.set('other', 'use_anonymous', True)
+        Config = configparser.ConfigParser()
+        Config.add_section('SERVER')
+        Config.set('SERVER', 'ip', '10.17.66.164')
         Config.write(cfgfile)
         cfgfile.close()

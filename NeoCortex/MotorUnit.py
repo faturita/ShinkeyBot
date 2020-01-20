@@ -245,64 +245,144 @@ while(True):
 
             if (data == 'K'):
                 #Scan
-                motor.connection.send(b'K')
+                ssmr.write('K')
             if (data == 'N'):
-                motor.connection.send(b'H')
+                ssmr.write('H')
                 #Camera Right
             elif (data == 'B'):
-                motor.connection.send(b'G')
+                ssmr.write('G')
                 #Camera Center
                 visualpos = [90,95]
             elif (data == 'V'):
-                motor.connection.send(b'F')
+                ssmr.write('F')
                 #Camera Left
             elif (data == 'C'):
-                motor.connection.send(b'T')
+                ssmr.write('T')
                 #Camera nose down
-
-
-
+            elif (data == '='):
+                #Home position.
+                mtrn.write('=')
+                wristpos=90
+                elbowpos=90
+                pitpos = 150
+                shoulderpos=150
+            elif (data == '$'):
+                pitpos = pitpos + 1
+                mtrn.write('AC'+'{:3d}'.format(pitpos))
+            elif (data == '%'):
+                pitpos = pitpos - 1
+                mtrn.write('AC'+'{:3d}'.format(pitpos))
+            elif (data == 'Y'):
+                # Move shoulder up
+                shoulderpos = shoulderpos + 1
+                mtrn.write('A7'+'{:3d}'.format(shoulderpos))
+            elif (data == 'H'):
+                # Move shoulder down.
+                shoulderpos = shoulderpos - 1
+                mtrn.write('A7'+'{:3d}'.format(shoulderpos))
+            elif (data=='<'):
+                # Move elbows up (by increasing its torque)
+                elbowpos = elbowpos + 1
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='>'):
+                # Move elbows dow (by decreasing its torque)
+                elbowpos = elbowpos - 1
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='Z'):
+                # Reset Elbow position (no force)
+                elbowpos = 90
+                mtrn.write('AA'+'{:3d}'.format(elbowpos))
+            elif (data=='J'):
+                # mtrn.write('A6180')
+                wristpos = wristpos + 1
+                mtrn.write('A6'+'{:3d}'.format(wristpos))
+                # wrist Up
+            elif (data=='j'):
+                # mtrn.write('A6090')
+                wristpos = wristpos - 1
+                mtrn.write('A6'+'{:3d}'.format(wristpos))
+                # wrist down
+            elif (data=='\''):
+                # Wrist clockwise
+                mtrn.write('A8120')
+            elif (data=='?'):
+                # Wrist anticlockwise
+                mtrn.write('A9120')
+            elif (data=='G'):
+                # Grip close
+                mtrn.write('A1220')
+            elif (data=='R'):
+                # Grip open
+                mtrn.write('A2200')
+                # Gripper Release
+            elif (data==' '):
+                ssmr.write('1')
+                # Quiet
+            elif (data=='W'):
+                ssmr.write('2')
+                # Forward
+            elif (data=='S'):
+                ssmr.write('3')
+                # Backward
+            elif (data=='D'):
+                ssmr.write('4')
+                # Right
+            elif (data=='A'):
+                ssmr.write('5')
+                # Left
+            elif (data=='.'):
+                ssmr.write('-')
+                # Move slowly
+            elif (data==','):
+                ssmr.write('+')
+                # Move coarsely
             elif (data=='L'):
-                motor.connection.send(b'L')
-                motor.connection.send(b'L')
+                mtrn.write('L')
+                ssmr.write('L')
                 # Laser on
             elif (data=='l'):
-                motor.connection.send(b'l')
-                motor.connection.send(b'l')
+                mtrn.write('l')
+                ssmr.write('l')
                 # Laser off
+            elif (data=='+'):
+                tgt = tgt + 100
+                # Pull up tesaki target
+            elif (data=='-'):
+                tgt = tgt - 100
+                # Pull down tesaki target
             elif (data=='{'):
                 # Camera left
                 visualpos[0]=visualpos[0]+1;
-                motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii'))
+                ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
             elif (data=='}'):
                 # Camera right
                 visualpos[0]=visualpos[0]-1;
-                motor.connection.send(bytes('AF'+'{:3d}'.format(visualpos[0]),'ascii')))
+                ssmr.write('AF'+'{:3d}'.format(visualpos[0]))
             elif (data=='['):
                 # Nose down
                 visualpos[1]=visualpos[1]-1;
-                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii')))
+                ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
             elif (data==']'):
                 # Nose up
                 visualpos[1]=visualpos[1]+1;
-                motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii')))
+                ssmr.write('AT'+'{:3d}'.format(visualpos[1]))
             elif (data=='a'):
                 # Scan right
                 scan=scan-1;
-                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii')))
+                ssmr.write('AO'+'{:3d}'.format(scan))
             elif (data=='d'):
                 # Scan left
                 scan=scan+1;
-                motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii')))
+                ssmr.write('AO'+'{:3d}'.format(scan))
             elif (data=='M'):
                 pass
                 #prop.moveto(mtrn, hidraw, tgt)
                 # PID to desired position
             elif (data=='E'):
-                motor.connection.send(b'E')
+                ssmr.write('E')
                 # Empire song
             elif (data=='P'):
-                motor.connection.send(b'B')
+                ssmr.write('B')
 
             elif (cmd_data == ' '):
                 motor.stop()

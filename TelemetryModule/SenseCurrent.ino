@@ -25,7 +25,7 @@ void senseCurrentAndVoltage()
   // print out the value you read:
   if (debug)
   {
-    Serial.print(currentValue);
+    Serial.print(Voltage);
     Serial.print("-");
     Serial.print(voltage,4);
     Serial.print("-");
