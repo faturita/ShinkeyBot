@@ -186,20 +186,20 @@ connection.send(b'AE010')
 connection.send(b'AB100')
 
 def terminate():
-    print('Stopping ALPIBot')
+    print('Stopping ShinkeyBot')
     
     try:
         motor.stop()
     finally:
         os.remove('running.wt')
 
-    print ('ALPIBot has stopped.')
+    print ('ShinkeyBot has stopped.')
     exit(0)
 
 signal.signal(signal.SIGINT, lambda signum, frame: terminate())
 signal.signal(signal.SIGTERM, lambda signum, frame: terminate())
 
-print('ALPIBot ready.')
+print('ShinkeyBot ready.')
 # Live
 while(True):
     try:
