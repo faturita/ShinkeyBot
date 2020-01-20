@@ -126,6 +126,7 @@ print ('Done.')
 cap.release()
 time.sleep(5)
 
-out.release()
+if (savevideo):
+	out.release()
 
 cv2.destroyAllWindows()

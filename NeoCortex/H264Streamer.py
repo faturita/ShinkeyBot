@@ -4,6 +4,8 @@ import socket
 import time
 import picamera
 import threading
+import subprocess
+import os
 
 import Configuration as conf
 
@@ -14,9 +16,14 @@ class H264VideoStreamer:
         self.videoport = conf.videoport
         self.fps = 1
         self.thread = None
+        self.pro = None
 
     def interrupt(self):
         print ('Interrupting stream h264 server...')
+
+        if (self.pro != None):
+            os.killpg(os.getpgid(self.pro.pid), signal.SIGTERM)  
+
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = ('127.0.0.1', self.videoport)
@@ -24,15 +31,25 @@ class H264VideoStreamer:
             sock.send(b'1')
             sock.close()
         except Exception as e:
-            print('Server seems to be down:' + str(e))
+            print('Streaming Server seems to be down:' + str(e))
 
+
+    def spanAndConnect(self):
+        try:
+            FNULL = open(os.devnull, 'w')
+            pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py'],preexec_fn=os.setsid)
+            if pro.stderr or pro.returncode:
+                return False
+        except Exception as e:
+            print ("Error:" + str(e))
+            print ("Error: unable to start a new thread")
 
     def startAndConnect(self):
         try:
             self.thread = threading.Thread(target=self.connect, args=(1,))
             self.thread.start()
         except Exception as e:
-            print ("Error:" + e)
+            print ("Error:" + str(e))
             print ("Error: unable to start a new thread")
 
     def connectMe(self, server_socket):
