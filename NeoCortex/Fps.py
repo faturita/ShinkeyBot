@@ -36,12 +36,11 @@ if __name__ == "__main__":
     for i in range(1,1000):
         ffps.step()
 
-    print "Estimated frames per second: {0}".format(ffps.toc())
+    print ("Estimated frames per second: {0}".format(ffps.toc()))
 
     for i in range(1,1000000):
         ffps.steptoc()
-        time.sleep(0.5)
-        print "Estimated frames per second: {0}".format(ffps.fps)
+        print ("Estimated frames per second: {0}".format(ffps.fps))
 
     # Start time
     start = time.time()
@@ -55,7 +54,7 @@ if __name__ == "__main__":
 
         # Time elapsed
         seconds = end - start
-        print "Time taken : {0} seconds".format(seconds)
+        print ("Time taken : {0} seconds".format(seconds))
 
         num_frames = num_frames + 1
 
@@ -65,4 +64,4 @@ if __name__ == "__main__":
 
     # Calculate frames per second
     fps  = num_frames / seconds;
-    print "Estimated frames per second : {0}".format(fps);
+    print ("Estimated frames per second : {0}".format(fps))
