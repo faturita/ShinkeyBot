@@ -102,7 +102,15 @@ dosomestreaming = True
 vst = pcs.H264VideoStreamer()
 if (dosomestreaming):
     try:
-        vst.startAndConnect()
+        #vst.startAndConnect()
+
+        FNULL = open(os.devnull, 'w')
+        pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py',preexec_fn=os.setsid)
+        if pro.stderr or pro.returncode:
+            return False
+
+
+
         pass
     except Exception as e:
         print('Error starting H264 stream thread:'+e)

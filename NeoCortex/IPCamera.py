@@ -38,8 +38,8 @@ else:
 #cap = cv2.VideoCapture('rtsp://192.168.0.3/cam0_0')
 #cap = cv2.VideoCapture('tcp://192.168.0.110:10000')
 #cap = cv2.VideoCapture('tcp://10.17.48.177:10000')
-#cap = cv2.VideoCapture('tcp://'+str(ip)+':'+str(port))
-cap = cv2.VideoCapture('udp://localhost:10000')
+cap = cv2.VideoCapture('tcp://'+str(ip)+':'+str(port))
+#cap = cv2.VideoCapture('udp://localhost:10000')
 
 if (savevideo):
 	w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
