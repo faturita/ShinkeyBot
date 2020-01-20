@@ -10,6 +10,7 @@ import fcntl
 from threading import Timer
 import signal
 import time
+import subprocess
 
 from connection import MCast
 from SerialConnection import SerialConnection
