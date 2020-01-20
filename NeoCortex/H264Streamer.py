@@ -39,8 +39,8 @@ class H264VideoStreamer:
     def spanAndConnect(self):
         try:
             FNULL = open(os.devnull, 'w')
-            pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py'],preexec_fn=os.setsid)
-            if pro.stderr or pro.returncode:
+            self.pro = subprocess.Popen(['/usr/bin/python3', 'H264Streamer.py'],preexec_fn=os.setsid)
+            if self.pro.stderr or self.pro.returncode:
                 return False
         except Exception as e:
             print ("Error:" + str(e))

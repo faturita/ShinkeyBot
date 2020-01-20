@@ -75,7 +75,7 @@ while Configuration.broadcast_IP:
     except:
         data = None
 
-    if (abs(time.time()- start) > 5):
+    if (abs(time.time()- start) > 20):
         print('Giving up broadcasting ip... Lets get started.')
         break
 
@@ -109,6 +109,9 @@ if (dosomestreaming):
     except Exception as e:
         print('Error starting H264 stream thread:'+str(e))
 
+
+visualpos = [90, 95]
+scan = 90
 # Enables the sensor telemetry.  Arduinos will send telemetry data that will be
 #  sent to listening servers.
 sensesensor = False
