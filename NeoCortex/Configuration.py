@@ -5,3 +5,4 @@ shinkeybotip = '192.168.0.110'
 telemetryport = 10003
 videoport = 10000
 controlport = 10001
+broadcast_IP = True
