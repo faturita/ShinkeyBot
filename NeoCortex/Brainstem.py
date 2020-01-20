@@ -314,13 +314,13 @@ while(True):
             elif (cmd_data == ' '):
                 motor.stop()
 
-            elif (cmd_data == 'w'):
+            elif (cmd_data == 'W'):
                 motor.move_forward()
-            elif (cmd_data == 's'):
+            elif (cmd_data == 'S'):
                 motor.move_backwards()
-            elif (cmd_data == 'd'):
+            elif (cmd_data == 'D'):
                 motor.move_right()
-            elif (cmd_data == 'a'):
+            elif (cmd_data == 'A'):
                 motor.move_left()
             elif (cmd_data == '.'):
                 motor.decrease_speed()
