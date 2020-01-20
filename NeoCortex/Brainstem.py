@@ -262,6 +262,8 @@ while(True):
                 motor.connection.send(b'T')
                 #Camera nose down
 
+
+
             elif (cmd_data=='L'):
                 motor.connection.send(b'L')
                 motor.connection.send(b'L')
