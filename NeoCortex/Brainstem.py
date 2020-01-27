@@ -293,11 +293,11 @@ while(True):
                 motor.connection.send(bytes('AT'+'{:3d}'.format(visualpos[1]),'ascii'))
             elif (cmd_data=='a'):
                 # Scan right
-                scan=scan-1;
+                scan=scan+1;
                 motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
             elif (cmd_data=='d'):
                 # Scan left
-                scan=scan+1;
+                scan=scan-1;
                 motor.connection.send(bytes('AO'+'{:3d}'.format(scan),'ascii'))
             elif (cmd_data=='M'):
                 pass
