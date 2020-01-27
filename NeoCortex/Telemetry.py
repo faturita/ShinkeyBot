@@ -20,6 +20,8 @@ import Configuration
 
 from Fps import Fps
 
+from TelemetryDictionary import telemetrydirs
+
 data1 = 1
 data2 = 2
 data3 = 3
@@ -33,11 +35,25 @@ unpackcode = 'hhffffhhh'
 length = 66
 unpackcode='fffffffffffhhhhhhhhhhh'
 
+length = 40
+unpackcode = 'fiiihhhhhhhhhhhh'
+
+length = 36
+unpackcode = 'fiiiiiffhh'
+
+length = 66
+unpackcode = 'fffffffffffhhhhhhhhhhh'
+
 if (len(sys.argv)>=2):
-    print "Reading which data to shown"
-    data1 = int(sys.argv[1])
-    data2 = int(sys.argv[2])
-    data3 = int(sys.argv[3])
+    print ("Reading which data to shown")
+    try:
+        data1 = int(sys.argv[1])
+        data2 = int(sys.argv[2])
+        data3 = int(sys.argv[3])
+    except:
+        data1 = telemetrydirs[sys.argv[1]]
+        data2 = telemetrydirs[sys.argv[2]]
+        data3 = telemetrydirs[sys.argv[3]]
 
 if (len(sys.argv)>=5):
     min = int(sys.argv[4])
@@ -53,7 +69,7 @@ serialconnected = False
 if (not serialconnected):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_address = ('0.0.0.0', Configuration.telemetryport)
-    print >> sys.stderr, 'starting up on %s port %s', server_address
+    print ('Starting up on %s port %s' % server_address)
 
     sock.bind(server_address)
 
@@ -69,7 +85,7 @@ def gimmesomething(ser):
 # Sensor Recording
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M-%S')
-f = open('../data/sensor.'+st+'.dat', 'w')
+f = open('./data/sensor.'+st+'.dat', 'w')
 
 
 if (serialconnected):
@@ -82,13 +98,13 @@ if (serialconnected):
     time.sleep(6)
 
     buf = ser.readline()
-    print str(buf)
+    print (str(buf))
 
     buf = ser.readline()
-    print str(buf)
+    print (str(buf))
 
     buf = ser.readline()
-    print str(buf)
+    print (str(buf))
 
     ser.write('S')
 
@@ -146,7 +162,7 @@ while True:
           new_values = unpack(unpackcode,data)
           #new_values = unpack('ffffffhhhhhhhhhh'+'hhffffhhh',data)
           #new_values = unpack('ffffffhhhhhhhhhh', data)
-          print str(address)+'-'+str(fps.fps)+':'+str(new_values)
+          print (str(address)+'-'+str(fps.fps)+':'+str(new_values))
           #print str(new_values[1]) + '\t' + str(new_values[2]) + '\t' + str(new_values[3])
           f.write( str(new_values[data1]) + ' ' + str(new_values[data2]) + ' ' + str(new_values[data3]) + '\n')
 
@@ -165,7 +181,7 @@ while True:
           line3.set_xdata(plotx)
 
           fig.canvas.draw()
-          plt.pause(0.00001)
+          plt.pause(0.0000000001)
 
           plcounter = plcounter+1
 
@@ -180,4 +196,4 @@ while True:
 f.close()
 if (serialconnected):
    ser.close()
-print 'Everything successfully closed.'
+print ('Everything successfully closed.')

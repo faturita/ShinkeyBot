@@ -248,9 +248,7 @@ while(True):
             elif (cmd_data == 'q'):
                 sensesensor = False
 
-            if (cmd_data == 'K'):
-                #Scan
-                motor.connection.send(b'K')
+
             if (cmd_data == 'N'):
                 motor.connection.send(b'H')
                 #Camera Right
@@ -309,7 +307,18 @@ while(True):
                 motor.connection.send(b'E')
                 # Empire song
             elif (cmd_data=='P'):
+                # Beep
                 motor.connection.send(b'B')
+
+            elif (cmd_data=='p'):
+                # Get barometric data
+                motor.connection.send(b'P')
+            elif (cmd_data=='O'):
+                # Do the ultrasound sensor scan
+                motor.connection.send(b'O')
+            elif (cmd_data == 'K'):
+                #IMU sensor readings
+                motor.connection.send(b'K')
 
             elif (cmd_data == ' '):
                 motor.stop()

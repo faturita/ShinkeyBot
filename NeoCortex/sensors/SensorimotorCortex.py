@@ -135,8 +135,6 @@ class SensorimotorCortex:
     def reset(self):
         self.connection.flush()
         self.cleanbuffer()
-        self.send(b'AE010')
-        self.send(b'AB100')
 
 
 #sensorimotor = Sensorimotor('sensorimotor',66,'fffffffffffhhhhhhhhhhh')

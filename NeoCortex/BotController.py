@@ -15,7 +15,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 print('Parameters:' + str(sys.argv))
 # Fetch the remote ip if I do not have one.  It should be multicasted by ShinkeyBot
-reporter = MCast.Receiver()
+#reporter = MCast.Receiver()
 
 ConfigMe.createconfig("config.ini")
 
