@@ -200,6 +200,9 @@ signal.signal(signal.SIGINT, lambda signum, frame: terminate())
 signal.signal(signal.SIGTERM, lambda signum, frame: terminate())
 
 print('ShinkeyBot ready.')
+# Beeping !!!!
+connection.send(b'B')
+
 # Live
 while(True):
     try:
