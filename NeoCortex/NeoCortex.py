@@ -20,6 +20,8 @@ import sys, select
 
 from TelemetryDictionary import telemetrydirs
 
+from SLAMComputing import SLAMComputer
+
 class Cmd:
     def __init__(self,cmd,dl):
         self.cmd = cmd
@@ -38,8 +40,6 @@ class Asynctimer:
 
 
 print('Parameters:' + str(sys.argv))
-# Fetch the remote ip if I do not have one.  It should be multicasted by ShinkeyBot
-reporter = MCast.Receiver()
 
 ConfigMe.createconfig("config.ini")
 
@@ -50,6 +50,8 @@ print("Last ip used:"+lastip)
 
 if (len(sys.argv)<2):
     print ("Waiting for Multicast Message")
+    # Fetch the remote ip if I do not have one.  It should be multicasted by ShinkeyBot
+    reporter = MCast.Receiver()
     shinkeybotip = reporter.receive()
     print ('Bot IP:' + shinkeybotip)
     ip = shinkeybotip
@@ -110,6 +112,7 @@ action = ''
 
 # q = Queue.Queue()
 
+s = SLAMComputer()
 
 while (True):
 
@@ -132,12 +135,13 @@ while (True):
     gPitch = new_values[telemetrydirs['geoPitch']]
     gRoll = new_values[telemetrydirs['geoRoll']]
     near = new_values[telemetrydirs['distance']]
+    heading = new_values[telemetrydirs['geoHeading']]
 
-    state = 0
-    action = ''
 
-    print (distance)
-    print (angle)
+    [state, action] = s.compute(state, new_values)
+
+    print ('State %d Distance %d Angle %d - (%d, %d, %d)' % (state,near,heading, gYaw, gPitch, gRoll))
+
 
     if (len(action)>0):
         # Determine action command and send it.

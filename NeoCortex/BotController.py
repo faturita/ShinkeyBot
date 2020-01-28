@@ -6,16 +6,14 @@ import sys
 import time
 from connection import MCast
 import os
-  
-
-
 import ConfigMe
+import Configuration
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 print('Parameters:' + str(sys.argv))
 # Fetch the remote ip if I do not have one.  It should be multicasted by ShinkeyBot
-#reporter = MCast.Receiver()
+reporter = MCast.Receiver()
 
 ConfigMe.createconfig("config.ini")
 
@@ -37,7 +35,7 @@ else:
     print ("Using IP:"+ip)
 
 ConfigMe.setconfig("config.ini","ip",ip)
-server_address = (ip, 10001)
+server_address = (ip, Configuration.controlport)
 
 def _find_getch():
     try:
