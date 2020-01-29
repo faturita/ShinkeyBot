@@ -37,7 +37,7 @@ class SLAMComputer:
         elif (state == 3):
             self.tick = self.tick + 1
             if (self.tick >= 40):
-                state = 1
+                state = 0
                 self.tick = 0       
 
         self.keypoint = (0,0,sensors[telemetrydirs['geoHeading']], sensors[telemetrydirs['scanned']])

@@ -1,20 +1,20 @@
 import serial
 import time
-
 import os
 
-
-if (os.path.exists('/dev/tty.usbmodem1411')):
-   ser = serial.Serial(port='/dev/tty.usbmodem1411',baudrate=115200,timeout=0)
-elif (os.path.exists('/dev/ttyACM0')):
-   ser = serial.Serial(port='/dev/ttyACM0',baudrate=115200,timeout=0)
+if (os.path.exists('/dev/cu.usbmodem144101')):
+   ser = serial.Serial(port='/dev/cu.usbmodem144101',baudrate=9600,timeout=0)
+elif (os.path.exists('/dev/ttyACM1')):
+   ser = serial.Serial(port='/dev/ttyACM1',baudrate=9600,timeout=0)
 
 time.sleep(5)
 
 buf = ser.read(25)
 
-print str(buf)
-ser.write('A4200')
+print (str(buf))
+
+ser.write(b'A4200')
 time.sleep(0.4)
-ser.write('A5000')
+ser.write(b'A5000')
+time.sleep(3)
 ser.close()

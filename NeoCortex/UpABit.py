@@ -2,8 +2,8 @@ import serial
 import time
 import os
 
-if (os.path.exists('/dev/tty.usbmodem1431')):
-   ser = serial.Serial(port='/dev/tty.usbmodem1431',baudrate=9600,timeout=0)
+if (os.path.exists('/dev/cu.usbmodem144101')):
+   ser = serial.Serial(port='/dev/cu.usbmodem144101',baudrate=9600,timeout=0)
 elif (os.path.exists('/dev/ttyACM1')):
    ser = serial.Serial(port='/dev/ttyACM1',baudrate=9600,timeout=0)
 
@@ -11,7 +11,7 @@ time.sleep(5)
 
 buf = ser.read(25)
 
-print str(buf)
+print (str(buf))
 
 # for spd in range(1,251):
 #     cmd = 'A4'
@@ -20,26 +20,26 @@ print str(buf)
 #     print val
 #     ser.write(val)
 
-ser.write('AC105')
+ser.write(b'AC105')
 time.sleep(2)
-ser.write('A7160')
-ser.write('A6170')
+ser.write(b'A7160')
+ser.write(b'A6170')
 time.sleep(6)
 
-ser.write('A2225')
-ser.write('L')
+ser.write(b'A2225')
+ser.write(b'L')
 time.sleep(1)
-ser.write('A8220')
+ser.write(b'A8220')
 time.sleep(6)
-ser.write('AA080')
-ser.write('l')
-ser.write('A9220')
+ser.write(b'AA080')
+ser.write(b'l')
+ser.write(b'A9220')
 time.sleep(1)
-ser.write('A1225')
+ser.write(b'A1225')
 time.sleep(6)
-ser.write('=')
-ser.write('AC150')
+ser.write(b'=')
+ser.write(b'AC150')
 time.sleep(6)
-ser.write('=')
+ser.write(b'=')
 time.sleep(6)
 ser.close()

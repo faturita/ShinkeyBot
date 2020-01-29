@@ -7,7 +7,7 @@ results = []
 x = []
 y = []
 
-with open('data/slam.dat') as inputfile:
+with open('data/slam2.dat') as inputfile:
     val = inputfile.readline()
     while len(val)>0:
         rows = val[1:-2]
@@ -21,7 +21,8 @@ print ('Longitud del archivo:'+str(len(results)))
 
 print( results[1000:1100] )
 
-x = map(lambda p: p * np.pi/180.0, x)
+# Map returns a generator, that should be casted into a list for the plot
+x = list(map(lambda p: p * np.pi/180.0, x))
 
 
 fig = plt.figure(figsize=(5, 5))

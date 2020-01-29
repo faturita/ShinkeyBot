@@ -86,7 +86,11 @@ class SensorimotorCortex:
         self.f.write(str(ts) + ' '+ ' '.join(map(str, new_values)) + '\n')
 
     def send(self,data):
-        sent = self.sock.sendto(data, self.server_address)
+        try:
+            sent = self.sock.sendto(data, self.server_address)
+        except Exception as e:
+            print('Telemetry Error:'+str(e))
+            # @FIXME: Do nothing right now but I think I should restart the socket.
 
     def repack(self,list_pos,list_values):
         new_values = unpack(self.mapping, self.data)
